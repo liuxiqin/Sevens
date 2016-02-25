@@ -1,0 +1,14 @@
+F:\CodeProject\NetProject\Sevens\src\Sevens\Seven\bin\Debug\Seven.dll
+F:\CodeProject\NetProject\Sevens\src\Sevens\Seven\bin\Debug\Seven.pdb
+F:\CodeProject\NetProject\Sevens\src\Sevens\Seven\bin\Debug\Newtonsoft.Json.dll
+F:\CodeProject\NetProject\Sevens\src\Sevens\Seven\bin\Debug\protobuf-net.dll
+F:\CodeProject\NetProject\Sevens\src\Sevens\Seven\bin\Debug\RabbitMQ.Client.dll
+F:\CodeProject\NetProject\Sevens\src\Sevens\Seven\bin\Debug\Newtonsoft.Json.xml
+F:\CodeProject\NetProject\Sevens\src\Sevens\Seven\bin\Debug\protobuf-net.pdb
+F:\CodeProject\NetProject\Sevens\src\Sevens\Seven\bin\Debug\protobuf-net.xml
+F:\CodeProject\NetProject\Sevens\src\Sevens\Seven\bin\Debug\RabbitMQ.Client.xml
+F:\CodeProject\NetProject\Sevens\src\Sevens\Seven\obj\Debug\Seven.dll
+F:\CodeProject\NetProject\Sevens\src\Sevens\Seven\obj\Debug\Seven.pdb
+F:\CodeProject\NetProject\Sevens\src\Sevens\Seven\obj\Debug\Seven.csprojResolveAssemblyReference.cache
+F:\CodeProject\NetProject\Sevens\src\Sevens\Seven\bin\Debug\Autofac.dll
+F:\CodeProject\NetProject\Sevens\src\Sevens\Seven\bin\Debug\Autofac.xml

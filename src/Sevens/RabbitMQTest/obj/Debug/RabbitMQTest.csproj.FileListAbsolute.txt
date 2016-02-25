@@ -1,0 +1,7 @@
+F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMQTest\bin\Debug\RabbitMQTest.exe.config
+F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMQTest\bin\Debug\RabbitMQTest.exe
+F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMQTest\bin\Debug\RabbitMQTest.pdb
+F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMQTest\bin\Debug\RabbitMQ.Client.dll
+F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMQTest\bin\Debug\RabbitMQ.Client.xml
+F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMQTest\obj\Debug\RabbitMQTest.exe
+F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMQTest\obj\Debug\RabbitMQTest.pdb

@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{71FD2DBC-6909-440B-8594-07179FB8184B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Seven</RootNamespace>
+    <AssemblyName>Seven</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\packages\protobuf-net.2.0.0.668\lib\net40\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="RabbitMQ.Client">
+      <HintPath>..\packages\RabbitMQ.Client.3.5.4\lib\net40\RabbitMQ.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Aggregates\AggregateRoot.cs" />
+    <Compile Include="Initializer\IApplictionInitializer.cs" />
+    <Compile Include="Initializer\CommandHandleProvider.cs" />
+    <Compile Include="Initializer\EventHandleProvider.cs" />
+    <Compile Include="Aggregates\IAggregateRoot.cs" />
+    <Compile Include="Commands\CommandService.cs" />
+    <Compile Include="Commands\CommandBus.cs" />
+    <Compile Include="Commands\CommandExecutionState.cs" />
+    <Compile Include="Commands\DefaultCommandExecuted.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\ICommandBus.cs" />
+    <Compile Include="Commands\CommandContext.cs" />
+    <Compile Include="Commands\ICommandContext.cs" />
+    <Compile Include="Commands\ICommandExecute.cs" />
+    <Compile Include="Commands\ICommandHanlder.cs" />
+    <Compile Include="Commands\ICommandService.cs" />
+    <Compile Include="Commands\ProcessCommand.cs" />
+    <Compile Include="Events\IDomainEvent.cs" />
+    <Compile Include="Events\IEvent.cs" />
+    <Compile Include="Infrastructure\Exceptions\SystemException.cs" />
+    <Compile Include="Infrastructure\Ioc\IContainerObject.cs" />
+    <Compile Include="Infrastructure\MessageDevice\IMessageConnection.cs" />
+    <Compile Include="Infrastructure\MessageDevice\MessageConnectionState.cs" />
+    <Compile Include="Infrastructure\Repository\EventSouringRepository.cs" />
+    <Compile Include="Infrastructure\Repository\IRepository.cs" />
+    <Compile Include="Infrastructure\Repository\MemoryCacheRepository.cs" />
+    <Compile Include="Infrastructure\Serializer\DefaultBinarySerializer.cs" />
+    <Compile Include="Infrastructure\Serializer\IBinarySerializer.cs" />
+    <Compile Include="Infrastructure\Serializer\IJsonSerializer.cs" />
+    <Compile Include="Infrastructure\Serializer\DefaultJsonSerializer.cs" />
+    <Compile Include="Infrastructure\Serializer\ProtoBufSerializer.cs" />
+    <Compile Include="Infrastructure\Store\IEventStore.cs" />
+    <Compile Include="Infrastructure\Store\MemoryCacheStore.cs" />
+    <Compile Include="Initializer\MessageTypeProvider.cs" />
+    <Compile Include="Message\IMessage.cs" />
+    <Compile Include="Message\IMessageBroker.cs" />
+    <Compile Include="Message\IMessageConsumer.cs" />
+    <Compile Include="Message\IMessageHandler.cs" />
+    <Compile Include="Message\IMessageProducer.cs" />
+    <Compile Include="Message\MessageBroker.cs" />
+    <Compile Include="Message\MessageConsumer.cs" />
+    <Compile Include="Message\IMessgaeExecute.cs" />
+    <Compile Include="Message\MessageProducer.cs" />
+    <Compile Include="Message\MessageResult.cs" />
+    <Compile Include="Message\QueueConnectionInfo.cs" />
+    <Compile Include="Message\QueueMessage.cs" />
+    <Compile Include="Pipeline\EndingMessageHandler.cs" />
+    <Compile Include="Pipeline\ErroMessageHandler.cs" />
+    <Compile Include="Pipeline\MessageContext.cs" />
+    <Compile Include="Pipeline\IMessageContext.cs" />
+    <Compile Include="Pipeline\ProcessMessageHandler.cs" />
+    <Compile Include="Pipeline\ReceiveMessageHandler.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Configuration\" />
+    <Folder Include="Infrastructure\Aspects\" />
+    <Folder Include="Infrastructure\Logs\" />
+    <Folder Include="Modules\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
