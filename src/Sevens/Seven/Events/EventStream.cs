@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace Seven.Events
 {
-    public interface IEvent
+    public class EventStream
     {
+        public int Version { get; set; }
 
+        public IList<IEvent> Events { get; set; }
     }
+
 }

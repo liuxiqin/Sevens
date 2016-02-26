@@ -11,6 +11,6 @@ namespace Seven.Infrastructure.Repository
     {
         void Add(IAggregateRoot aggregateRoot);
 
-        T Get<T>(object aggregateRootId) where T : IAggregateRoot;
+        T Get<T>(string aggregateRootId) where T : IAggregateRoot;
     }
 }

@@ -20,7 +20,7 @@ namespace Seven.Infrastructure.Repository
             }
         }
 
-        public T Get<T>(object aggregateRootId) where T : IAggregateRoot
+        public T Get<T>(string aggregateRootId) where T : IAggregateRoot
         {
             if (_aggregateRoots.ContainsKey(aggregateRootId.ToString()))
             {

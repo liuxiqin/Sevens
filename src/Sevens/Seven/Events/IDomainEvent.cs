@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Seven.Events
 {
-    public interface IDomainEvent:IEvent
+    public interface IDomainEvent : IEvent
     {
 
     }

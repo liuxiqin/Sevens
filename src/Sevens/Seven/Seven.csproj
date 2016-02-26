@@ -54,6 +54,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Aggregates\AggregateRoot.cs" />
+    <Compile Include="Events\EventStream.cs" />
+    <Compile Include="Infrastructure\Ioc\AutofacContainerObject.cs" />
+    <Compile Include="Infrastructure\Ioc\ObjectContainer.cs" />
     <Compile Include="Initializer\IApplictionInitializer.cs" />
     <Compile Include="Initializer\CommandHandleProvider.cs" />
     <Compile Include="Initializer\EventHandleProvider.cs" />
@@ -84,8 +87,8 @@
     <Compile Include="Infrastructure\Serializer\IJsonSerializer.cs" />
     <Compile Include="Infrastructure\Serializer\DefaultJsonSerializer.cs" />
     <Compile Include="Infrastructure\Serializer\ProtoBufSerializer.cs" />
-    <Compile Include="Infrastructure\Store\IEventStore.cs" />
-    <Compile Include="Infrastructure\Store\MemoryCacheStore.cs" />
+    <Compile Include="EventStore\IEventStore.cs" />
+    <Compile Include="EventStore\MemoryCacheStore.cs" />
     <Compile Include="Initializer\MessageTypeProvider.cs" />
     <Compile Include="Message\IMessage.cs" />
     <Compile Include="Message\IMessageBroker.cs" />
@@ -111,6 +114,7 @@
     <Folder Include="Configuration\" />
     <Folder Include="Infrastructure\Aspects\" />
     <Folder Include="Infrastructure\Logs\" />
+    <Folder Include="Infrastructure\Store\" />
     <Folder Include="Modules\" />
   </ItemGroup>
   <ItemGroup>
