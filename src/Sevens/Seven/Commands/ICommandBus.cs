@@ -28,15 +28,15 @@ namespace Seven.Commands
         /// <summary>
         /// Send command to commandbus
         /// </summary>
-        /// <param name="command"></param>
-        void Send(ICommand command);
+        /// <param name="processCommand"></param>
+        void Send(ProcessCommand processCommand);
 
 
         /// <summary>
         /// Dispatch the command
         /// </summary>
-        /// <param name="copmmand"></param>
-        void Dispatch(ICommand copmmand);
+        /// <param name="processCommand"></param>
+        void Dispatch(ProcessCommand processCommand);
 
 
 

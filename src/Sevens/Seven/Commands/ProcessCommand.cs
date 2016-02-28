@@ -8,6 +8,19 @@ namespace Seven.Commands
 {
     public class ProcessCommand
     {
-        public ICommand Command { get; set; }
+        public ICommandContext CommandContext { get; private set; }
+
+        public ICommand Command { get; private set; }
+
+        public ProcessCommand(ICommandContext commandContext, ICommand command)
+        {
+            CommandContext = commandContext;
+            Command = command;
+        }
+
+        public Type GetCommandType
+        {
+            get { return Command.GetType(); }
+        }
     }
 }

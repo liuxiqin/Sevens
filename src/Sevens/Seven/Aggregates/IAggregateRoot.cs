@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using Seven.Events;
 
 namespace Seven.Aggregates
@@ -11,6 +12,12 @@ namespace Seven.Aggregates
 
         void ApplyEvent(IDomainEvent evnt);
 
-        IList<IDomainEvent> Commit();
+        IList<IEvent> Commit();
+
+        void ApplyEvents(IList<IDomainEvent> events);
+
+        IList<IEvent> GetChanges(); 
+
+        int Version { get;}
     }
 }

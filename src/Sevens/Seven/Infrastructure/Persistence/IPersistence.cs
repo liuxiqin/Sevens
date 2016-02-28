@@ -1,23 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Seven.Events;
+using Seven.Infrastructure.Snapshoting;
 
 namespace Seven.Infrastructure.Persistence
 {
     public interface IPersistence
     {
-        EventStream Get(string aggregateRootId);
+        void Save<TEntity>(TEntity entity) where TEntity : EntityBase;
 
-        EventStream Get(string aggregateRootId, int version);
+        TEntity GetById<TEntity>(string aggregateRootId) where TEntity : EntityBase;
 
-        void Append(string aggregateRootId, int version, IList<IEvent> events);
+        TEntity Get<TEntity>(ISpecification<TEntity> specification) where TEntity : EntityBase;
     }
 
 
-    public class EventStoreModel
+    public class EventEntity
     {
         public string AggregateRootId { get; set; }
 

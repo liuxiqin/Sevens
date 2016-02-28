@@ -32,22 +32,22 @@ namespace Seven.Commands
         }
 
         public CommandExecutionState ExecuteState { get; private set; }
-        
+
 
         public void Add(IAggregateRoot aggregate)
         {
             AggregateRoots.Add(aggregate.AggregateRootId, aggregate);
         }
 
-        public T Get<T>(object aggregateRootId) where T : IAggregateRoot
+        public T Get<T>(string aggregateRootId) where T : IAggregateRoot
         {
-            if (!AggregateRoots.ContainsKey(aggregateRootId.ToString()))
+            if (!AggregateRoots.ContainsKey(aggregateRootId))
             {
                 var aggregateRoot = _repository.Get<IAggregateRoot>(aggregateRootId);
 
-                AggregateRoots.Add(aggregateRootId.ToString(), aggregateRoot);
+                AggregateRoots.Add(aggregateRootId, aggregateRoot);
             }
-            return (T)AggregateRoots[aggregateRootId.ToString()];
+            return (T) AggregateRoots[aggregateRootId];
         }
     }
 }

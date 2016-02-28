@@ -11,13 +11,11 @@ namespace Seven.Commands
 {
     public class CommandBus : ICommandBus
     {
-        public IDictionary<Type, Action<ICommand>> subscribes;
-
+        private readonly IDictionary<Type, Action<ICommandContext, ICommand>> _commandHandlerProvider;
 
         public CommandBus(Assembly assembly)
         {
-            subscribes = new ConcurrentDictionary<Type, Action<ICommand>>();
-
+            _commandHandlerProvider = new ConcurrentDictionary<Type, Action<ICommandContext, ICommand>>();
             Init(assembly);
         }
 
@@ -34,6 +32,7 @@ namespace Seven.Commands
             foreach (var executorType in commandExecutorTypes)
             {
                 dynamic handler = Activator.CreateInstance(executorType, true);
+
                 var commandType = executorType.GetInterface(targetType.FullName).GetGenericArguments().First();
 
                 RegisterHandler(commandType, handler);
@@ -44,36 +43,38 @@ namespace Seven.Commands
         public void RegisterHandler<TCommand>(Type commandType, ICommandHandler<TCommand> handler)
             where TCommand : ICommand
         {
-            if (subscribes.ContainsKey(commandType))
+            if (_commandHandlerProvider.ContainsKey(commandType))
             {
                 return;
             }
-            Action<ICommand> action = (cmd) => handler.Handle(new CommandContext(null), (TCommand)cmd);
+            Action<ICommandContext, ICommand> commandHandler = (context, cmd) => handler.Handle(new CommandContext(null), (TCommand)cmd);
 
-            subscribes.Add(commandType, action);
+            _commandHandlerProvider.Add(commandType, commandHandler);
         }
 
         public void UnRegister<T>(Type commandType) where T : class, ICommand
         {
-            if (subscribes.ContainsKey(typeof(T)))
+            if (_commandHandlerProvider.ContainsKey(typeof(T)))
             {
-                subscribes.Remove(typeof(T));
+                _commandHandlerProvider.Remove(typeof(T));
             }
         }
 
-        public void Send(ICommand command)
+        public void Send(ProcessCommand processCommand)
         {
-            Dispatch(command);
+            Dispatch(processCommand);
         }
 
-        public void Dispatch(ICommand command)
+        public void Dispatch(ProcessCommand processCommand)
         {
-            if (subscribes.ContainsKey(command.GetType()))
+            if (_commandHandlerProvider.ContainsKey(processCommand.GetType()))
             {
-                var commandHandler = subscribes[command.GetType()];
-                commandHandler(command);
+                var commandHandler = _commandHandlerProvider[processCommand.GetCommandType];
+                commandHandler(processCommand.CommandContext, processCommand.Command);
             }
         }
     }
+
+
 }
 

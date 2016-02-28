@@ -32,7 +32,7 @@ namespace SevenTest
             ObjectContainer.RegisterInstance(applictionInitializer);
             ObjectContainer.RegisterInstance(commandInitializer);
 
-            IRepository repository = new EventSouringRepository();
+            IRepository repository = new EventSouringRepository(null, null);
 
             var comamndHandler = ObjectContainer.Resolve<CommandHandleProvider>();
 
@@ -80,10 +80,7 @@ namespace SevenTest
             ApplyEvent(new BindEmailEvent(email));
         }
 
-        public void ChangePassword(string oldPassword, string newPassword)
-        {
-            ApplyEvent(new ChangePasswordEvent(oldPassword, newPassword));
-        }
+
 
         public void BindPhone(string phone)
         {
@@ -103,6 +100,10 @@ namespace SevenTest
         {
             this.Email = evnt.Email;
         }
+        public void ChangePassword(string oldPassword, string newPassword)
+        {
+            ApplyEvent(new ChangePasswordEvent(oldPassword, newPassword));
+        }
 
         private void Handle(ChangePasswordEvent evnt)
         {
@@ -110,7 +111,6 @@ namespace SevenTest
             {
                 throw new ApplicationException("the old password is not true");
             }
-
             this.UserPassword = evnt.NewPassword;
         }
 

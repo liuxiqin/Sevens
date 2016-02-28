@@ -17,7 +17,8 @@ namespace CommandHandlerTest
         static void Main(string[] args)
         {
             ICommandBus bus = new CommandBus(Assembly.GetEntryAssembly());
-            bus.Send(new TestCommand());
+
+            bus.Send(null);
 
         }
     }

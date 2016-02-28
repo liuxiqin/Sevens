@@ -10,13 +10,15 @@ namespace Seven.Aggregates
     {
         private EventHandleProvider _eventHandleProvider;
 
-        public Queue<IDomainEvent> _unCommitEvents = null;
+        public Queue<IEvent> _unCommitEvents;
 
         private string _aggregateRootId;
 
+        public int Version { get; set; }
+
         protected AggregateRoot(string aggregateRootId)
         {
-            _unCommitEvents = new Queue<IDomainEvent>();
+            _unCommitEvents = new Queue<IEvent>();
 
             _aggregateRootId = aggregateRootId;
         }
@@ -34,11 +36,11 @@ namespace Seven.Aggregates
             AppendUnCommitEvents(evnt);
         }
 
-        public void AppendUnCommitEvents(IDomainEvent evnt)
+        public void AppendUnCommitEvents(IEvent evnt)
         {
             if (_unCommitEvents == null)
             {
-                _unCommitEvents = new Queue<IDomainEvent>();
+                _unCommitEvents = new Queue<IEvent>();
             }
 
             _unCommitEvents.Enqueue(evnt);
@@ -50,6 +52,18 @@ namespace Seven.Aggregates
             {
                 HandleEvent(evnt);
             }
+        }
+
+        public IList<IEvent> GetChanges()
+        {
+            var unCommitEvents = new List<IEvent>();
+
+            while (_unCommitEvents.Count > 0)
+            {
+                unCommitEvents.Add(_unCommitEvents.Dequeue());
+            }
+
+            return unCommitEvents;
         }
 
         public void HandleEvent(IDomainEvent evnt)
@@ -66,12 +80,15 @@ namespace Seven.Aggregates
                 throw new ApplicationException("can not find the handle with type of " + evnt.GetType());
             }
 
+            ((dynamic)this).Handle(evnt);
+
             handler(this, evnt);
         }
 
-        public IList<IDomainEvent> Commit()
+
+        public IList<IEvent> Commit()
         {
-            var unCommitEvents = new List<IDomainEvent>();
+            var unCommitEvents = new List<IEvent>();
 
             while (_unCommitEvents.Count > 0)
             {
@@ -80,6 +97,7 @@ namespace Seven.Aggregates
 
             return unCommitEvents;
         }
+
 
 
     }

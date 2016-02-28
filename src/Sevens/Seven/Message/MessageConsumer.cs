@@ -51,8 +51,6 @@ namespace Seven.Message
 
         public void Start()
         {
-            ulong deliveryTag = 0;
-
             var connection = _messageBroker.GetConnection;
 
             using (var channel = connection.CreateModel())
