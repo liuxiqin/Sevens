@@ -30,6 +30,10 @@ namespace Seven.Aggregates
 
         }
 
+        /// <summary>
+        /// 此处专门处理领域事件
+        /// </summary>
+        /// <param name="evnt"></param>
         public void ApplyEvent(IDomainEvent evnt)
         {
             HandleEvent(evnt);
