@@ -17,3 +17,6 @@ F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\obj\Debug\RabbitM
 F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\obj\Debug\RabbitMqClientTest.pdb
 F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\bin\Debug\Autofac.dll
 F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\bin\Debug\Autofac.xml
+E:\OpenSource\Sevens\src\Sevens\RabbitMqClientTest\bin\Debug\RabbitMqClientTest.exe.config
+E:\OpenSource\Sevens\src\Sevens\RabbitMqClientTest\obj\Debug\RabbitMqClientTest.exe
+E:\OpenSource\Sevens\src\Sevens\RabbitMqClientTest\obj\Debug\RabbitMqClientTest.pdb
