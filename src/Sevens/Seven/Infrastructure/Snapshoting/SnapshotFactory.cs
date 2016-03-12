@@ -5,7 +5,7 @@ namespace Seven.Infrastructure.Snapshoting
 {
     public class SnapshotFactory
     {
-        private IBinarySerializer _binarySerializer;
+        private readonly IBinarySerializer _binarySerializer;
 
         public SnapshotFactory(IBinarySerializer binarySerializer)
         {

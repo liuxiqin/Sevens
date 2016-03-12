@@ -10,9 +10,9 @@ namespace Seven.Events
     {
         public int Version { get; set; }
 
-        public IList<IDomainEvent> Events { get; set; }
+        public IList<IEvent> Events { get; set; }
 
-        public EventStream(int version, IList<IDomainEvent> events)
+        public EventStream(int version, IList<IEvent> events)
         {
             Version = version;
             Events = events;

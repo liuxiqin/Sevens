@@ -1,22 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Seven.Events;
 using Seven.EventStore;
 using Seven.Infrastructure.Persistence;
-using Seven.Infrastructure.Serializer;
 
 namespace Seven.Infrastructure.EventStore
 {
     public class EventStore : IEventStore
     {
-        private IPersistence _persistence;
+        private IPersistence<EventStreamEntity> _persistence;
 
         private EventStreamFactory _eventStreamFactory;
 
-        public EventStore(IPersistence persistence, EventStreamFactory eventStreamFactory)
+        public EventStore(IPersistence<EventStreamEntity> persistence, EventStreamFactory eventStreamFactory)
         {
             _persistence = persistence;
 
@@ -25,7 +23,7 @@ namespace Seven.Infrastructure.EventStore
 
         public EventStream LoadEventStream(string aggregateRootId)
         {
-            var entity = _persistence.GetById<EventStreamEntity>(aggregateRootId);
+            var entity = _persistence.GetById(aggregateRootId);
 
             return _eventStreamFactory.Create(entity);
         }
@@ -45,49 +43,9 @@ namespace Seven.Infrastructure.EventStore
 
         public void AppendToStream(string aggregateRootId, EventStream eventStream)
         {
-            var entity = _eventStreamFactory.Create(aggregateRootId, eventStream.Version, eventStream.Events);
+            var entity = _eventStreamFactory.Create(aggregateRootId, eventStream.Version,eventStream.Events);
 
             _persistence.Save(entity);
-        }
-    }
-
-    public class EventStreamEntity : EntityBase
-    {
-        public string AggregateRootId { get; private set; }
-
-        public int Version { get; private set; }
-
-        public byte[] EventDatas { get; private set; }
-
-        public EventStreamEntity(string aggregateRootId, int version, byte[] eventDatas)
-        {
-            AggregateRootId = aggregateRootId;
-            Version = version;
-            EventDatas = eventDatas;
-        }
-    }
-
-    public class EventStreamFactory
-    {
-        private readonly IBinarySerializer _binarySerializer;
-
-        public EventStreamFactory(IBinarySerializer binarySerializer)
-        {
-            _binarySerializer = binarySerializer;
-        }
-
-        public EventStream Create(EventStreamEntity entity)
-        {
-            var events = _binarySerializer.Deserialize<IList<IDomainEvent>>(entity.EventDatas);
-
-            return new EventStream(entity.Version, events);
-        }
-
-        public EventStreamEntity Create(string aggregateRootId, int version, IList<IDomainEvent> events)
-        {
-            var datas = _binarySerializer.Serialize(events);
-
-            return new EventStreamEntity(aggregateRootId, version, datas);
         }
     }
 }

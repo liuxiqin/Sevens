@@ -9,13 +9,15 @@ using Seven.Infrastructure.Snapshoting;
 
 namespace Seven.Infrastructure.Persistence
 {
-    public interface IPersistence
+    public interface IPersistence<TEntity> where TEntity : EntityBase
     {
-        void Save<TEntity>(TEntity entity) where TEntity : EntityBase;
+        void Save(TEntity entity);
 
-        TEntity GetById<TEntity>(string aggregateRootId) where TEntity : EntityBase;
+        TEntity GetById(string aggregateRootId);
 
-        TEntity Get<TEntity>(ISpecification<TEntity> specification) where TEntity : EntityBase;
+        TEntity Get(ISpecification<TEntity> specification);
+
+        TEntity Get(string aggregateRootId, int version);
     }
 
 
@@ -28,6 +30,6 @@ namespace Seven.Infrastructure.Persistence
         /// <summary>
         /// 此处采用json格式存储
         /// </summary>
-        public string Datas { get; set; }
+        public byte[] Datas { get; set; }
     }
 }

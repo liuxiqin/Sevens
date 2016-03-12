@@ -34,6 +34,18 @@
       <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Dapper, Version=1.40.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DapperExtensions, Version=1.4.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DapperExtensions.1.4.4\lib\net40\DapperExtensions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.9.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.8\lib\net45\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -56,10 +68,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Aggregates\AggregateRoot.cs" />
+    <Compile Include="EventStore\EventStreamEntity.cs" />
+    <Compile Include="EventStore\EventStreamFactory.cs" />
     <Compile Include="EventStore\EventStreamSpecification.cs" />
     <Compile Include="Events\EventStream.cs" />
+    <Compile Include="Extension\Persistence\EventStorePersistence.cs" />
+    <Compile Include="Extension\Persistence\SnapshotPersistence.cs" />
+    <Compile Include="Infrastructure\Exceptions\BusinessException.cs" />
+    <Compile Include="Infrastructure\Exceptions\FrameworkException.cs" />
     <Compile Include="Infrastructure\Ioc\AutofacContainerObject.cs" />
     <Compile Include="Infrastructure\Ioc\ObjectContainer.cs" />
+    <Compile Include="Infrastructure\Logs\ISevenLog.cs" />
     <Compile Include="Infrastructure\Persistence\EntityBase.cs" />
     <Compile Include="Infrastructure\Persistence\IPersistence.cs" />
     <Compile Include="Infrastructure\Snapshoting\ISnapshot.cs" />
@@ -87,7 +106,7 @@
     <Compile Include="Commands\ProcessCommand.cs" />
     <Compile Include="Events\IDomainEvent.cs" />
     <Compile Include="Events\IEvent.cs" />
-    <Compile Include="Infrastructure\Exceptions\SystemException.cs" />
+    <Compile Include="Infrastructure\Exceptions\SevenException.cs" />
     <Compile Include="Infrastructure\Ioc\IContainerObject.cs" />
     <Compile Include="Infrastructure\MessageDevice\IMessageConnection.cs" />
     <Compile Include="Infrastructure\MessageDevice\MessageConnectionState.cs" />
@@ -125,11 +144,11 @@
   <ItemGroup>
     <Folder Include="Configuration\" />
     <Folder Include="Infrastructure\Aspects\" />
-    <Folder Include="Infrastructure\Logs\" />
     <Folder Include="Infrastructure\Store\" />
     <Folder Include="Modules\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

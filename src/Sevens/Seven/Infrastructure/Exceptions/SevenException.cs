@@ -17,20 +17,4 @@ namespace Seven.Infrastructure.Exceptions
 
         }
     }
-
-    public class FrameworkException : SevenException
-    {
-        public FrameworkException(string message) : base(message)
-        {
-
-        }
-    }
-
-    public class BusinessException : SevenException
-    {
-        public BusinessException(string message) : base(message)
-        {
-
-        }
-    }
 }

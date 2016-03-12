@@ -10,10 +10,9 @@ namespace Seven.Infrastructure.Snapshoting
     /// <summary>
     /// 快照
     /// </summary>
-    /// <typeparam name="TAggregateRoot"></typeparam>
-    public class Snapshot<TAggregateRoot> where TAggregateRoot : IAggregateRoot
+    public class Snapshot
     {
-        public Snapshot(TAggregateRoot aggregateRoot)
+        public Snapshot(IAggregateRoot aggregateRoot)
         {
             AggregateRootId = aggregateRoot.AggregateRootId;
             Version = aggregateRoot.Version;
@@ -24,6 +23,6 @@ namespace Seven.Infrastructure.Snapshoting
 
         public int Version { get; set; }
 
-        public TAggregateRoot AggregateRoot { get; set; }
+        public IAggregateRoot AggregateRoot { get; set; }
     }
 }

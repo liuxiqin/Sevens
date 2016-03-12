@@ -5,10 +5,10 @@ namespace Seven.Infrastructure.Snapshoting
 {
     public class SnapshotRepository : ISnapshotRepository
     {
-        private readonly IPersistence _persistence;
+        private readonly IPersistence<SnapshotEntity> _persistence;
 
         private readonly SnapshotFactory _snapshotFactory;
-        public SnapshotRepository(IPersistence persistence, SnapshotFactory snapshotFactory)
+        public SnapshotRepository(IPersistence<SnapshotEntity> persistence, SnapshotFactory snapshotFactory)
         {
             _persistence = persistence;
             _snapshotFactory = snapshotFactory;
@@ -27,7 +27,7 @@ namespace Seven.Infrastructure.Snapshoting
         /// </summary>
         /// <typeparam name="TAggregateRoot"></typeparam>
         /// <param name="aggregateRoot"></param>
-        public void Build<TAggregateRoot>(TAggregateRoot aggregateRoot) where TAggregateRoot : IAggregateRoot
+        public void Create<TAggregateRoot>(TAggregateRoot aggregateRoot) where TAggregateRoot : IAggregateRoot
         {
             var snapShot = new Snapshot<TAggregateRoot>(aggregateRoot);
 

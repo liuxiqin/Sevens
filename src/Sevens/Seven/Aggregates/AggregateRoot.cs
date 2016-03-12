@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Seven.Events;
 using Seven.Infrastructure.Ioc;
 using Seven.Initializer;
 
 namespace Seven.Aggregates
 {
+    [Serializable()]
     public abstract class AggregateRoot : IAggregateRoot
     {
+     
+
         private EventHandleProvider _eventHandleProvider;
 
         public Queue<IEvent> _unCommitEvents;
@@ -34,7 +38,7 @@ namespace Seven.Aggregates
         /// 此处专门处理领域事件
         /// </summary>
         /// <param name="evnt"></param>
-        public void ApplyEvent(IDomainEvent evnt)
+        public void ApplyEvent(IEvent evnt)
         {
             HandleEvent(evnt);
             AppendUnCommitEvents(evnt);
@@ -50,11 +54,12 @@ namespace Seven.Aggregates
             _unCommitEvents.Enqueue(evnt);
         }
 
-        public void ApplyEvents(IList<IDomainEvent> events)
+        public void ApplyEvents(IList<IEvent> events)
         {
             foreach (var evnt in events)
             {
-                HandleEvent(evnt);
+                if (evnt.GetType().IsAssignableFrom(typeof(IEvent)))
+                    HandleEvent(evnt);
             }
         }
 
@@ -70,7 +75,7 @@ namespace Seven.Aggregates
             return unCommitEvents;
         }
 
-        public void HandleEvent(IDomainEvent evnt)
+        public void HandleEvent(IEvent evnt)
         {
             if (_eventHandleProvider == null)
             {
@@ -83,8 +88,6 @@ namespace Seven.Aggregates
             {
                 throw new ApplicationException("can not find the handle with type of " + evnt.GetType());
             }
-
-            ((dynamic)this).Handle(evnt);
 
             handler(this, evnt);
         }

@@ -20,6 +20,6 @@ namespace Seven.Infrastructure.Snapshoting
         /// </summary>
         /// <typeparam name="TAggregateRoot"></typeparam>
         /// <param name="aggregateRoot"></param>
-        void Build<TAggregateRoot>(TAggregateRoot aggregateRoot) where TAggregateRoot :  IAggregateRoot;
+        void Create<TAggregateRoot>(TAggregateRoot aggregateRoot) where TAggregateRoot :  IAggregateRoot;
     }
 }

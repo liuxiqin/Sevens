@@ -11,9 +11,9 @@ namespace Seven.Initializer
 {
     public class EventHandleProvider : IApplictionInitializer
     {
-        private IDictionary<Type, IDictionary<Type, Action<IAggregateRoot, IDomainEvent>>>
+        private IDictionary<Type, IDictionary<Type, Action<IAggregateRoot, IEvent>>>
             _eventHandlerProvider =
-                new ConcurrentDictionary<Type, IDictionary<Type, Action<IAggregateRoot, IDomainEvent>>>();
+                new ConcurrentDictionary<Type, IDictionary<Type, Action<IAggregateRoot, IEvent>>>();
 
         private readonly BindingFlags bindingFlags = BindingFlags.NonPublic | BindingFlags.Instance |
                                                      BindingFlags.DeclaredOnly;
@@ -42,24 +42,24 @@ namespace Seven.Initializer
             }
         }
 
-        public Action<IAggregateRoot, IDomainEvent> GetInternalHandler(Type aggregateRootType, Type eventType)
+        public Action<IAggregateRoot, IEvent> GetInternalHandler(Type aggregateRootType, Type eventType)
         {
-            IDictionary<Type, Action<IAggregateRoot, IDomainEvent>> eventHandlerDic;
+            IDictionary<Type, Action<IAggregateRoot, IEvent>> eventHandlerDic;
 
             if (!_eventHandlerProvider.TryGetValue(aggregateRootType, out eventHandlerDic)) return null;
 
-            Action<IAggregateRoot, IDomainEvent> eventHandler;
+            Action<IAggregateRoot, IEvent> eventHandler;
 
             return eventHandlerDic.TryGetValue(eventType, out eventHandler) ? eventHandler : null;
         }
 
         private void RegisterInternalHandler(Type aggregateRootType, Type eventType, MethodInfo eventHandler)
         {
-            IDictionary<Type, Action<IAggregateRoot, IDomainEvent>> eventHandlerDic;
+            IDictionary<Type, Action<IAggregateRoot, IEvent>> eventHandlerDic;
 
             if (!_eventHandlerProvider.TryGetValue(aggregateRootType, out eventHandlerDic))
             {
-                eventHandlerDic = new Dictionary<Type, Action<IAggregateRoot, IDomainEvent>>();
+                eventHandlerDic = new Dictionary<Type, Action<IAggregateRoot, IEvent>>();
 
                 _eventHandlerProvider.Add(aggregateRootType, eventHandlerDic);
             }

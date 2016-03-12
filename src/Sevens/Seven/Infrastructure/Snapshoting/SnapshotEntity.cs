@@ -4,17 +4,22 @@ namespace Seven.Infrastructure.Snapshoting
 {
     public class SnapshotEntity : EntityBase
     {
-        public string AggregateRootId { get; private set; }
+        public string AggregateRootId { get;  set; }
 
-        public int Version { get; private set; }
+        public int Versions { get;  set; }
 
-        public byte[] Datas { get; private set; }
+        public byte[] Datas { get;  set; }
 
         public SnapshotEntity(string aggregateRootId, int version, byte[] datas)
         {
             AggregateRootId = aggregateRootId;
-            Version = version;
+            Versions = version;
             Datas = datas;
+        }
+
+        public SnapshotEntity()
+        {
+            
         }
     }
 }
