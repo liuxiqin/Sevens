@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMQServerTest", "Rabbi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMqClientTest", "RabbitMqClientTest\RabbitMqClientTest.csproj", "{7DE063B1-7DEB-4AFA-8DC0-C28F9D7EC1FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTest", "SevenTest\SevenTest.csproj", "{5A1A705A-F726-40C5-BF38-53FC10CEC5FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seven.Tests", "SevenTest\Seven.Tests.csproj", "{5A1A705A-F726-40C5-BF38-53FC10CEC5FD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataBase", "DataBase", "{BD08F41B-BCE3-49CE-9B11-AF786EFA27DD}"
 EndProject

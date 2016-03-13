@@ -10,16 +10,14 @@ namespace Seven.Infrastructure.Snapshoting
         /// <summary>
         /// 获取快照
         /// </summary>
-        /// <typeparam name="TAggregateRoot"></typeparam>
         /// <param name="aggregateRootId"></param>
         /// <returns></returns>
-        Snapshot<TAggregateRoot> Get<TAggregateRoot>(string aggregateRootId) where TAggregateRoot : IAggregateRoot;
+        Snapshot Get(string aggregateRootId);
 
         /// <summary>
         /// 建立快照
         /// </summary>
-        /// <typeparam name="TAggregateRoot"></typeparam>
         /// <param name="aggregateRoot"></param>
-        void Create<TAggregateRoot>(TAggregateRoot aggregateRoot) where TAggregateRoot :  IAggregateRoot;
+        void Create(IAggregateRoot aggregateRoot);
     }
 }

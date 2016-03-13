@@ -38,7 +38,7 @@ namespace Seven.Extension.Persistence
         {
             return
                 _dbConnection.Query<EventStreamEntity>(
-                    "select top 1 * from EventStreamEntity where AggregateRootId=@aggregateRootId and Version=@version",
+                    "select * from EventStreamEntity where AggregateRootId=@aggregateRootId and Version=@version",
                     new { aggregateRootId = aggregateRootId, version = version }).FirstOrDefault();
         }
     }

@@ -15,6 +15,7 @@ using MySql.Data.MySqlClient;
 using Seven.Events;
 using Seven.Infrastructure.EventStore;
 using Seven.Infrastructure.Serializer;
+using SevenTest.UserSample.Commands;
 
 namespace SevenTest
 {
@@ -38,27 +39,6 @@ namespace SevenTest
             ObjectContainer.RegisterInstance(applictionInitializer);
             ObjectContainer.RegisterInstance(commandInitializer);
 
-            IRepository repository = new EventSouringRepository(null, null);
-
-            var comamndHandler = ObjectContainer.Resolve<CommandHandleProvider>();
-
-            var createUserCommand = new CreateUserCommand("张杰", "2222222", false, 18);
-
-            var commandContext = new CommandContext(repository);
-
-            var commandHanldeAction = comamndHandler.GetInternalCommandHandle(typeof(CreateUserCommand));
-            commandHanldeAction(commandContext, createUserCommand);
-
-            var aggregateRoots = commandContext.AggregateRoots;
-
-            IList<IEvent> unCommitEvents = null;
-
-            foreach (var item in aggregateRoots)
-            {
-                 unCommitEvents = item.Value.Commit();
-            }
-
-            var aggregateRoot = aggregateRoots.FirstOrDefault().Value;
 
             var dbConnection = new MySqlConnection(_mysqlConnection);
 
@@ -74,11 +54,35 @@ namespace SevenTest
 
             var eventStore = new EventStore(eventPersistence, eventFactory);
 
-            eventStore.AppendToStream(aggregateRoot.AggregateRootId,new EventStream(aggregateRoot.Version, unCommitEvents));
+
+            IRepository repository = new EventSouringRepository(eventStore, snapshotRepository);
+
+            var comamndHandler = ObjectContainer.Resolve<CommandHandleProvider>();
+
+            // var createUserCommand = new CreateUserCommand("张杰", "2222222", false, 18);
+
+            var changePasswordCommand = new ChangePasswordCommand("90ca0d59-65e6-403b-82c5-8df967cc8e22", "2222222", "11111");
+
+            var commandContext = new CommandContext(repository);
+
+            var commandHanldeAction = comamndHandler.GetInternalCommandHandle(typeof(ChangePasswordCommand));
+            commandHanldeAction(commandContext, changePasswordCommand);
+
+            var aggregateRoots = commandContext.AggregateRoots;
+
+            IList<IEvent> unCommitEvents = null;
+
+            foreach (var item in aggregateRoots)
+            {
+                unCommitEvents = item.Value.Commit();
+            }
+
+            var aggregateRoot = aggregateRoots.FirstOrDefault().Value;
+
+            eventStore.AppendToStream(aggregateRoot.AggregateRootId, new EventStream(aggregateRoot.Version, unCommitEvents));
 
             snapshotRepository.Create(aggregateRoot);
-             
-
+            
             Console.WriteLine("改方法执行完毕...");
         }
     }

@@ -36,7 +36,7 @@ namespace Seven.Infrastructure.EventStore
         /// <returns></returns>
         public EventStream LoadEventStream(string aggregateRootId, int version)
         {
-            var entity = _persistence.Get(new EventStreamSpecification(aggregateRootId, version));
+            var entity = _persistence.Get(aggregateRootId, version);
 
             return _eventStreamFactory.Create(entity);
         }

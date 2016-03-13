@@ -1,7 +1,7 @@
 using System;
 using Seven.Commands;
 
-namespace SevenTest
+namespace SevenTest.UserSample.Commands
 {
     [Serializable]
     public class ChangePasswordCommand : Command

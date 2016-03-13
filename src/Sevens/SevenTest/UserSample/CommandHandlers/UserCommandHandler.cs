@@ -1,4 +1,5 @@
 ﻿using Seven.Commands;
+using SevenTest.UserSample.Commands;
 
 namespace SevenTest
 {

@@ -1,6 +1,8 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using Dapper;
+using DapperExtensions;
 using Seven.Infrastructure.Persistence;
 using Seven.Infrastructure.Snapshoting;
 
@@ -24,7 +26,8 @@ namespace Seven.Extension.Persistence
 
         public SnapshotEntity GetById(string aggregateRootId)
         {
-            return default(SnapshotEntity);
+            return _dbConnection.Query<SnapshotEntity>("select * from SnapshotEntity where AggregateRootId=@AggregateRootId",new  { AggregateRootId = aggregateRootId }).FirstOrDefault();
+
         }
 
         public SnapshotEntity Get(ISpecification<SnapshotEntity> specification)

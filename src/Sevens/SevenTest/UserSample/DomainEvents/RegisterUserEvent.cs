@@ -20,10 +20,10 @@ namespace SevenTest
             bool sex,
             int age)
         {
-            this.UserName = userName;
-            this.UserPassword = userPasword;
-            this.Sex = sex;
-            this.Age = age;
+            UserName = userName;
+            UserPassword = userPasword;
+            Sex = sex;
+            Age = age;
         }
     }
 }

@@ -30,13 +30,13 @@ namespace Seven.Infrastructure.Repository
 
         public TAggregateRoot Get<TAggregateRoot>(string aggregateRootId) where TAggregateRoot : IAggregateRoot
         {
-            var snapshot = _snapshotRepository.Get<TAggregateRoot>(aggregateRootId);
+            var snapshot = _snapshotRepository.Get(aggregateRootId);
 
             var aggregateRoot = default(TAggregateRoot);
 
             if (snapshot != null)
             {
-                aggregateRoot = snapshot.AggregateRoot;
+                aggregateRoot = (TAggregateRoot)snapshot.AggregateRoot;
             }
 
             if (aggregateRoot == null)

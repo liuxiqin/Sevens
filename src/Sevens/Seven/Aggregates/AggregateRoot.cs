@@ -10,10 +10,10 @@ namespace Seven.Aggregates
     [Serializable()]
     public abstract class AggregateRoot : IAggregateRoot
     {
-     
-
+        [NonSerialized]
         private EventHandleProvider _eventHandleProvider;
 
+        [NonSerialized]
         public Queue<IEvent> _unCommitEvents;
 
         private string _aggregateRootId;
@@ -58,7 +58,7 @@ namespace Seven.Aggregates
         {
             foreach (var evnt in events)
             {
-                if (evnt.GetType().IsAssignableFrom(typeof(IEvent)))
+                if (evnt is IDomainEvent)
                     HandleEvent(evnt);
             }
         }
@@ -92,7 +92,6 @@ namespace Seven.Aggregates
             handler(this, evnt);
         }
 
-
         public IList<IEvent> Commit()
         {
             var unCommitEvents = new List<IEvent>();
@@ -104,8 +103,5 @@ namespace Seven.Aggregates
 
             return unCommitEvents;
         }
-
-
-
     }
 }

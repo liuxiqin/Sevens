@@ -14,24 +14,22 @@ namespace Seven.Infrastructure.Snapshoting
             _snapshotFactory = snapshotFactory;
         }
 
-        public Snapshot<TAggregateRoot> Get<TAggregateRoot>(string aggregateRootId)
-            where TAggregateRoot : IAggregateRoot
+        public Snapshot Get(string aggregateRootId)
         {
-            var snapshot = _persistence.Get(new SnapshotSpecification(aggregateRootId));
+            var snapshot = _persistence.GetById(aggregateRootId);
 
-            return _snapshotFactory.Create<TAggregateRoot>(snapshot);
+            return _snapshotFactory.Create(snapshot);
         }
 
         /// <summary>
         /// 建立快照
         /// </summary>
-        /// <typeparam name="TAggregateRoot"></typeparam>
         /// <param name="aggregateRoot"></param>
-        public void Create<TAggregateRoot>(TAggregateRoot aggregateRoot) where TAggregateRoot : IAggregateRoot
+        public void Create(IAggregateRoot aggregateRoot) 
         {
-            var snapShot = new Snapshot<TAggregateRoot>(aggregateRoot);
+            var snapShot = new Snapshot(aggregateRoot);
 
-            var entity = _snapshotFactory.Create(snapShot);
+            var entity = _snapshotFactory.Create(aggregateRoot);
 
             _persistence.Save(entity);
         }
