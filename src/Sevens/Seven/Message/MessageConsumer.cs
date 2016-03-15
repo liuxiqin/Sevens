@@ -63,7 +63,15 @@ namespace Seven.Message
 
                 var consumer = new QueueingBasicConsumer(channel);
 
+                var subscribe=new EventingBasicConsumer(channel);
+
+                subscribe.Received+= (sender, args) =>
+                {
+                    
+                };
+
                 channel.BasicConsume(_routingKey, false, consumer);
+                 
 
                 var basicDeliverEventArgs = consumer.Queue.Dequeue();
                 var bytes = basicDeliverEventArgs.Body;
