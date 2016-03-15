@@ -58,9 +58,7 @@ namespace SevenTest
             IRepository repository = new EventSouringRepository(eventStore, snapshotRepository);
 
             var comamndHandler = ObjectContainer.Resolve<CommandHandleProvider>();
-
-            // var createUserCommand = new CreateUserCommand("张杰", "2222222", false, 18);
-
+   
             var changePasswordCommand = new ChangePasswordCommand("90ca0d59-65e6-403b-82c5-8df967cc8e22", "2222222", "11111");
 
             var commandContext = new CommandContext(repository);

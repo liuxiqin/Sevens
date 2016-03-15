@@ -15,7 +15,7 @@ namespace SevenTest.UserSample.ProcessManager
     /// 创建订单流程
     /// </summary>
     public class CreateOrderSagas : ICommandHandler<CreateOrderCommand>,
-            ICommandHandler<CreatedOrderCancelCommand>,
+            ICommandHandler<DestroyOrderCommand>,
             ICommandHandler<ReduceInventoryCommand>,
             ICommandHandler<CancelReduceInventoryCommand>,
             IEventHandler<OrderCreated>,
@@ -72,9 +72,9 @@ namespace SevenTest.UserSample.ProcessManager
         /// </summary>
         /// <param name="commandContext"></param>
         /// <param name="command"></param>
-        public void Handle(ICommandContext commandContext, CreatedOrderCancelCommand command)
+        public void Handle(ICommandContext commandContext, DestroyOrderCommand command)
         {
-            commandContext.Get<OrderAggregateRoot>(command.AggregateRootId).CreateOrderCancel();
+            commandContext.Get<OrderAggregateRoot>(command.AggregateRootId).DestroyOrder();
         }
 
         /// <summary>

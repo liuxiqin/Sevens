@@ -18,3 +18,4 @@ F:\CodeProject\NetProject\Sevens\src\Sevens\Seven\bin\Debug\protobuf-net.xml
 F:\CodeProject\NetProject\Sevens\src\Sevens\Seven\bin\Debug\RabbitMQ.Client.xml
 F:\CodeProject\NetProject\Sevens\src\Sevens\Seven\obj\Debug\Seven.dll
 F:\CodeProject\NetProject\Sevens\src\Sevens\Seven\obj\Debug\Seven.pdb
+F:\CodeProject\NetProject\Sevens\src\Sevens\Seven\obj\Debug\Seven.csprojResolveAssemblyReference.cache
