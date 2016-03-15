@@ -4,13 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Seven.Message
+namespace Seven.Commands
 {
-    /// <summary>
-    /// 消息处理结果
-    /// </summary>
-    public class MessageHandleResult
+    public class CommandExecutedResult
     {
-         
     }
 }

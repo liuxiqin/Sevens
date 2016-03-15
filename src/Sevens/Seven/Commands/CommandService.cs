@@ -19,9 +19,11 @@ namespace Seven.Commands
             _messageProducer = messageProducer;
         }
 
-        public void Send(ICommand command)
+        public Task<CommandExecutedResult> Send(ICommand command)
         {
             _messageProducer.Publish(command);
+
+            return null;
         }
 
         public void SendAsync(ICommand command)

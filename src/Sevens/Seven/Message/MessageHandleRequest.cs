@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace Seven.Message
 {
-    /// <summary>
-    /// 消息处理结果
-    /// </summary>
-    public class MessageHandleResult
+    public class MessageHandleRequest
     {
-         
+        public IMessage MessageS { get; set; }
     }
 }

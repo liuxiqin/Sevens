@@ -8,7 +8,7 @@ namespace Seven.Commands
 {
     public interface ICommandService
     {
-        void Send(ICommand command);
+        Task<CommandExecutedResult> Send(ICommand command);
 
         void SendAsync(ICommand command);
     }

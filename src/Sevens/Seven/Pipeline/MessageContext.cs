@@ -24,6 +24,16 @@ namespace Seven.Pipeline
 
         public ulong DeliveryTag { get; private set; }
 
+        /// <summary>
+        /// 消息响应结果
+        /// </summary>
+        public MessageHandleResult Response { get; private set; }
+
+        /// <summary>
+        /// 消息请求结果
+        /// </summary>
+        public MessageHandleRequest Request { get; set; }
+
         public MessageContext(IModel channel, IMessage message, string routingKey, string topic, ulong deliveryTag)
         {
             Channel = channel;
@@ -31,6 +41,20 @@ namespace Seven.Pipeline
             Topic = topic;
             DeliveryTag = deliveryTag;
             RoutingKey = routingKey;
+        }
+
+        public void SetRequest(MessageHandleRequest request)
+        {
+            Request = request;
+        }
+
+        /// <summary>
+        /// 消息处理结果
+        /// </summary>
+        /// <param name="response"></param>
+        public void SetResponse(MessageHandleResult response)
+        {
+            Response = response;
         }
     }
 }
