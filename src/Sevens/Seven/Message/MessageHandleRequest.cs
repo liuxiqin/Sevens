@@ -8,6 +8,6 @@ namespace Seven.Message
 {
     public class MessageHandleRequest
     {
-        public IMessage MessageS { get; set; }
+
     }
 }

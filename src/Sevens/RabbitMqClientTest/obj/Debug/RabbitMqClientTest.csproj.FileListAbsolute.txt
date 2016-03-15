@@ -13,7 +13,6 @@ F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\bin\Debug\protobu
 F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\bin\Debug\RabbitMQ.Client.dll
 F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\bin\Debug\Seven.dll
 F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\bin\Debug\Autofac.dll
-F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\bin\Debug\DapperExtensions.dll
 F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\bin\Debug\CommandHandlerTest.pdb
 F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\bin\Debug\Seven.pdb
 F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\bin\Debug\Dapper.pdb
@@ -24,7 +23,8 @@ F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\bin\Debug\protobu
 F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\bin\Debug\protobuf-net.xml
 F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\bin\Debug\RabbitMQ.Client.xml
 F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\bin\Debug\Autofac.xml
-F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\bin\Debug\DapperExtensions.pdb
 F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\obj\Debug\RabbitMqClientTest.csprojResolveAssemblyReference.cache
 F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\obj\Debug\RabbitMqClientTest.exe
 F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\obj\Debug\RabbitMqClientTest.pdb
+F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\bin\Debug\DapperExtensions.dll
+F:\CodeProject\NetProject\Sevens\src\Sevens\RabbitMqClientTest\bin\Debug\DapperExtensions.pdb

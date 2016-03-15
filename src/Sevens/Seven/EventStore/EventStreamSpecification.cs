@@ -7,7 +7,7 @@ using Seven.Events;
 using Seven.Infrastructure.EventStore;
 using Seven.Infrastructure.Snapshoting;
 
-namespace Seven.EventStore
+namespace Seven.EventStorage
 {
     public class EventStreamSpecification : ISpecification<EventStreamEntity>
     {

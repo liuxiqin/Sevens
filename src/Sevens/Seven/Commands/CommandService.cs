@@ -34,12 +34,12 @@ namespace Seven.Commands
 
     public class DefaultCommandService : ICommandService
     {
-        public void Send(ICommand command)
+        public Task<CommandExecutedResult> Send(ICommand command)
         {
             throw new NotImplementedException();
         }
 
-        public void SendAsync(ICommand command)
+        public async void SendAsync(ICommand command)
         {
             throw new NotImplementedException();
         }

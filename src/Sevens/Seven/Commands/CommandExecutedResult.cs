@@ -8,5 +8,6 @@ namespace Seven.Commands
 {
     public class CommandExecutedResult
     {
+
     }
 }

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Seven.Events;
-using Seven.EventStore;
+using Seven.EventStorage;
 using Seven.Infrastructure.Persistence;
 
 namespace Seven.Infrastructure.EventStore
