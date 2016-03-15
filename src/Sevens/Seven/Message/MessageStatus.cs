@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace Seven.Message
 {
-    /// <summary>
-    /// 消息处理结果
-    /// </summary>
-    public class MessageResult
+    public enum MessageStatus
     {
-         
+        Success,
+        Fail
     }
 }

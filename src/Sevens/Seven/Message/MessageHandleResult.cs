@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Seven.Commands
+namespace Seven.Message
 {
-    public class CommandExecutedResult
+    [Serializable]
+    public class MessageHandleResult
     {
         public string Message { get; set; }
 
-        public CommandStatus Status { get; set; }
+        public MessageStatus Status { get; set; }
+
     }
 }

@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="Aggregates\AggregateRoot.cs" />
     <Compile Include="Commands\CommandExecutedResult.cs" />
+    <Compile Include="Commands\CommandStatus.cs" />
     <Compile Include="Domains\IDomainService.cs" />
     <Compile Include="EventStore\EventStreamEntity.cs" />
     <Compile Include="EventStore\EventStreamFactory.cs" />
@@ -134,12 +135,14 @@
     <Compile Include="Message\MessageConsumer.cs" />
     <Compile Include="Message\IMessgaeExecute.cs" />
     <Compile Include="Message\MessageHandleRequest.cs" />
+    <Compile Include="Message\MessageHandleResult.cs" />
     <Compile Include="Message\MessageProducer.cs" />
     <Compile Include="Message\MessageResult.cs" />
+    <Compile Include="Message\MessageStatus.cs" />
     <Compile Include="Message\QueueConnectionInfo.cs" />
     <Compile Include="Message\QueueMessage.cs" />
     <Compile Include="Pipeline\EndingMessageHandler.cs" />
-    <Compile Include="Pipeline\ErroMessageHandler.cs" />
+    <Compile Include="Pipeline\ErrorMessageHandler.cs" />
     <Compile Include="Pipeline\MessageContext.cs" />
     <Compile Include="Pipeline\IMessageContext.cs" />
     <Compile Include="Pipeline\ProcessMessageHandler.cs" />

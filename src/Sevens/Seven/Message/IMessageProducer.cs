@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Seven.Message
 {
-    public interface IMessageProducer
+    public interface IMessageProducter
     {
         Task<MessageHandleResult> Publish<TMessage>(TMessage message) where TMessage : IMessage;
 
-        Task PublishAsync<TMessage>(TMessage message) where TMessage : IMessage;
+        void PublishAsync<TMessage>(TMessage message) where TMessage : IMessage;
     }
 }

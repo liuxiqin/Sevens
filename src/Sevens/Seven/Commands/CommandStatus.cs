@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace Seven.Commands
 {
-    public class CommandExecutedResult
+    public enum CommandStatus
     {
-        public string Message { get; set; }
-
-        public CommandStatus Status { get; set; }
+        Success,
+        Error
     }
 }

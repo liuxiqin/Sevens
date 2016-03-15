@@ -12,7 +12,7 @@ namespace Seven.Message
     /// <summary>
     /// 消息生产者
     /// </summary>
-    public class MessageProducer : IMessageProducer
+    public class MessageProducer : IMessageProducter
     {
         private IBinarySerializer _binarySerializer;
 
@@ -56,9 +56,9 @@ namespace Seven.Message
             return null;
         }
 
-        public Task PublishAsync<TMessage>(TMessage message) where TMessage : IMessage
+        public void PublishAsync<TMessage>(TMessage message) where TMessage : IMessage
         {
-            return null;
+            return ;
         }
     }
 }
