@@ -20,7 +20,9 @@ namespace Seven.Message
 
         private readonly MessageBroker _messageBroker;
 
-        public MessageProducer(MessageBroker messageBroker, IBinarySerializer binarySerializer,
+        public MessageProducer(
+            MessageBroker messageBroker,
+            IBinarySerializer binarySerializer,
             IJsonSerializer jsonSerializer)
         {
             _messageBroker = messageBroker;
@@ -28,7 +30,7 @@ namespace Seven.Message
             _jsonSerializer = jsonSerializer;
         }
 
-        public void Publish<TMessage>(TMessage message) where TMessage : IMessage
+        public Task<MessageHandleResult> Publish<TMessage>(TMessage message) where TMessage : IMessage
         {
             using (var channel = _messageBroker.GetConnection.CreateModel())
             {
@@ -50,12 +52,13 @@ namespace Seven.Message
                 channel.BasicPublish(topic, tag, new BasicProperties() { DeliveryMode = 2 },
                     _binarySerializer.Serialize(queueMessage));
             }
+
+            return null;
         }
 
-        public void PublishAsync<TMessage>(TMessage message) where TMessage : IMessage
+        public Task PublishAsync<TMessage>(TMessage message) where TMessage : IMessage
         {
-
+            return null;
         }
-
     }
 }
