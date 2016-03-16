@@ -70,7 +70,9 @@
     <Compile Include="Aggregates\AggregateRoot.cs" />
     <Compile Include="Commands\CommandExecutedResult.cs" />
     <Compile Include="Commands\CommandStatus.cs" />
+    <Compile Include="Domains\Entity.cs" />
     <Compile Include="Domains\IDomainService.cs" />
+    <Compile Include="Domains\ValueObject.cs" />
     <Compile Include="EventStore\EventStreamEntity.cs" />
     <Compile Include="EventStore\EventStreamFactory.cs" />
     <Compile Include="EventStore\EventStreamSpecification.cs" />
