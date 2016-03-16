@@ -23,3 +23,6 @@ F:\CodeProject\NetProject\Sevens\src\Sevens\MysqlDataBase\bin\Debug\protobuf-net
 F:\CodeProject\NetProject\Sevens\src\Sevens\MysqlDataBase\obj\Debug\MysqlDataBase.csprojResolveAssemblyReference.cache
 F:\CodeProject\NetProject\Sevens\src\Sevens\MysqlDataBase\obj\Debug\MysqlDataBase.exe
 F:\CodeProject\NetProject\Sevens\src\Sevens\MysqlDataBase\obj\Debug\MysqlDataBase.pdb
+E:\OpenSource\Sevens\src\Sevens\MysqlDataBase\bin\Debug\MysqlDataBase.exe.config
+E:\OpenSource\Sevens\src\Sevens\MysqlDataBase\obj\Debug\MysqlDataBase.exe
+E:\OpenSource\Sevens\src\Sevens\MysqlDataBase\obj\Debug\MysqlDataBase.pdb
