@@ -45,12 +45,9 @@ namespace RabbitMqClientTest
 
             var broker = new MessageBroker(binarySerializer, connectionInfo);
 
-            var messageHandler = new DefaultMessgaeExecute();
-
             var exchangeName = typeof(CreateUserCommand).ToString();
 
-            var consumer = new MessageConsumer(broker, messageHandler, binarySerializer, jsonSerializer, exchangeName,
-                exchangeName);
+            var consumer = new MessageConsumer(broker, binarySerializer, jsonSerializer, exchangeName, exchangeName);
 
             Console.WriteLine("Begin to receive the message.");
 

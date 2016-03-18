@@ -10,4 +10,15 @@
 
         }
     }
+
+    /// <summary>
+    /// 超时处理
+    /// </summary>
+    public class FrameworkTimeoutException : FrameworkException
+    {
+        public FrameworkTimeoutException(string message = "throw the exception of FrameworkTimeoutException.") : base(message)
+        {
+
+        }
+    }
 }

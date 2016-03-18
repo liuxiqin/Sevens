@@ -8,7 +8,7 @@ namespace Seven.Message
 {
     public interface IMessage
     {
-
+        string MessageId { get; }
     }
 
     [Serializable]

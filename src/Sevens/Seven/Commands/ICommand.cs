@@ -15,9 +15,14 @@ namespace Seven.Commands
             throw new NotImplementedException();
         }
 
-        public Guid CommandId
+        public string CommandId
         {
-            get { return Guid.NewGuid(); }
+            get { return Guid.NewGuid().ToString(); }
+        }
+
+        public string MessageId
+        {
+            get { return CommandId; }
         }
 
         public long Version
@@ -30,7 +35,7 @@ namespace Seven.Commands
 
     public interface ICommand : IMessage
     {
-        Guid CommandId { get; }
+        string CommandId { get; }
 
         void Execute();
     }

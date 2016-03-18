@@ -31,17 +31,12 @@ namespace CommandHandlerTest
         }
     }
 
-    public class TestCommand : ICommand
+    public class TestCommand : Command
     {
 
         public void Execute()
         {
             Console.WriteLine("excute the command Execute");
-        }
-
-        public Guid CommandId
-        {
-            get { return new Guid(); }
         }
     }
 

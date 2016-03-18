@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Seven.Commands;
+using Seven.Infrastructure.Exceptions;
 using Seven.Infrastructure.Ioc;
 using Seven.Infrastructure.Serializer;
 using Seven.Initializer;
@@ -31,7 +32,6 @@ namespace Seven.Message
         private readonly IJsonSerializer _jsonSerializer;
 
         public MessageConsumer(IMessageBroker messageBroker,
-            IMessgaeExecute messgaeExecute,
             IBinarySerializer binarySerializer,
             IJsonSerializer jsonSerializer,
             string exchangeName,
@@ -39,54 +39,56 @@ namespace Seven.Message
         {
             _messageBroker = messageBroker;
 
-            _messgaeExecute = messgaeExecute;
-
             _exchangeName = exchangeName;
             _routingKey = routingKey;
 
             _binarySerializer = binarySerializer;
 
             _jsonSerializer = jsonSerializer;
+
+            _messgaeExecute = new DefaultMessgaeExecute();
         }
 
         public void Start()
         {
-            var connection = _messageBroker.GetConnection;
+            var channel = _messageBroker.GetConnection.CreateModel();
 
-            using (var channel = connection.CreateModel())
+            channel.ExchangeDeclare(_exchangeName, ExchangeType.Direct, true);
+
+            channel.QueueDeclare(_routingKey, true, false, false, null);
+
+            channel.QueueBind(_routingKey, _exchangeName, _routingKey);
+
+            var consumer = new QueueingBasicConsumer(channel);
+
+            channel.BasicConsume(_routingKey, false, consumer);
+
+            while (true)
             {
-                channel.ExchangeDeclare(_exchangeName, ExchangeType.Direct, true);
-
-                channel.QueueDeclare(_routingKey, true, false, false, null);
-
-                channel.QueueBind(_routingKey, _exchangeName, _routingKey);
-
-                var consumer = new QueueingBasicConsumer(channel);
-
-                var subscribe=new EventingBasicConsumer(channel);
-
-                subscribe.Received+= (sender, args) =>
-                {
-                    
-                };
-
-                channel.BasicConsume(_routingKey, false, consumer);
-                 
-
                 var basicDeliverEventArgs = consumer.Queue.Dequeue();
+
                 var bytes = basicDeliverEventArgs.Body;
 
                 var queueMessage = _binarySerializer.Deserialize<QueueMessage>(bytes);
 
-                var messageTypeProvider = ObjectContainer.Resolve<MessageTypeProvider>();
+                //var messageTypeProvider = ObjectContainer.Resolve<MessageTypeProvider>();
 
-                var message = _jsonSerializer.DeSerialize(Encoding.UTF8.GetString(queueMessage.Datas),
-                        messageTypeProvider.GetType(queueMessage.TypeName)) as IMessage;
+                //var message = _jsonSerializer.DeSerialize(Encoding.UTF8.GetString(queueMessage.Datas),
+                //    messageTypeProvider.GetType(queueMessage.TypeName)) as IMessage;
 
-                var messageContext = new MessageContext(channel, message, _routingKey, _exchangeName,
-                    basicDeliverEventArgs.DeliveryTag);
+                //var messageContext = new MessageContext(channel, message, _routingKey, _exchangeName,
+                //    basicDeliverEventArgs.DeliveryTag);
 
-                _messgaeExecute.Execute(messageContext);
+                var responseQueue = basicDeliverEventArgs.BasicProperties.ReplyTo;
+
+                var correlationId = basicDeliverEventArgs.BasicProperties.CorrelationId;
+
+                var producter = new MessageProducer(_messageBroker, _binarySerializer, _jsonSerializer);
+
+                producter.Response(responseQueue, correlationId, new MessageHandleResult() { Message = "Message响应成功", Status = MessageStatus.Success });
+
+                //_messgaeExecute.Execute(messageContext);
+                Thread.Sleep(1);
             }
         }
 
@@ -111,9 +113,45 @@ namespace Seven.Message
                 }
             }
         }
+
         public void Stop()
         {
-            throw new NotImplementedException();
+
+        }
+
+        public MessageHandleResult SubscribeResult(string responseQueueName, string correlationId, TimeSpan timeout)
+        {
+            var channel = _messageBroker.GetConnection.CreateModel();
+
+            channel.ExchangeDeclare(responseQueueName, ExchangeType.Direct, true);
+
+            channel.QueueDeclare(responseQueueName, true, false, false, null);
+
+            channel.QueueBind(responseQueueName, responseQueueName, correlationId);
+
+            var resultConsumer = new EventingBasicConsumer(channel);
+
+            var manualReset = new ManualResetEventSlim(false);
+
+            var handleResult = default(MessageHandleResult);
+
+            resultConsumer.Received += (sender, args) =>
+            {
+                handleResult = _binarySerializer.Deserialize<MessageHandleResult>(args.Body);
+
+                manualReset.Set();
+            };
+
+            channel.BasicConsume(responseQueueName, true, resultConsumer);
+
+            var timeOuted = manualReset.Wait(timeout);
+
+            if (!timeOuted)
+            {
+                throw new FrameworkTimeoutException("Get the message handle result has timeout.");
+            }
+
+            return handleResult;
         }
     }
 }

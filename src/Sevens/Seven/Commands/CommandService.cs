@@ -14,16 +14,31 @@ namespace Seven.Commands
     {
         private readonly IMessageProducter _messageProducer;
 
-        public CommandService(IMessageProducter messageProducer)
+        private readonly IMessageConsumer _messageConsumer;
+
+        public CommandService(IMessageProducter messageProducer, MessageConsumer messageConsumer)
         {
             _messageProducer = messageProducer;
+
+            _messageConsumer = messageConsumer;
         }
 
         public CommandExecutedResult Send(ICommand command)
         {
-            _messageProducer.Publish(command);
+            var task = _messageProducer.Publish(command);
 
-            return null;
+            // var timeout = TimeSpan.FromSeconds(100);
+
+            // var handleResult = _messageConsumer.SubscribeResult("Rpc_Response", command.MessageId, timeout);
+
+            var sendResult = task.Result;
+
+
+            return new CommandExecutedResult()
+            {
+                Message = task.Result.Message,
+                Status = task.Result.Status == MessageStatus.Success ? CommandStatus.Success : CommandStatus.Error
+            };
         }
 
         public async void SendAsync(ICommand command)
@@ -39,26 +54,32 @@ namespace Seven.Commands
 
     public class DefaultCommandService : ICommandService
     {
-        private IMessageProducter _producter;
+        private readonly IMessageProducter _messageProducer;
 
-        /// <summary>
-        /// 同步阻塞处理，返回结果
-        /// </summary>
-        /// <param name="command"></param>
-        /// <returns></returns>
+        private readonly IMessageConsumer _messageConsumer;
+
+        public DefaultCommandService(IMessageProducter messageProducer, MessageConsumer messageConsumer)
+        {
+            _messageProducer = messageProducer;
+
+            _messageConsumer = messageConsumer;
+        }
+
         public CommandExecutedResult Send(ICommand command)
         {
-            var sendTask = _producter.Publish(command);
+            _messageProducer.Publish(command);
 
-            var taskResult = sendTask.Result;
+            var timeout = TimeSpan.FromSeconds(20);
+
+            var handleResult = _messageConsumer.SubscribeResult("Rpc_Response", command.MessageId, timeout);
 
             return new CommandExecutedResult()
             {
-                Message = taskResult.Message,
-                Status = (CommandStatus)(int)taskResult.Status
+                Message = handleResult.Message,
+                Status = handleResult.Status == MessageStatus.Success ? CommandStatus.Success : CommandStatus.Error
             };
-
         }
+
         /// <summary>
         /// 异步处理返回结果，/配合MVC/WebApi异步处理方式
         /// </summary>

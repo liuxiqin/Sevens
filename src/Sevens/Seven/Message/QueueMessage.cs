@@ -15,6 +15,8 @@ namespace Seven.Message
 
         public string TypeName { get; set; }
 
+        public MessageType MessageType { get; set; }
+
         public byte[] Datas;
     }
 }
