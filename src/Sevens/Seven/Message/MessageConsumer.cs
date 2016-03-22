@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Framing;
 using Seven.Commands;
 using Seven.Infrastructure.Exceptions;
 using Seven.Infrastructure.Ioc;
@@ -51,17 +52,21 @@ namespace Seven.Message
 
         public void Start()
         {
-            var channel = _messageBroker.GetConnection.CreateModel();
+            var consumerChannel = _messageBroker.GetConnection.CreateModel();
 
-            channel.ExchangeDeclare(_exchangeName, ExchangeType.Direct, true);
+            consumerChannel.ExchangeDeclare(_exchangeName, ExchangeType.Direct, true);
 
-            channel.QueueDeclare(_routingKey, true, false, false, null);
+            consumerChannel.QueueDeclare(_routingKey, true, false, false, null);
 
-            channel.QueueBind(_routingKey, _exchangeName, _routingKey);
+            consumerChannel.QueueBind(_routingKey, _exchangeName, _routingKey);
 
-            var consumer = new QueueingBasicConsumer(channel);
+            consumerChannel.BasicQos(0, 1, false);
 
-            channel.BasicConsume(_routingKey, false, consumer);
+            var consumer = new QueueingBasicConsumer(consumerChannel);
+
+            consumerChannel.BasicConsume(_routingKey, false, consumer);
+
+            var responseChannel = _messageBroker.GetConnection.CreateModel();
 
             while (true)
             {
@@ -71,23 +76,20 @@ namespace Seven.Message
 
                 var queueMessage = _binarySerializer.Deserialize<QueueMessage>(bytes);
 
-                //var messageTypeProvider = ObjectContainer.Resolve<MessageTypeProvider>();
+                var messageTypeProvider = ObjectContainer.Resolve<MessageTypeProvider>();
 
-                //var message = _jsonSerializer.DeSerialize(Encoding.UTF8.GetString(queueMessage.Datas),
-                //    messageTypeProvider.GetType(queueMessage.TypeName)) as IMessage;
+                var message = _jsonSerializer.DeSerialize(Encoding.UTF8.GetString(queueMessage.Datas),
+                    messageTypeProvider.GetType(queueMessage.TypeName)) as IMessage;
 
-                //var messageContext = new MessageContext(channel, message, _routingKey, _exchangeName,
-                //    basicDeliverEventArgs.DeliveryTag);
-
-                var responseQueue = basicDeliverEventArgs.BasicProperties.ReplyTo;
+                var messageContext = new MessageContext(consumerChannel, message, _routingKey, _exchangeName,
+                    basicDeliverEventArgs.DeliveryTag);
 
                 var correlationId = basicDeliverEventArgs.BasicProperties.CorrelationId;
 
-                var producter = new MessageProducer(_messageBroker, _binarySerializer, _jsonSerializer);
+                consumerChannel.BasicAck(basicDeliverEventArgs.DeliveryTag, true);
 
-                producter.Response(responseQueue, correlationId, new MessageHandleResult() { Message = "Message响应成功", Status = MessageStatus.Success });
+                _messgaeExecute.Execute(messageContext);
 
-                //_messgaeExecute.Execute(messageContext);
                 Thread.Sleep(1);
             }
         }

@@ -22,6 +22,10 @@ namespace Seven.Message
 
         private readonly IMessageBroker _messageBroker;
 
+        private TimeSpan _timeout = TimeSpan.FromSeconds(5);
+
+        private readonly string _responseQueueName = "PRCRESPONSE";
+
         public MessageProducer(
            IMessageBroker messageBroker,
             IBinarySerializer binarySerializer,
@@ -32,59 +36,51 @@ namespace Seven.Message
             _jsonSerializer = jsonSerializer;
         }
 
+        public Task<MessageHandleResult> Publish<TMessage>(TMessage message, TimeSpan timeout) where TMessage : IMessage
+        {
+            return null;
+        }
         public Task<MessageHandleResult> Publish<TMessage>(TMessage message) where TMessage : IMessage
         {
             var task = new Task<MessageHandleResult>(() =>
              {
-                 using (var channel = _messageBroker.GetConnection.CreateModel())
+                 using (var productChannel = _messageBroker.GetConnection.CreateModel())
                  {
-                     var tag = message.GetType().FullName;
-                     var topic = message.GetType().FullName;
+                     var queueMessage = BuildMessage(message);
 
-                     var data = _jsonSerializer.Serialize(message);
+                     var responseChannel = _messageBroker.GetConnection.CreateModel();
 
-                     var queueMessage = new QueueMessage()
-                     {
-                         Tag = tag,
-                         Topic = topic,
-                         Datas = Encoding.UTF8.GetBytes(data),
-                         TypeName = typeof(TMessage).FullName,
-                         MessageType = MessageType.Reply
-                     };
+                     productChannel.ExchangeDeclare(queueMessage.Topic, ExchangeType.Direct, true);
 
-                     channel.ExchangeDeclare(queueMessage.Topic, ExchangeType.Direct, true);
-
-                     channel.QueueDeclare("Rpc_Response", true, false, false, null);
-
-                     channel.QueueBind(queueMessage.Topic, "Rpc_Response", message.MessageId);
-
-                     var resultConsumer = new EventingBasicConsumer(channel);
+                     responseChannel.ExchangeDeclare(queueMessage.Topic, ExchangeType.Direct, true);
+                     responseChannel.QueueDeclare(_responseQueueName, true, false, false, null);
+                     responseChannel.QueueBind(_responseQueueName, queueMessage.Topic, message.MessageId);
 
                      var manualReset = new ManualResetEventSlim(false);
 
                      var handleResult = default(MessageHandleResult);
 
-                     resultConsumer.Received += (sender, args) =>
+                     var responseConsumer = new EventingBasicConsumer(responseChannel);
+
+                     responseConsumer.Received += (sender, args) =>
                      {
                          handleResult = _binarySerializer.Deserialize<MessageHandleResult>(args.Body);
 
                          manualReset.Set();
                      };
 
-                     channel.BasicConsume("Rpc_Response", true, resultConsumer);
-
-
-                     channel.BasicPublish(topic, tag,
+                     productChannel.BasicConsume(_responseQueueName, true, responseConsumer);
+                     
+                     productChannel.BasicPublish(message.GetType().FullName, message.GetType().FullName,
                          new BasicProperties()
                          {
                              DeliveryMode = 2,
-                             ReplyTo = "Rpc_Response",
+                             ReplyTo = _responseQueueName,
                              CorrelationId = message.MessageId
                          },
                          _binarySerializer.Serialize(queueMessage));
 
-
-                     manualReset.Wait();
+                     manualReset.Wait(_timeout);
 
                      return handleResult;
                  }
@@ -93,6 +89,25 @@ namespace Seven.Message
             task.Start();
 
             return task;
+        }
+
+        private QueueMessage BuildMessage<TMessage>(TMessage message) where TMessage : IMessage
+        {
+            var tag = message.GetType().FullName;
+            var topic = message.GetType().FullName;
+
+            var data = _jsonSerializer.Serialize(message);
+
+            var queueMessage = new QueueMessage()
+            {
+                Tag = tag,
+                Topic = topic,
+                Datas = Encoding.UTF8.GetBytes(data),
+                TypeName = typeof(TMessage).FullName,
+                MessageType = MessageType.Reply
+            };
+
+            return queueMessage;
         }
 
         public void PublishAsync<TMessage>(TMessage message) where TMessage : IMessage

@@ -5,6 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using Seven.Infrastructure.Exceptions;
 using Seven.Message;
 
 namespace Seven.Pipeline
@@ -14,6 +15,8 @@ namespace Seven.Pipeline
     /// </summary>
     public class MessageContext : IMessageContext
     {
+        public IConnection Connection { get; private set; }
+
         public IModel Channel { get; private set; }
 
         public IMessage Message { get; private set; }
@@ -55,6 +58,13 @@ namespace Seven.Pipeline
         public void SetResponse(MessageHandleResult response)
         {
             Response = response;
+        }
+
+        public SevenException Exception { get; private set; }
+
+        public void SetException(SevenException exception)
+        {
+            Exception = exception;
         }
     }
 }

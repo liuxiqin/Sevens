@@ -150,6 +150,7 @@
     <Compile Include="Pipeline\IMessageContext.cs" />
     <Compile Include="Pipeline\ProcessMessageHandler.cs" />
     <Compile Include="Pipeline\ReceiveMessageHandler.cs" />
+    <Compile Include="Pipeline\ResponseMessageHandle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

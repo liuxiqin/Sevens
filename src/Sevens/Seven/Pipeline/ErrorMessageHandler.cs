@@ -16,7 +16,7 @@ namespace Seven.Pipeline
     {
         public void Execute(MessageContext message)
         {
-            throw new NotImplementedException();
+            message.SetResponse(new MessageHandleResult() { Status = MessageStatus.Fail, Message = message.Exception.Message });
         }
     }
 }

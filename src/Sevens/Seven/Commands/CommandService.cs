@@ -27,12 +27,7 @@ namespace Seven.Commands
         {
             var task = _messageProducer.Publish(command);
 
-            // var timeout = TimeSpan.FromSeconds(100);
-
-            // var handleResult = _messageConsumer.SubscribeResult("Rpc_Response", command.MessageId, timeout);
-
             var sendResult = task.Result;
-
 
             return new CommandExecutedResult()
             {

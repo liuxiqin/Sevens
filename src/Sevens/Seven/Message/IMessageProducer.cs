@@ -11,6 +11,8 @@ namespace Seven.Message
     {
         Task<MessageHandleResult> Publish<TMessage>(TMessage message) where TMessage : IMessage;
 
+        Task<MessageHandleResult> Publish<TMessage>(TMessage message, TimeSpan timeout) where TMessage : IMessage;
+
         void PublishAsync<TMessage>(TMessage message) where TMessage : IMessage;
 
         void Response(string responseQueueName, string correlationId, MessageHandleResult handleResult);
