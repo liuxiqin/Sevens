@@ -1,1 +1,0 @@
-F:\CodeProject\NetProject\Sevens\src\Sevens\Seven.RabbitMq\obj\Debug\Seven.RabbitMq.csprojResolveAssemblyReference.cache
