@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CommandHandlerTest;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using Seven.Commands;
@@ -15,6 +14,7 @@ using Seven.Infrastructure.Serializer;
 using Seven.Initializer;
 using Seven.Message;
 using Seven.Pipeline;
+using Seven.Tests.UserSample.Commands;
 
 namespace RabbitMqClientTest
 {

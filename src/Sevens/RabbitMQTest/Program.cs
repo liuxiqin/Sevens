@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading;
-using CommandHandlerTest;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Framing;
 using Seven.Commands;
 using Seven.Infrastructure.Serializer;
 using Seven.Message;
+using Seven.Tests.UserSample.Commands;
 
 namespace RabbitMQServerTest
 {
@@ -25,13 +25,12 @@ namespace RabbitMQServerTest
             var comsumer = new MessageConsumer(broker, binarySerializer, new DefaultJsonSerializer(), "", "");
 
             var commandService = new CommandService(producer, comsumer);
-            
-            var command = new CreateUserCommand()
-            {
-                Age = 22,
-                UserName = "天涯狼" + DateTime.Now.ToString("yyyyMMddHHmmsss"),
-                UserPassword = DateTime.Now.ToString("yyyyMMddHHmmsss")
-            };
+
+            var command = new CreateUserCommand(
+                "天涯狼" + DateTime.Now.ToString("yyyyMMddHHmmsss"),
+                DateTime.Now.ToString("yyyyMMddHHmmsss"),
+                true,
+                22);
 
             var commandHandleResult = commandService.Send(command);
 
