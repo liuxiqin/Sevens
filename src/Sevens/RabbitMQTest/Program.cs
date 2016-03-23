@@ -22,19 +22,23 @@ namespace RabbitMQServerTest
 
             var producer = new MessageProducer(broker, binarySerializer, new DefaultJsonSerializer());
 
-            var comsumer = new MessageConsumer(broker, binarySerializer, new DefaultJsonSerializer(), "", "");
+            var commandService = new CommandService(producer);
 
-            var commandService = new CommandService(producer, comsumer);
+            while (true)
+            {
+                var command = new CreateUserCommand(
+                    "天涯狼" + DateTime.Now.ToString("yyyyMMddHHmmsss"),
+                    DateTime.Now.ToString("yyyyMMddHHmmsss"),
+                    true,
+                    22);
 
-            var command = new CreateUserCommand(
-                "天涯狼" + DateTime.Now.ToString("yyyyMMddHHmmsss"),
-                DateTime.Now.ToString("yyyyMMddHHmmsss"),
-                true,
-                22);
+                var commandHandleResult = commandService.Send(command);
 
-            var commandHandleResult = commandService.Send(command);
+                Console.WriteLine("comand result Message:{0} and status:{1}", commandHandleResult.Message,
+                    commandHandleResult.Status);
 
-            Console.WriteLine("CommandHandleResult Message:{0};Status:{1}", commandHandleResult.Message, commandHandleResult.Status);
+                Thread.Sleep(1000);
+            }
         }
     }
 }

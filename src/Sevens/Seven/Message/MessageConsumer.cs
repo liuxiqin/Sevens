@@ -66,8 +66,6 @@ namespace Seven.Message
 
             consumerChannel.BasicConsume(_routingKey, false, consumer);
 
-            var responseChannel = _messageBroker.GetConnection.CreateModel();
-
             while (true)
             {
                 var basicDeliverEventArgs = consumer.Queue.Dequeue();
@@ -81,14 +79,12 @@ namespace Seven.Message
                 var message = _jsonSerializer.DeSerialize(Encoding.UTF8.GetString(queueMessage.Datas),
                     messageTypeProvider.GetType(queueMessage.TypeName)) as IMessage;
 
-                var messageContext = new MessageContext(consumerChannel, message, _routingKey, _exchangeName,
+                var messageContext = new MessageContext(consumerChannel, _messageBroker.GetConnection, message, _routingKey, _exchangeName,
                     basicDeliverEventArgs.DeliveryTag);
 
-                var correlationId = basicDeliverEventArgs.BasicProperties.CorrelationId;
+                _messgaeExecute.Execute(messageContext);
 
                 consumerChannel.BasicAck(basicDeliverEventArgs.DeliveryTag, true);
-
-                _messgaeExecute.Execute(messageContext);
 
                 Thread.Sleep(1);
             }

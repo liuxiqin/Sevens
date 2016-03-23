@@ -66,11 +66,13 @@ namespace Seven.Message
                      {
                          handleResult = _binarySerializer.Deserialize<MessageHandleResult>(args.Body);
 
+                         ((EventingBasicConsumer)sender).Model.BasicAck(args.DeliveryTag, true);
+
                          manualReset.Set();
                      };
 
-                     productChannel.BasicConsume(_responseQueueName, true, responseConsumer);
-                     
+                     responseChannel.BasicConsume(_responseQueueName, false, responseConsumer);
+
                      productChannel.BasicPublish(message.GetType().FullName, message.GetType().FullName,
                          new BasicProperties()
                          {
@@ -80,7 +82,14 @@ namespace Seven.Message
                          },
                          _binarySerializer.Serialize(queueMessage));
 
-                     manualReset.Wait(_timeout);
+                     var hasTimeouted = manualReset.Wait(_timeout);
+
+                     if (!hasTimeouted)
+                     {
+                         responseChannel.BasicCancel(responseConsumer.ConsumerTag);
+
+                         return new MessageHandleResult() { Message = "超时", Status = MessageStatus.Fail };
+                     }
 
                      return handleResult;
                  }
@@ -103,7 +112,7 @@ namespace Seven.Message
                 Tag = tag,
                 Topic = topic,
                 Datas = Encoding.UTF8.GetBytes(data),
-                TypeName = typeof(TMessage).FullName,
+                TypeName = message.GetType().FullName,
                 MessageType = MessageType.Reply
             };
 

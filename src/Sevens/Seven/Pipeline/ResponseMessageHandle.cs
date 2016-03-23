@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Framing;
 using Seven.Infrastructure.Serializer;
 using Seven.Message;
 
@@ -17,13 +19,16 @@ namespace Seven.Pipeline
             _binarySerializer = binarySerializer;
         }
 
-        public void Execute(MessageContext message)
+        public void Execute(MessageContext context)
         {
-            var responseChannel = message.Connection.CreateModel();
+            var responseChannel = context.Connection.CreateModel();
 
-            var responseDatas = _binarySerializer.Serialize(message.Response);
+            var responseDatas = _binarySerializer.Serialize(context.Response);
 
-            responseChannel.BasicPublish(message.Topic, message.Message.MessageId, null, responseDatas);
+            responseChannel.ExchangeDeclare(context.Topic, ExchangeType.Direct, true);
+
+            responseChannel.BasicPublish(context.Topic, context.Message.MessageId,
+                new BasicProperties() { DeliveryMode = 2 }, responseDatas);
         }
     }
 }

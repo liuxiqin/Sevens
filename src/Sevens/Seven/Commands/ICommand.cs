@@ -10,6 +10,13 @@ namespace Seven.Commands
     [Serializable]
     public class Command : ICommand
     {
+        public string Id;
+
+        public Command()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+
         public void Execute()
         {
             throw new NotImplementedException();
@@ -17,18 +24,15 @@ namespace Seven.Commands
 
         public string CommandId
         {
-            get { return Guid.NewGuid().ToString(); }
+            get { return Id; }
         }
 
         public string MessageId
         {
-            get { return CommandId; }
+            get { return Id; }
         }
 
-        public long Version
-        {
-            get { return 1; }
-        }
+        protected long Version { get; set; }
     }
 
 

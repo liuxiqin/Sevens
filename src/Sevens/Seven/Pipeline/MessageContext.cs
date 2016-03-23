@@ -37,13 +37,14 @@ namespace Seven.Pipeline
         /// </summary>
         public MessageHandleRequest Request { get; set; }
 
-        public MessageContext(IModel channel, IMessage message, string routingKey, string topic, ulong deliveryTag)
+        public MessageContext(IModel channel, IConnection connection, IMessage message, string routingKey, string topic, ulong deliveryTag)
         {
             Channel = channel;
             Message = message;
             Topic = topic;
             DeliveryTag = deliveryTag;
             RoutingKey = routingKey;
+            Connection = connection;
         }
 
         public void SetRequest(MessageHandleRequest request)

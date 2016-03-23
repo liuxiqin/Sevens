@@ -29,13 +29,13 @@ namespace RabbitMqClientTest
             ObjectContainer.SetContainer(new AutofacContainerObject());
 
             var eventHandleInitializer = new EventHandleProvider();
-            eventHandleInitializer.Initialize(Assembly.GetExecutingAssembly(), Assembly.Load("CommandHandlerTest"));
+            eventHandleInitializer.Initialize(Assembly.GetExecutingAssembly(), Assembly.Load("Seven.Tests"));
 
             var commandInitializer = new CommandHandleProvider();
-            commandInitializer.Initialize(Assembly.Load("CommandHandlerTest"));
+            commandInitializer.Initialize(Assembly.Load("Seven.Tests"));
 
             var messageTypeProvider = new MessageTypeProvider();
-            messageTypeProvider.Initialize(Assembly.GetExecutingAssembly(), Assembly.Load("CommandHandlerTest"));
+            messageTypeProvider.Initialize(Assembly.GetExecutingAssembly(), Assembly.Load("Seven.Tests"));
 
             ObjectContainer.RegisterInstance(eventHandleInitializer);
             ObjectContainer.RegisterInstance(commandInitializer);

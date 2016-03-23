@@ -18,30 +18,42 @@ namespace Seven.Pipeline
     /// </summary>
     public class ProcessMessageHandler : IMessageHandler
     {
+        private IMessageHandler _nextHandler = new ResponseMessageHandler(new DefaultBinarySerializer());
 
         public void Execute(MessageContext context)
         {
-            var command = context.Message as ICommand;
+            try
+            {
+                var command = context.Message as ICommand;
 
-            IRepository repository = new EventSouringRepository(null, null);
+                IRepository repository = new EventSouringRepository(null, null);
 
-            var comamndHandler = ObjectContainer.Resolve<CommandHandleProvider>();
+                var comamndHandler = ObjectContainer.Resolve<CommandHandleProvider>();
 
-            var action = comamndHandler.GetInternalCommandHandle(command.GetType());
+                var action = comamndHandler.GetInternalCommandHandle(command.GetType());
 
-            var commandContext = new CommandContext(repository);
+                var commandContext = new CommandContext(repository);
 
-            action(commandContext, command);
+                action(commandContext, command);
 
-            var aggregateRoots = commandContext.AggregateRoots;
+                var aggregateRoots = commandContext.AggregateRoots;
 
-            var aggregateRoot = aggregateRoots.First();
+                var aggregateRoot = aggregateRoots.First();
 
-            var domainEvents = aggregateRoot.Value.Commit();
+                var domainEvents = aggregateRoot.Value.Commit();
 
-            Console.WriteLine(aggregateRoot.ToString());
+                Console.WriteLine(aggregateRoot.ToString());
 
-            Console.WriteLine("DomainEvents count is {0}", domainEvents.Count);
+                Console.WriteLine("DomainEvents count is {0}", domainEvents.Count);
+
+                context.SetResponse(new MessageHandleResult() { Message = "成功", Status = MessageStatus.Success });
+            }
+            catch (Exception)
+            {
+                context.SetResponse(new MessageHandleResult() { Message = "失败", Status = MessageStatus.Fail });
+            }
+
+            _nextHandler.Execute(context);
         }
     }
 }

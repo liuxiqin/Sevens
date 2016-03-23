@@ -14,7 +14,7 @@ namespace Seven.Tests.UserSample.Commands
 
         public int Age { get; private set; }
 
-        public CreateUserCommand(string userName, string userPassword, bool sex, int age)
+        public CreateUserCommand(string userName, string userPassword, bool sex, int age) : base()
         {
             UserName = userName;
             UserPassword = userPassword;
