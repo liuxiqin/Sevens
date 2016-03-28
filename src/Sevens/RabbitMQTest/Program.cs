@@ -24,6 +24,10 @@ namespace RabbitMQServerTest
 
             var commandService = new CommandService(producer);
 
+            var comsumer = new MessageConsumer(broker, binarySerializer, new DefaultJsonSerializer(), typeof(CreateUserCommand).FullName, "RPCRESPONSE");
+
+
+
             while (true)
             {
                 var command = new CreateUserCommand(

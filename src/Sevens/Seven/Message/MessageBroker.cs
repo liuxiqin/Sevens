@@ -4,6 +4,7 @@ using System.Threading;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Framing;
 using RabbitMQ.Client.Framing.Impl;
 using RabbitMQ.Client.MessagePatterns;
 using Seven.Infrastructure.MessageDevice;
@@ -36,8 +37,7 @@ namespace Seven.Message
             }
         }
 
-        public MessageBroker(IBinarySerializer binarySerializer,
-            RabbitMqConnectionInfo connectionInfo)
+        public MessageBroker(IBinarySerializer binarySerializer, RabbitMqConnectionInfo connectionInfo)
         {
             _connectionFactory = new ConnectionFactory();
             _connectionFactory.HostName = connectionInfo.HostName;

@@ -14,14 +14,6 @@ namespace Seven.Message
 
         void Stop();
 
-        /// <summary>
-        /// Get the message handle result.
-        /// </summary>
-        /// <param name="responseQueueName"></param>
-        /// <param name="correlationId"></param>
-        /// <param name="timeout"></param>
-        /// <returns></returns>
-        MessageHandleResult SubscribeResult(string responseQueueName, string correlationId, TimeSpan timeout);
     }
 
     public class MessageConsumerManager
