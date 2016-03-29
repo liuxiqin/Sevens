@@ -12,6 +12,8 @@ namespace Seven.Message
     {
         void Start();
 
+        void Execute(QueueMessage message);
+
         void Stop();
 
     }

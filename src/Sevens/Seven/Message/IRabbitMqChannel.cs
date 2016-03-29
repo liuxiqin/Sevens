@@ -8,5 +8,6 @@ namespace Seven.Message
 {
     public interface IRabbitMqChannel
     {
+       
     }
 }

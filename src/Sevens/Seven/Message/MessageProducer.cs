@@ -22,7 +22,7 @@ namespace Seven.Message
 
         private readonly IMessageBroker _messageBroker;
 
-        private TimeSpan _timeout = TimeSpan.FromSeconds(5);
+        private TimeSpan _timeout = TimeSpan.FromSeconds(10);
 
         private readonly string _responseQueueName = "PRCRESPONSE";
 
@@ -43,57 +43,16 @@ namespace Seven.Message
         public Task<MessageHandleResult> Publish<TMessage>(TMessage message) where TMessage : IMessage
         {
             var task = new Task<MessageHandleResult>(() =>
-             {
-                 using (var productChannel = _messageBroker.GetConnection.CreateModel())
-                 {
-                     var queueMessage = BuildMessage(message);
+            {
+                var queueMessage = BuildMessage(message);
 
-                     var responseChannel = _messageBroker.GetConnection.CreateModel();
+                var requestChannel = RequestChannelPools.GetRequestChannel(queueMessage.Topic, _messageBroker, _binarySerializer);
 
-                     productChannel.ExchangeDeclare(queueMessage.Topic, ExchangeType.Direct, true);
+                var replyChannel = requestChannel.SendMessage(queueMessage, _timeout);
 
-                     responseChannel.ExchangeDeclare(queueMessage.Topic, ExchangeType.Direct, true);
-                     responseChannel.QueueDeclare(_responseQueueName, true, false, false, null);
-                     responseChannel.QueueBind(_responseQueueName, queueMessage.Topic, message.MessageId);
+                return replyChannel.GetResult();
 
-                     var manualReset = new ManualResetEventSlim(false);
-
-                     var handleResult = default(MessageHandleResult);
-
-                     var responseConsumer = new EventingBasicConsumer(responseChannel);
-
-                     responseConsumer.Received += (sender, args) =>
-                     {
-                         handleResult = _binarySerializer.Deserialize<MessageHandleResult>(args.Body);
-
-                         ((EventingBasicConsumer)sender).Model.BasicAck(args.DeliveryTag, true);
-
-                         manualReset.Set();
-                     };
-
-                     responseChannel.BasicConsume(_responseQueueName, false, responseConsumer);
-
-                     productChannel.BasicPublish(message.GetType().FullName, message.GetType().FullName,
-                         new BasicProperties()
-                         {
-                             DeliveryMode = 2,
-                             ReplyTo = _responseQueueName,
-                             CorrelationId = message.MessageId
-                         },
-                         _binarySerializer.Serialize(queueMessage));
-
-                     var hasTimeouted = manualReset.Wait(_timeout);
-
-                     if (!hasTimeouted)
-                     {
-                         responseChannel.BasicCancel(responseConsumer.ConsumerTag);
-
-                         return new MessageHandleResult() { Message = "超时", Status = MessageStatus.Fail };
-                     }
-
-                     return handleResult;
-                 }
-             });
+            });
 
             task.Start();
 

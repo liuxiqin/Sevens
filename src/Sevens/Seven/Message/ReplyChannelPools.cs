@@ -10,7 +10,7 @@ using RabbitMQ.Client;
 
 namespace Seven.Message
 {
-    public static class ReplyChannelPools
+    public class ReplyChannelPools
     {
         private static readonly ConcurrentDictionary<string, IReplyChannel> _channelPools = new ConcurrentDictionary<string, IReplyChannel>();
 
@@ -27,9 +27,16 @@ namespace Seven.Message
         }
 
 
-        public static bool TryAddReplyChannel(string messageId)
+        public static IReplyChannel TryAddReplyChannel(string messageId, TimeSpan timeout)
         {
-            return _channelPools.TryAdd(messageId, new ReplyChannel(messageId, TimeSpan.FromSeconds(10)));
+            var replyChannel = new ReplyChannel(messageId, timeout);
+
+            if (_channelPools.TryAdd(messageId, replyChannel))
+            {
+                return replyChannel;
+            }
+
+            return null;
         }
     }
 }

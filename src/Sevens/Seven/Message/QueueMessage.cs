@@ -9,6 +9,8 @@ namespace Seven.Message
     [Serializable]
     public class QueueMessage
     {
+        public string MessageId { get; set; }
+
         public string Tag { get; set; }
 
         public string Topic { get; set; }
@@ -16,6 +18,8 @@ namespace Seven.Message
         public string TypeName { get; set; }
 
         public MessageType MessageType { get; set; }
+
+        public bool IsRpcInvoke { get; set; }
 
         public byte[] Datas;
     }

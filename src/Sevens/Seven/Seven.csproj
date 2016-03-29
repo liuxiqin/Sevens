@@ -130,7 +130,7 @@
     <Compile Include="EventStore\IEventStore.cs" />
     <Compile Include="EventStore\EventStore.cs" />
     <Compile Include="Initializer\MessageTypeProvider.cs" />
-    <Compile Include="Message\ChannelPool.cs" />
+    <Compile Include="Message\ReplyChannelPools.cs" />
     <Compile Include="Message\IMessage.cs" />
     <Compile Include="Message\IMessageBroker.cs" />
     <Compile Include="Message\IMessageConsumer.cs" />
@@ -156,6 +156,7 @@
     <Compile Include="Message\RabbitMqConnectionPool.cs" />
     <Compile Include="Message\ReplyChannel.cs" />
     <Compile Include="Message\RequestChannel.cs" />
+    <Compile Include="Message\RequestChannelPools.cs" />
     <Compile Include="Pipeline\EndingMessageHandler.cs" />
     <Compile Include="Pipeline\ErrorMessageHandler.cs" />
     <Compile Include="Pipeline\MessageContext.cs" />

@@ -9,6 +9,8 @@ namespace Seven.Message
     [Serializable]
     public class MessageHandleResult
     {
+        public string MessageId { get; set; }
+
         public string Message { get; set; }
 
         public MessageStatus Status { get; set; }
