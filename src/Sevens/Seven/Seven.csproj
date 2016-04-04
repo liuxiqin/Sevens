@@ -130,6 +130,8 @@
     <Compile Include="EventStore\IEventStore.cs" />
     <Compile Include="EventStore\EventStore.cs" />
     <Compile Include="Initializer\MessageTypeProvider.cs" />
+    <Compile Include="Message\IMessageChannel.cs" />
+    <Compile Include="Message\MessageResultConsumer.cs" />
     <Compile Include="Message\ReplyChannelPools.cs" />
     <Compile Include="Message\IMessage.cs" />
     <Compile Include="Message\IMessageBroker.cs" />
@@ -148,7 +150,6 @@
     <Compile Include="Message\MessageProducer.cs" />
     <Compile Include="Message\MessageResult.cs" />
     <Compile Include="Message\MessageResultPool.cs" />
-    <Compile Include="Message\MessageResultSubscribe.cs" />
     <Compile Include="Message\MessageStatus.cs" />
     <Compile Include="Message\MessageType.cs" />
     <Compile Include="Message\QueueConnectionInfo.cs" />

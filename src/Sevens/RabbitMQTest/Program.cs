@@ -17,17 +17,13 @@ namespace RabbitMQServerTest
             var binarySerializer = new DefaultBinarySerializer();
 
             var connectionInfo = new RabbitMqConnectionInfo("guest", "guest", "127.0.0.1", 5672);
-
-            var broker = new MessageBroker(binarySerializer, connectionInfo);
-
-            var producer = new MessageProducer(broker, binarySerializer, new DefaultJsonSerializer());
+             
+            var producer = new MessageProducer(binarySerializer);
 
             var commandService = new CommandService(producer);
 
-            var comsumer = new MessageConsumer(broker, binarySerializer, new DefaultJsonSerializer(), typeof(CreateUserCommand).FullName, "RPCRESPONSE");
-
-
-
+         //   var comsumer = new MessageConsumer(binarySerializer, new DefaultJsonSerializer(), typeof(CreateUserCommand).FullName, "RPCRESPONSE");
+             
             while (true)
             {
                 var command = new CreateUserCommand(

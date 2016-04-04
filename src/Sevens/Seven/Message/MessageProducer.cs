@@ -18,35 +18,41 @@ namespace Seven.Message
     {
         private IBinarySerializer _binarySerializer;
 
-        private IJsonSerializer _jsonSerializer;
-
-        private readonly IMessageBroker _messageBroker;
-
         private TimeSpan _timeout = TimeSpan.FromSeconds(10);
 
         private readonly string _responseQueueName = "PRCRESPONSE";
 
-        public MessageProducer(
-           IMessageBroker messageBroker,
-            IBinarySerializer binarySerializer,
-            IJsonSerializer jsonSerializer)
+
+        public MessageProducer(IBinarySerializer binarySerializer)
         {
-            _messageBroker = messageBroker;
             _binarySerializer = binarySerializer;
-            _jsonSerializer = jsonSerializer;
         }
 
         public Task<MessageHandleResult> Publish<TMessage>(TMessage message, TimeSpan timeout) where TMessage : IMessage
         {
             return null;
         }
+
         public Task<MessageHandleResult> Publish<TMessage>(TMessage message) where TMessage : IMessage
         {
             var task = new Task<MessageHandleResult>(() =>
             {
                 var queueMessage = BuildMessage(message);
 
-                var requestChannel = RequestChannelPools.GetRequestChannel(queueMessage.Topic, _messageBroker, _binarySerializer);
+                var messageChannel = MessageChannelPools.GetMessageChannel(new ChannelInfo());
+
+                messageChannel.SendMessage(queueMessage);
+
+                var channelInfo = new ChannelInfo()
+                {
+                    ExChangeName = message.GetType().FullName,
+                    ExchangeType = MessageExchangeType.Direct,
+                    NoAck = false,
+                    RoutingKey = message.GetType().FullName,
+                    ShouldPersistent = true
+                };
+
+                var requestChannel = RequestChannelPools.GetRequestChannel(channelInfo);
 
                 var replyChannel = requestChannel.SendMessage(queueMessage, _timeout);
 
@@ -64,13 +70,13 @@ namespace Seven.Message
             var tag = message.GetType().FullName;
             var topic = message.GetType().FullName;
 
-            var data = _jsonSerializer.Serialize(message);
+            var data = _binarySerializer.Serialize(message);
 
             var queueMessage = new QueueMessage()
             {
-                Tag = tag,
+                RoutingKey = tag,
                 Topic = topic,
-                Datas = Encoding.UTF8.GetBytes(data),
+                Datas = data,
                 TypeName = message.GetType().FullName,
                 MessageType = MessageType.Reply
             };
@@ -81,18 +87,6 @@ namespace Seven.Message
         public void PublishAsync<TMessage>(TMessage message) where TMessage : IMessage
         {
             return;
-        }
-
-
-        public void Response(string responseQueueName, string correlationId, MessageHandleResult handleResult)
-        {
-            using (var channel = _messageBroker.GetConnection.CreateModel())
-            {
-                channel.ExchangeDeclare(responseQueueName, ExchangeType.Direct, true);
-
-                channel.BasicPublish(responseQueueName, responseQueueName, new BasicProperties() { DeliveryMode = 2 },
-                    _binarySerializer.Serialize(handleResult));
-            }
         }
     }
 }

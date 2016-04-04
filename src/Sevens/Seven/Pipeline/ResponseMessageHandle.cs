@@ -21,14 +21,14 @@ namespace Seven.Pipeline
 
         public void Execute(MessageContext context)
         {
-            var responseChannel = context.Connection.CreateModel();
+          //  var responseChannel = context.Connection.CreateModel();
 
-            var responseDatas = _binarySerializer.Serialize(context.Response);
+            //var responseDatas = _binarySerializer.Serialize(context.Response);
 
-            responseChannel.ExchangeDeclare(context.Topic, ExchangeType.Direct, true);
+            //responseChannel.ExchangeDeclare(context.Topic, ExchangeType.Direct, //true);
 
-            responseChannel.BasicPublish(context.Topic, context.Message.MessageId,
-                new BasicProperties() { DeliveryMode = 2 }, responseDatas);
+            //responseChannel.BasicPublish(context.Topic, context.Message.MessageId,
+              //  new BasicProperties() { DeliveryMode = 2 }, responseDatas);
         }
     }
 }

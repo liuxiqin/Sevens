@@ -14,7 +14,7 @@ namespace Seven.Pipeline
     {
         public void Execute(MessageContext message)
         {
-            message.Channel.BasicAck(message.DeliveryTag, true);
+           
         }
     }
 }

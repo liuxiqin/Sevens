@@ -14,11 +14,7 @@ namespace Seven.Pipeline
     /// 消息处理上下文
     /// </summary>
     public class MessageContext : IMessageContext
-    {
-        public IConnection Connection { get; private set; }
-
-        public IModel Channel { get; private set; }
-
+    { 
         public IMessage Message { get; private set; }
 
         public string RoutingKey { get; private set; }
@@ -37,14 +33,12 @@ namespace Seven.Pipeline
         /// </summary>
         public MessageHandleRequest Request { get; set; }
 
-        public MessageContext(IModel channel, IConnection connection, IMessage message, string routingKey, string topic, ulong deliveryTag)
-        {
-            Channel = channel;
+        public MessageContext(IMessage message, string routingKey, string topic, ulong deliveryTag)
+        { 
             Message = message;
             Topic = topic;
             DeliveryTag = deliveryTag;
-            RoutingKey = routingKey;
-            Connection = connection;
+            RoutingKey = routingKey; 
         }
 
         public void SetRequest(MessageHandleRequest request)

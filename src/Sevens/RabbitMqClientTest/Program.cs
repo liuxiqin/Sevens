@@ -43,17 +43,14 @@ namespace RabbitMqClientTest
 
             var connectionInfo = new RabbitMqConnectionInfo("guest", "guest", "127.0.0.1", 5672);
 
-            var broker = new MessageBroker(binarySerializer, connectionInfo);
-
+            
             var exchangeName = typeof(CreateUserCommand).ToString();
-
-            var consumer = new MessageConsumer(broker, binarySerializer, jsonSerializer, exchangeName, exchangeName);
+ 
 
             Console.WriteLine("Begin to receive the message.");
 
             Task.Factory.StartNew(() =>
-            {
-                consumer.Start();
+            { 
             });
 
             Console.ReadLine();

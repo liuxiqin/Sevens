@@ -11,9 +11,7 @@ namespace Seven.Message
     public interface IMessageConsumer
     {
         void Start();
-
-        void Execute(QueueMessage message);
-
+         
         void Stop();
 
     }

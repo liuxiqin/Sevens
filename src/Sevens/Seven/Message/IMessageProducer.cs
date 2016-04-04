@@ -15,6 +15,5 @@ namespace Seven.Message
 
         void PublishAsync<TMessage>(TMessage message) where TMessage : IMessage;
 
-        void Response(string responseQueueName, string correlationId, MessageHandleResult handleResult);
     }
 }

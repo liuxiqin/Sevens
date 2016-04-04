@@ -11,7 +11,7 @@ namespace Seven.Message
     {
         public string MessageId { get; set; }
 
-        public string Tag { get; set; }
+        public string RoutingKey { get; set; }
 
         public string Topic { get; set; }
 

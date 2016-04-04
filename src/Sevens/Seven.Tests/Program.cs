@@ -15,6 +15,7 @@ using MySql.Data.MySqlClient;
 using Seven.Events;
 using Seven.Infrastructure.EventStore;
 using Seven.Infrastructure.Serializer;
+using Seven.Message;
 using Seven.Tests.UserSample.Commands;
 
 namespace Seven.Tests
@@ -26,62 +27,83 @@ namespace Seven.Tests
         private static void Main(string[] args)
         {
 
-            ObjectContainer.SetContainer(new AutofacContainerObject());
+            //ObjectContainer.SetContainer(new AutofacContainerObject());
 
-            var applictionInitializer = new EventHandleProvider();
+            //var applictionInitializer = new EventHandleProvider();
 
-            applictionInitializer.Initialize(Assembly.GetExecutingAssembly());
+            //applictionInitializer.Initialize(Assembly.GetExecutingAssembly());
 
-            var commandInitializer = new CommandHandleProvider();
+            //var commandInitializer = new CommandHandleProvider();
 
-            commandInitializer.Initialize(Assembly.GetExecutingAssembly());
+            //commandInitializer.Initialize(Assembly.GetExecutingAssembly());
 
-            ObjectContainer.RegisterInstance(applictionInitializer);
-            ObjectContainer.RegisterInstance(commandInitializer);
-
-
-            var dbConnection = new MySqlConnection(_mysqlConnection);
-
-            var persistence = new SnapshotPersistence(dbConnection);
-
-            var binarySerializer = new DefaultBinarySerializer();
-
-            var snapshotRepository = new SnapshotRepository(persistence, new SnapshotFactory(binarySerializer));
-
-            var eventPersistence = new EventStorePersistence(dbConnection);
-
-            var eventFactory = new EventStreamFactory(binarySerializer);
-
-            var eventStore = new EventStore(eventPersistence, eventFactory);
+            //ObjectContainer.RegisterInstance(applictionInitializer);
+            //ObjectContainer.RegisterInstance(commandInitializer);
 
 
-            IRepository repository = new EventSouringRepository(eventStore, snapshotRepository);
+            //var dbConnection = new MySqlConnection(_mysqlConnection);
 
-            var comamndHandler = ObjectContainer.Resolve<CommandHandleProvider>();
-   
+            //var persistence = new SnapshotPersistence(dbConnection);
+
+            //var binarySerializer = new DefaultBinarySerializer();
+
+            //var snapshotRepository = new SnapshotRepository(persistence, new SnapshotFactory(binarySerializer));
+
+            //var eventPersistence = new EventStorePersistence(dbConnection);
+
+            //var eventFactory = new EventStreamFactory(binarySerializer);
+
+            //var eventStore = new EventStore(eventPersistence, eventFactory);
+
+
+            //IRepository repository = new EventSouringRepository(eventStore, snapshotRepository);
+
+            //var comamndHandler = ObjectContainer.Resolve<CommandHandleProvider>();
+
+            //var changePasswordCommand = new ChangePasswordCommand("90ca0d59-65e6-403b-82c5-8df967cc8e22", "2222222", "11111");
+
+            //var commandContext = new CommandContext(repository);
+
+            //var commandHanldeAction = comamndHandler.GetInternalCommandHandle(typeof(ChangePasswordCommand));
+            //commandHanldeAction(commandContext, changePasswordCommand);
+
+            //var aggregateRoots = commandContext.AggregateRoots;
+
+            //IList<IEvent> unCommitEvents = null;
+
+            //foreach (var item in aggregateRoots)
+            //{
+            //    unCommitEvents = item.Value.Commit();
+            //}
+
+            //var aggregateRoot = aggregateRoots.FirstOrDefault().Value;
+
+            //eventStore.AppendToStream(aggregateRoot.AggregateRootId, new EventStream(aggregateRoot.Version, unCommitEvents));
+
+            //snapshotRepository.Create(aggregateRoot);
+
+            //Console.WriteLine("改方法执行完毕...");
+
+            TestBinSer();
+
+        }
+
+        public static void TestBinSer()
+        {
             var changePasswordCommand = new ChangePasswordCommand("90ca0d59-65e6-403b-82c5-8df967cc8e22", "2222222", "11111");
 
-            var commandContext = new CommandContext(repository);
+            var message = new QueueMessage();
 
-            var commandHanldeAction = comamndHandler.GetInternalCommandHandle(typeof(ChangePasswordCommand));
-            commandHanldeAction(commandContext, changePasswordCommand);
+            message.Topic = changePasswordCommand.GetType().FullName;
+            message.TypeName= changePasswordCommand.GetType().FullName;
 
-            var aggregateRoots = commandContext.AggregateRoots;
+            var binarySerializer=new DefaultBinarySerializer();
+            message.Datas = binarySerializer.Serialize(changePasswordCommand);
 
-            IList<IEvent> unCommitEvents = null;
+            var commandMessage = binarySerializer.Deserialize<IMessage>(message.Datas);
 
-            foreach (var item in aggregateRoots)
-            {
-                unCommitEvents = item.Value.Commit();
-            }
+            Console.WriteLine(commandMessage);
 
-            var aggregateRoot = aggregateRoots.FirstOrDefault().Value;
-
-            eventStore.AppendToStream(aggregateRoot.AggregateRootId, new EventStream(aggregateRoot.Version, unCommitEvents));
-
-            snapshotRepository.Create(aggregateRoot);
-            
-            Console.WriteLine("改方法执行完毕...");
         }
     }
 }

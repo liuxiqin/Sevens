@@ -15,24 +15,20 @@ namespace Seven.Message
 
         private static object _lockObj = new object();
 
-        public static IRequestChannel GetRequestChannel(
-            string exChangeName,
-            IMessageBroker messageBroker,
-            IBinarySerializer binarySerializer)
+        public static IRequestChannel GetRequestChannel(ChannelInfo channelInfo)
         {
-            if (!_channelPools.ContainsKey(exChangeName))
+            if (!_channelPools.ContainsKey(channelInfo.ToString()))
             {
                 lock (_lockObj)
                 {
-                    if (!_channelPools.ContainsKey(exChangeName))
+                    if (!_channelPools.ContainsKey(channelInfo.ToString()))
                     {
-                        _channelPools.TryAdd(exChangeName,
-                            new RequestChannel(exChangeName, messageBroker, binarySerializer));
+                        _channelPools.TryAdd(channelInfo.ToString(), new RequestChannel(channelInfo));
                     }
                 }
             }
 
-            return _channelPools[exChangeName];
+            return _channelPools[channelInfo.ToString()];
         }
     }
 }

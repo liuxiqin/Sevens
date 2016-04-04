@@ -19,8 +19,6 @@ namespace Seven.Message
     {
         private readonly ConnectionFactory _connectionFactory;
 
-        private readonly IBinarySerializer _binarySerializer;
-
         private EventHandler connectioneSuccessed;
         private EventHandler connectionFailed;
         private IConnection connection;
@@ -37,15 +35,15 @@ namespace Seven.Message
             }
         }
 
-        public MessageBroker(IBinarySerializer binarySerializer, RabbitMqConnectionInfo connectionInfo)
+        public MessageBroker(RabbitMqConfiguration config)
         {
             _connectionFactory = new ConnectionFactory();
-            _connectionFactory.HostName = connectionInfo.HostName;
-            _connectionFactory.Port = connectionInfo.Port;
-            _connectionFactory.UserName = connectionInfo.UserName;
-            _connectionFactory.Password = connectionInfo.UserPaasword;
+            _connectionFactory.HostName = config.HostName;
+            _connectionFactory.Port = config.Port;
+            _connectionFactory.UserName = config.UserName;
+            _connectionFactory.Password = config.UserPaasword;
+            _connectionFactory.VirtualHost = config.VirtualName;
 
-            this._binarySerializer = binarySerializer;
         }
 
         private IConnection Connection()
@@ -75,7 +73,7 @@ namespace Seven.Message
                 var basicProperties = channel.CreateBasicProperties();
                 basicProperties.DeliveryMode = 2; //消息持久化
 
-                channel.BasicPublish(message.Topic, message.Tag, false, false, basicProperties, null);
+                channel.BasicPublish(message.Topic, message.RoutingKey, false, false, basicProperties, null);
             }
         }
 
@@ -95,7 +93,6 @@ namespace Seven.Message
                 while (true)
                 {
                     var queue = consumer.Queue.Dequeue();
-                    var queueMessage = _binarySerializer.Deserialize<QueueMessage>(queue.Body);
 
                     Thread.Sleep(1);
                 }
