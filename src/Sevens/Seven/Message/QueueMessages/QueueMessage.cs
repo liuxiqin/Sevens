@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Seven.Message
+namespace Seven.Message.QueueMessages
 {
     [Serializable]
     public class QueueMessage
@@ -20,6 +16,8 @@ namespace Seven.Message
         public MessageType MessageType { get; set; }
 
         public bool IsRpcInvoke { get; set; }
+
+        public ulong DeliveryTag { get; set; }
 
         public byte[] Datas;
     }

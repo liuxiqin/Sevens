@@ -15,9 +15,5 @@ namespace Seven.Message
         void Stop();
 
     }
-
-    public class MessageConsumerManager
-    {
-
-    }
+     
 }

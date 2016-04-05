@@ -7,12 +7,14 @@ using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
+using Seven.Infrastructure.Exceptions;
 
-namespace Seven.Message
+namespace Seven.Message.Channels
 {
     public class ReplyChannelPools
     {
-        private static readonly ConcurrentDictionary<string, IReplyChannel> _channelPools = new ConcurrentDictionary<string, IReplyChannel>();
+        private static readonly ConcurrentDictionary<string, IReplyChannel> _channelPools =
+            new ConcurrentDictionary<string, IReplyChannel>();
 
         public static IReplyChannel GetReplyChannel(string messageId)
         {
@@ -20,10 +22,11 @@ namespace Seven.Message
             {
                 var replyChannel = default(IReplyChannel);
 
-                _channelPools.TryRemove(messageId, out replyChannel);
+                if (_channelPools.TryRemove(messageId, out replyChannel))
+                    return replyChannel;
             }
 
-            return null;
+            throw new FrameworkException("Can not find the reply channel with messageId is " + messageId);
         }
 
 
@@ -36,7 +39,7 @@ namespace Seven.Message
                 return replyChannel;
             }
 
-            return null;
+            throw new FrameworkException("can not add the ReplyChannel in the ReplyChannelPools");
         }
     }
 }

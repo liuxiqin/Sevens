@@ -1,8 +1,9 @@
 using System;
+using Seven.Message.QueueMessages;
 
-namespace Seven.Message
+namespace Seven.Message.Channels
 {
-    public interface IRequestChannel : IRabbitMqChannel
+    public interface IRequestChannel 
     {
         IReplyChannel SendMessage(QueueMessage message,TimeSpan timeout);
 

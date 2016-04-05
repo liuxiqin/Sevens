@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Seven.Message;
-
-namespace Seven.Pipeline
+﻿
+namespace Seven.Message.Pipelines
 {
     /// <summary>
     /// 消息错误处理 
@@ -14,7 +8,7 @@ namespace Seven.Pipeline
     /// </summary>
     public class ErrorMessageHandler : IMessageHandler
     {
-        public void Execute(MessageContext message)
+        public void Handle(MessageContext message)
         {
             message.SetResponse(new MessageHandleResult() { Status = MessageStatus.Fail, Message = message.Exception.Message });
         }

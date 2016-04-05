@@ -1,8 +1,9 @@
 ﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Framing;
 using Seven.Infrastructure.Serializer;
+using Seven.Message.QueueMessages;
 
-namespace Seven.Message
+namespace Seven.Message.Channels
 {
     public abstract class MessageChannelBase
     {

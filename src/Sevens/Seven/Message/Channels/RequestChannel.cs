@@ -3,8 +3,9 @@ using Microsoft.SqlServer.Server;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Framing;
 using Seven.Infrastructure.Serializer;
+using Seven.Message.QueueMessages;
 
-namespace Seven.Message
+namespace Seven.Message.Channels
 {
     public class RequestChannel : IRequestChannel
     {

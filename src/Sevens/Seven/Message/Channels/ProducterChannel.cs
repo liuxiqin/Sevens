@@ -1,6 +1,6 @@
 using RabbitMQ.Client;
 
-namespace Seven.Message
+namespace Seven.Message.Channels
 {
     public class ProducterChannel : MessageChannelBase
     {

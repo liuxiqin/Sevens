@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Seven.Infrastructure.Serializer;
 
-namespace Seven.Message
+namespace Seven.Message.Channels
 {
     public class RequestChannelPools
     {

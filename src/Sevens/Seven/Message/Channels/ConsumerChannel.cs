@@ -1,8 +1,8 @@
 ﻿using RabbitMQ.Client;
 
-namespace Seven.Message
+namespace Seven.Message.Channels
 {
-    public abstract class ConsumerChannel : MessageChannelBase
+    public class ConsumerChannel : MessageChannelBase
     {
         private ChannelInfo _channelInfo = null;
 

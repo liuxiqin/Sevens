@@ -9,16 +9,11 @@ namespace Seven.Message
     /// <summary>
     /// 消息Broker
     /// </summary>
-    public interface IMessageBroker : IDisposable
+    public interface IMessageBroker
     {
-        
-
         void Stop();
 
         IConnection GetConnection { get; }
 
-        void SendMessage(QueueMessage message);
-
-        void ReceiveMessage(string exchangeName, string routingKey, string exchangeType);
     }
 }

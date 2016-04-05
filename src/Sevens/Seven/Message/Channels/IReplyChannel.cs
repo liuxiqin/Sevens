@@ -1,6 +1,6 @@
-namespace Seven.Message
+namespace Seven.Message.Channels
 {
-    public interface IReplyChannel : IRabbitMqChannel
+    public interface IReplyChannel
     {
         MessageHandleResult GetResult();
 

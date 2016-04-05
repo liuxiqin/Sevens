@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using Seven.Infrastructure.Exceptions;
 
-namespace Seven.Message
+namespace Seven.Message.Channels
 {
     public class ReplyChannel : IReplyChannel
     {

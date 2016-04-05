@@ -8,6 +8,8 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Framing;
 using Seven.Infrastructure.Serializer;
+using Seven.Message.Channels;
+using Seven.Message.QueueMessages;
 
 namespace Seven.Message
 {
@@ -21,7 +23,6 @@ namespace Seven.Message
         private TimeSpan _timeout = TimeSpan.FromSeconds(10);
 
         private readonly string _responseQueueName = "PRCRESPONSE";
-
 
         public MessageProducer(IBinarySerializer binarySerializer)
         {
@@ -39,9 +40,9 @@ namespace Seven.Message
             {
                 var queueMessage = BuildMessage(message);
 
-                var messageChannel = MessageChannelPools.GetMessageChannel(new ChannelInfo());
+                var channel = MessageChannelPools.GetMessageChannel(new ChannelInfo());
 
-                messageChannel.SendMessage(queueMessage);
+                channel.SendMessage(queueMessage);
 
                 var channelInfo = new ChannelInfo()
                 {

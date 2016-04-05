@@ -1,4 +1,4 @@
-namespace Seven.Message
+namespace Seven.Message.Channels
 {
     public class ChannelInfo
     {

@@ -16,6 +16,7 @@ using Seven.Events;
 using Seven.Infrastructure.EventStore;
 using Seven.Infrastructure.Serializer;
 using Seven.Message;
+using Seven.Message.QueueMessages;
 using Seven.Tests.UserSample.Commands;
 
 namespace Seven.Tests

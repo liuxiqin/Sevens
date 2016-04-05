@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Framing;
-using Seven.Infrastructure.Serializer;
-using Seven.Message;
+﻿using Seven.Infrastructure.Serializer; 
 
-namespace Seven.Pipeline
+namespace Seven.Message.Pipelines
 {
     public class ResponseMessageHandler : IMessageHandler
     {
@@ -19,7 +11,7 @@ namespace Seven.Pipeline
             _binarySerializer = binarySerializer;
         }
 
-        public void Execute(MessageContext context)
+        public void Handle(MessageContext context)
         {
           //  var responseChannel = context.Connection.CreateModel();
 

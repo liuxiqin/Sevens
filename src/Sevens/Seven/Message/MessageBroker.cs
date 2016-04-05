@@ -15,7 +15,7 @@ namespace Seven.Message
     /// <summary>
     /// 消息Broker
     /// </summary>
-    public class MessageBroker : IMessageBroker, IDisposable
+    public class MessageBroker : IMessageBroker
     {
         private readonly ConnectionFactory _connectionFactory;
 
@@ -54,53 +54,7 @@ namespace Seven.Message
             }
             return connection;
         }
-
-
-        /// <summary>
-        /// send message to queue
-        /// </summary>
-        /// <param name="message"></param>
-        public void SendMessage(QueueMessage message)
-        {
-            if (!connection.IsOpen)
-            {
-                return;
-            }
-            using (var channel = connection.CreateModel())
-            {
-                channel.ExchangeDeclare(message.Topic, ExchangeType.Direct, true);
-
-                var basicProperties = channel.CreateBasicProperties();
-                basicProperties.DeliveryMode = 2; //消息持久化
-
-                channel.BasicPublish(message.Topic, message.RoutingKey, false, false, basicProperties, null);
-            }
-        }
-
-
-        public void ReceiveMessage(string exchangeName, string routingKey, string exchangeType)
-        {
-            using (var channel = connection.CreateModel())
-            {
-                channel.ExchangeDeclare(exchangeName, ExchangeType.Direct, true);
-                channel.QueueDeclare(exchangeName, true, false, false, null);
-                channel.QueueBind(exchangeName, exchangeName, exchangeName);
-
-                var consumer = new QueueingBasicConsumer(channel);
-
-                channel.BasicConsume(exchangeName, false, consumer);
-
-                while (true)
-                {
-                    var queue = consumer.Queue.Dequeue();
-
-                    Thread.Sleep(1);
-                }
-            }
-        }
-
-
-
+         
         public void Stop()
         {
             if (connection.IsOpen)
@@ -108,8 +62,7 @@ namespace Seven.Message
                 connection.Close();
             }
         }
-
-
+         
 
         public void Dispose()
         {

@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Seven.Infrastructure.Serializer;
-using Seven.Message;
 using Seven.Commands;
-using Seven.Infrastructure.EventStore;
 using Seven.Infrastructure.Ioc;
 using Seven.Infrastructure.Repository;
 using Seven.Initializer;
 
-namespace Seven.Pipeline
+namespace Seven.Message.Pipelines
 {
     /// <summary>
     /// 处理消息
@@ -20,7 +15,7 @@ namespace Seven.Pipeline
     {
         private IMessageHandler _nextHandler = new ResponseMessageHandler(new DefaultBinarySerializer());
 
-        public void Execute(MessageContext context)
+        public void Handle(MessageContext context)
         {
             try
             {
@@ -53,7 +48,7 @@ namespace Seven.Pipeline
                 context.SetResponse(new MessageHandleResult() { Message = "失败", Status = MessageStatus.Fail });
             }
 
-            _nextHandler.Execute(context);
+            _nextHandler.Handle(context);
         }
     }
 }
