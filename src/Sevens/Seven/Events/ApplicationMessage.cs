@@ -9,6 +9,16 @@ namespace Seven.Events
     [Serializable]
     public abstract class ApplicationEvent : IEvent
     {
+        public readonly string Id;
 
+        public ApplicationEvent()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+
+        public string MessageId
+        {
+            get { return Id; }
+        }
     }
 }

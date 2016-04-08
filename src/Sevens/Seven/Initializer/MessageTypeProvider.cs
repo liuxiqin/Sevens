@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Seven.Infrastructure.Exceptions;
-using Seven.Message;
+using Seven.Messages;
 
 namespace Seven.Initializer
 {

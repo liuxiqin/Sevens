@@ -15,8 +15,8 @@ using MySql.Data.MySqlClient;
 using Seven.Events;
 using Seven.Infrastructure.EventStore;
 using Seven.Infrastructure.Serializer;
-using Seven.Message;
-using Seven.Message.QueueMessages;
+using Seven.Messages;
+using Seven.Messages.QueueMessages;
 using Seven.Tests.UserSample.Commands;
 
 namespace Seven.Tests
@@ -85,9 +85,30 @@ namespace Seven.Tests
 
             //Console.WriteLine("改方法执行完毕...");
 
-            TestBinSer();
+            // TestBinSer();
 
+            var messageHandleResult = new MessageHandleResult()
+            {
+                Message = "订单那等你给当地发给你",
+                Status = MessageStatus.Success,
+                MessageId = Guid.NewGuid().ToString(),
+            };
+
+          
+
+            IBinarySerializer binarySerializer = new DefaultBinarySerializer();
+
+            var datas = binarySerializer.Serialize(messageHandleResult);
+
+            var queueMessage = new QueueMessage() { Datas = datas };
+
+            var queues = binarySerializer.Serialize(queueMessage);
+
+            var datas2 = binarySerializer.Deserialize<QueueMessage>(queues).Datas;
+
+            Console.WriteLine(binarySerializer.Deserialize<MessageHandleResult>(datas2).Message);
         }
+
 
         public static void TestBinSer()
         {
@@ -96,9 +117,9 @@ namespace Seven.Tests
             var message = new QueueMessage();
 
             message.Topic = changePasswordCommand.GetType().FullName;
-            message.TypeName= changePasswordCommand.GetType().FullName;
+            message.TypeName = changePasswordCommand.GetType().FullName;
 
-            var binarySerializer=new DefaultBinarySerializer();
+            var binarySerializer = new DefaultBinarySerializer();
             message.Datas = binarySerializer.Serialize(changePasswordCommand);
 
             var commandMessage = binarySerializer.Deserialize<IMessage>(message.Datas);

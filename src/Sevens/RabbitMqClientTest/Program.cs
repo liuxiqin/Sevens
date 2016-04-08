@@ -12,47 +12,63 @@ using Seven.Commands;
 using Seven.Infrastructure.Ioc;
 using Seven.Infrastructure.Serializer;
 using Seven.Initializer;
-using Seven.Message;
+using Seven.Messages;
+using Seven.Messages.Channels;
+using Seven.Messages.QueueMessages;
 using Seven.Tests.UserSample.Commands;
 
 namespace RabbitMqClientTest
 {
     class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var binarySerializer = new DefaultBinarySerializer();
 
             //IJsonSerializer jsonSerializer = new DefaultJsonSerializer();
 
-            //ObjectContainer.SetContainer(new AutofacContainerObject());
+            ObjectContainer.SetContainer(new AutofacContainerObject());
 
-            //var eventHandleInitializer = new EventHandleProvider();
-            //eventHandleInitializer.Initialize(Assembly.GetExecutingAssembly(), Assembly.Load("Seven.Tests"));
+            var eventHandleInitializer = new EventHandleProvider();
+            eventHandleInitializer.Initialize(Assembly.GetExecutingAssembly(), Assembly.Load("Seven.Tests"));
 
-            //var commandInitializer = new CommandHandleProvider();
-            //commandInitializer.Initialize(Assembly.Load("Seven.Tests"));
+            var commandInitializer = new CommandHandleProvider();
+            commandInitializer.Initialize(Assembly.Load("Seven.Tests"));
 
-            //var messageTypeProvider = new MessageTypeProvider();
-            //messageTypeProvider.Initialize(Assembly.GetExecutingAssembly(), Assembly.Load("Seven.Tests"));
+            var messageTypeProvider = new MessageTypeProvider();
+            messageTypeProvider.Initialize(Assembly.GetExecutingAssembly(), Assembly.Load("Seven.Tests"));
 
-            //ObjectContainer.RegisterInstance(eventHandleInitializer);
-            //ObjectContainer.RegisterInstance(commandInitializer);
-            //ObjectContainer.RegisterInstance(messageTypeProvider);
+            ObjectContainer.RegisterInstance(eventHandleInitializer);
+            ObjectContainer.RegisterInstance(commandInitializer);
+            ObjectContainer.RegisterInstance(messageTypeProvider);
 
-            //var connectionInfo = new RabbitMqConnectionInfo("guest", "guest", "127.0.0.1", 5672);
+            var configuration = new RabbitMqConfiguration()
+            {
+                HostName = "127.0.0.1",
+                Port = 5672,
+                UserName = "guest",
+                UserPaasword = "guest",
+                VirtualName = "/"
+            };
 
-            
-            //var exchangeName = typeof(CreateUserCommand).ToString();
- 
+            Console.WriteLine("begin to receive the message.");
 
-            //Console.WriteLine("Begin to receive the message.");
+            var consumer = new PushMessageConsumer(new RequestMessageContext()
+            {
+                Configuation = configuration,
+                ExChangeName = typeof(CreateUserCommand).FullName,
+                ExchangeType = MessageExchangeType.Direct,
+                NoAck = false,
+                RoutingKey = typeof(CreateUserCommand).FullName,
+                ShouldPersistent = true
+            },
+                new MessageRequestHandler(binarySerializer));
 
-            //Task.Factory.StartNew(() =>
-            //{ 
-            //});
+            consumer.Start();
 
-            //Console.ReadLine();
+            Console.WriteLine("begin to consumer the message.");
+
+            Console.ReadLine();
         }
     }
 }
