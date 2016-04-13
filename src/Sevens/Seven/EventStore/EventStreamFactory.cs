@@ -13,11 +13,11 @@ namespace Seven.Infrastructure.EventStore
             _binarySerializer = binarySerializer;
         }
 
-        public EventStream Create(EventStreamEntity entity)
+        public DomainEventStream Create(EventStreamEntity entity)
         {
             var events = _binarySerializer.Deserialize<IList<IEvent>>(entity.EventDatas);
 
-            return new EventStream(entity.Version, events);
+            return new DomainEventStream(entity.Version, events);
         }
 
         public EventStreamEntity Create(string aggregateRootId, int version, IList<IEvent> events)

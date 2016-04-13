@@ -13,14 +13,10 @@ namespace Seven.Messages.QueueMessages
 
     public class MessageRequestHandler : IQueueMessageHandler
     {
-        private IBinarySerializer _binarySerializer;
-
         private List<IMessageHandler> _handlers = new List<IMessageHandler>();
 
-        public MessageRequestHandler(IBinarySerializer binarySerializer)
+        public MessageRequestHandler()
         {
-            _binarySerializer = binarySerializer;
-
             InitHandlers();
         }
 
@@ -29,7 +25,7 @@ namespace Seven.Messages.QueueMessages
         {
             // _handlers.Add(new ReceiveMessageHandler(_binarySerializer));
             // _handlers.Add(new ProcessMessageHandler());
-            //  _handlers.Add(new AckMessageHandler());
+            _handlers.Add(new AckMessageHandler());
             _handlers.Add(new ResponseMessageHandler());
         }
 
@@ -37,12 +33,15 @@ namespace Seven.Messages.QueueMessages
         {
             try
             {
-                context.SetResponse(new MessageHandleResult()
-                {
-                    Message = "测试通道",
-                    MessageId = context.QueueMessage.MessageId,
-                    Status = MessageStatus.Success
-                });
+                var messageresult = @"成功";
+
+                var result = new MessageHandleResult(context.QueueMessage.MessageId, messageresult,
+                    MessageStatus.Success);
+
+
+                context.SetResponse(result);
+
+                Console.WriteLine(result.Message);
 
                 _handlers.ForEach(m => m.Handle(context));
             }

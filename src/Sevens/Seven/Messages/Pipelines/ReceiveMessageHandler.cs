@@ -16,10 +16,8 @@ namespace Seven.Messages.Pipelines
         }
 
         public void Handle(MessageContext context)
-        {
-            var message = _binarySerializer.Deserialize<IMessage>(context.QueueMessage.Datas);
-
-            context.SetMessage(message);
+        { 
+            context.SetMessage(context.QueueMessage.Message);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Seven.Messages.QueueMessages
 
             var message = context.QueueMessage;
 
-            context.SetResponse(context.QueueMessage);
+            context.SetResponse(message.Message as MessageHandleResult);
 
             var replyChannel = ReplyChannelPools.GetReplyChannel(message.MessageId);
 

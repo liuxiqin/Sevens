@@ -11,6 +11,7 @@ using DapperExtensions.Mapper;
 using MySql.Data.MySqlClient;
 using Seven.Extension.Persistence;
 using Seven.Infrastructure.Snapshoting;
+using Seven.Infrastructure.UniqueIds;
 
 namespace MysqlDataBase
 {
@@ -36,7 +37,7 @@ namespace MysqlDataBase
 
             var bytes = Encoding.UTF8.GetBytes(datas);
 
-            var snapshot = new SnapshotEntity(Guid.NewGuid().ToString(), 1, bytes);
+            var snapshot = new SnapshotEntity(ObjectId.NewObjectId(), 1, bytes);
 
             var testEntity = new TestEntity() { Id = "13566558", Name = "Dapper Insert Test" };
 

@@ -8,6 +8,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Framing;
 using Seven.Infrastructure.Serializer;
+using Seven.Infrastructure.UniqueIds;
 using Seven.Messages.Channels;
 using Seven.Messages.QueueMessages;
 
@@ -52,11 +53,7 @@ namespace Seven.Messages
                     RoutingKey = queueMessage.RoutingKey,
                     ShouldPersistent = true
                 };
-
-                //var channel = MessageChannelPools.GetMessageChannel(requestMessageContext);
-
-                // channel.SendMessage(queueMessage);
-
+ 
                 var requestChannel = RequestChannelPools.GetRequestChannel(requestMessageContext);
 
                 var replyChannel = requestChannel.SendMessage(queueMessage, _timeout);
@@ -74,15 +71,13 @@ namespace Seven.Messages
         {
             var routingKey = message.GetType().FullName;
             var topic = message.GetType().FullName;
-
-            var data = _binarySerializer.Serialize(message);
-
+             
             var queueMessage = new QueueMessage()
             {
-                MessageId = Guid.NewGuid().ToString(),
+                MessageId = ObjectId.NewObjectId(),
                 RoutingKey = routingKey,
                 Topic = topic,
-                Datas = data,
+                Message = message,
                 TypeName = message.GetType().FullName,
                 MessageType = MessageType.Reply
             };

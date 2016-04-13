@@ -30,6 +30,8 @@ namespace Seven.Messages.Channels
 
             var queueMessage = _binarySerializer.Deserialize<QueueMessage>(deliverEvent.Body);
 
+            queueMessage.DeliveryTag = deliverEvent.DeliveryTag;
+
             return queueMessage;
         }
 

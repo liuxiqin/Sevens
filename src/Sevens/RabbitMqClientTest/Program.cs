@@ -19,13 +19,11 @@ using Seven.Tests.UserSample.Commands;
 
 namespace RabbitMqClientTest
 {
-    class Program
+    internal class Program
     {
         private static void Main(string[] args)
         {
             var binarySerializer = new DefaultBinarySerializer();
-
-            //IJsonSerializer jsonSerializer = new DefaultJsonSerializer();
 
             ObjectContainer.SetContainer(new AutofacContainerObject());
 
@@ -61,8 +59,7 @@ namespace RabbitMqClientTest
                 NoAck = false,
                 RoutingKey = typeof(CreateUserCommand).FullName,
                 ShouldPersistent = true
-            },
-                new MessageRequestHandler(binarySerializer));
+            }, new MessageRequestHandler());
 
             consumer.Start();
 
@@ -72,44 +69,3 @@ namespace RabbitMqClientTest
         }
     }
 }
-
-#region
-//IBinarySerializer binarySerializer = new DefaultBinarySerializer();
-
-//           var factory = new ConnectionFactory();
-//           factory.HostName = "127.0.0.1";
-//           factory.UserName = "guest";
-//           factory.Password = "guest";
-//           factory.Port = 5672;
-
-//           using (var connection = factory.CreateConnection())
-//           {
-//               using (var channel = connection.CreateModel())
-//               {
-//                   channel.ExchangeDeclare("Command", ExchangeType.Direct, true);
-//                   channel.QueueDeclare("UserCommand", true, false, false, null);
-//                   channel.QueueBind("UserCommand", "Command", "Command");
-
-//                   QueueingBasicConsumer consumer = new QueueingBasicConsumer(channel);
-
-//                   channel.BasicConsume("UserCommand", false, consumer);
-
-//                   while (true)
-//                   {
-//                       var queue = consumer.Queue.Dequeue();
-
-//                       Console.WriteLine("waitting for get message from rabbitmq.");
-
-//                       var applicationMessage = binarySerializer.Deserialize<ApplicationMessage>(queue.Body);
-
-//                       var obj = binarySerializer.Deserialize(applicationMessage.Bodys);
-
-//                       Console.WriteLine("receive the command {0}", obj.ToString());
-
-//                       channel.BasicAck(queue.DeliveryTag, true);
-
-//                       Thread.Sleep(1000);
-//                   }
-//               }
-//           }
-#endregion

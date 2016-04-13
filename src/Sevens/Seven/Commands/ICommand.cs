@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Seven.Infrastructure.UniqueIds;
 using Seven.Messages;
 
 namespace Seven.Commands
@@ -14,7 +15,7 @@ namespace Seven.Commands
 
         public Command()
         {
-            Id = Guid.NewGuid().ToString();
+            Id =ObjectId.NewObjectId();
         }
 
         public void Execute()

@@ -15,6 +15,7 @@ using MySql.Data.MySqlClient;
 using Seven.Events;
 using Seven.Infrastructure.EventStore;
 using Seven.Infrastructure.Serializer;
+using Seven.Infrastructure.UniqueIds;
 using Seven.Messages;
 using Seven.Messages.QueueMessages;
 using Seven.Tests.UserSample.Commands;
@@ -61,7 +62,8 @@ namespace Seven.Tests
 
             //var comamndHandler = ObjectContainer.Resolve<CommandHandleProvider>();
 
-            //var changePasswordCommand = new ChangePasswordCommand("90ca0d59-65e6-403b-82c5-8df967cc8e22", "2222222", "11111");
+            var changePasswordCommand = new ChangePasswordCommand("90ca0d59-65e6-403b-82c5-8df967cc8e22", "2222222",
+                "11111");
 
             //var commandContext = new CommandContext(repository);
 
@@ -87,26 +89,30 @@ namespace Seven.Tests
 
             // TestBinSer();
 
-            var messageHandleResult = new MessageHandleResult()
-            {
-                Message = "订单那等你给当地发给你",
-                Status = MessageStatus.Success,
-                MessageId = Guid.NewGuid().ToString(),
-            };
-
-          
+            //var messageHandleResult = new MessageHandleResult()
+            //{
+            //    Message = "订单那等你给当地发给你",
+            //    Status = MessageStatus.Success,
+            //    MessageId = Guid.NewGuid().ToString(),
+            //};
 
             IBinarySerializer binarySerializer = new DefaultBinarySerializer();
 
-            var datas = binarySerializer.Serialize(messageHandleResult);
-
-            var queueMessage = new QueueMessage() { Datas = datas };
+            var queueMessage = new QueueMessage()
+            {
+                Message = changePasswordCommand,
+            };
 
             var queues = binarySerializer.Serialize(queueMessage);
 
-            var datas2 = binarySerializer.Deserialize<QueueMessage>(queues).Datas;
+            var queueMessage1 = binarySerializer.Deserialize<QueueMessage>(queues);
+             
 
-            Console.WriteLine(binarySerializer.Deserialize<MessageHandleResult>(datas2).Message);
+            for (var i = 0; i < 1000000; i++)
+            {
+                Console.WriteLine(ObjectId.NewObjectId());
+            }
+
         }
 
 
@@ -120,11 +126,6 @@ namespace Seven.Tests
             message.TypeName = changePasswordCommand.GetType().FullName;
 
             var binarySerializer = new DefaultBinarySerializer();
-            message.Datas = binarySerializer.Serialize(changePasswordCommand);
-
-            var commandMessage = binarySerializer.Deserialize<IMessage>(message.Datas);
-
-            Console.WriteLine(commandMessage);
 
         }
     }

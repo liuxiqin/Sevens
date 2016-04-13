@@ -44,20 +44,24 @@ namespace RabbitMQServerTest
                 Configuation = configuration,
                 ExChangeName = typeof(CreateUserCommand).FullName,
                 ExchangeType = MessageExchangeType.Direct,
-                NoAck = false,
+                NoAck = true,
                 RoutingKey = "RpcResponseQueue",
-                ShouldPersistent = true
+                ShouldPersistent = false
             }, new MessageResponseHandler());
 
             consumer.Start();
 
             Console.WriteLine("begin to receive the result message");
 
-            var commandResult = commandService.Send(command);
+            for (var i = 0; i < 100; i++)
+            {
+                var commandResult = commandService.Send(command);
 
-            Console.WriteLine("message:{0}", commandResult.Message);
-
+                Console.WriteLine("message:{0}", commandResult.Message);
+            }
             Console.ReadLine();
+
+
         }
     }
 }

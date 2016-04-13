@@ -11,9 +11,11 @@ namespace Seven.Messages.Pipelines
     {
         public void Handle(MessageContext context)
         {
-            var replyChannel = MessageChannelPools.GetMessageChannel(context.ChannelInfo);
+            context.Channel.GetChannel().BasicAck(context.DeliveryTag, false);
 
-            replyChannel.GetChannel().BasicAck(context.DeliveryTag, true);
+          //  var replyChannel = MessageChannelPools.GetMessageChannel(context.ChannelInfo);
+
+           // replyChannel.GetChannel().BasicAck(context.DeliveryTag, false);
         }
     }
 }

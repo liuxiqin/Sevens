@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Seven.Events;
-using Seven.EventStorage;
 using Seven.Infrastructure.Persistence;
 
 namespace Seven.Infrastructure.EventStore
@@ -21,7 +20,7 @@ namespace Seven.Infrastructure.EventStore
             _eventStreamFactory = eventStreamFactory;
         }
 
-        public EventStream LoadEventStream(string aggregateRootId)
+        public DomainEventStream LoadEventStream(string aggregateRootId)
         {
             var entity = _persistence.GetById(aggregateRootId);
 
@@ -34,16 +33,16 @@ namespace Seven.Infrastructure.EventStore
         /// <param name="aggregateRootId"></param>
         /// <param name="version"></param>
         /// <returns></returns>
-        public EventStream LoadEventStream(string aggregateRootId, int version)
+        public DomainEventStream LoadEventStream(string aggregateRootId, int version)
         {
             var entity = _persistence.Get(aggregateRootId, version);
 
             return _eventStreamFactory.Create(entity);
         }
 
-        public void AppendToStream(string aggregateRootId, EventStream eventStream)
+        public void AppendAsync( DomainEventStream eventStream)
         {
-            var entity = _eventStreamFactory.Create(aggregateRootId, eventStream.Version,eventStream.Events);
+            var entity = _eventStreamFactory.Create(eventStream.AggregateRootId, eventStream.Version,eventStream.Events);
 
             _persistence.Save(entity);
         }

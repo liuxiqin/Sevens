@@ -24,15 +24,14 @@ namespace Seven.Messages.Pipelines
 
         public RequestMessageContext ChannelInfo { get; private set; }
 
-        private readonly IBinarySerializer _binarySerializer;
+        public MessageChannelBase Channel { get; private set; }
 
-
-        public MessageContext(IBinarySerializer binarySerializer, QueueMessage queueMessage, RequestMessageContext channelInfo, ulong deliveryTag)
+        public MessageContext(MessageChannelBase channel, QueueMessage queueMessage, RequestMessageContext channelInfo, ulong deliveryTag)
         {
-            _binarySerializer = binarySerializer;
             QueueMessage = queueMessage;
             ChannelInfo = channelInfo;
             DeliveryTag = deliveryTag;
+            Channel = channel;
         }
 
 
@@ -45,17 +44,12 @@ namespace Seven.Messages.Pipelines
             Response = response;
         }
 
-        public void SetResponse(QueueMessage queueMessage)
-        {
-            Response = _binarySerializer.Deserialize<MessageHandleResult>(queueMessage.Datas);
-        }
-
 
         public QueueMessage GetResponse()
         {
             var queueMessage = new QueueMessage()
             {
-                Datas = _binarySerializer.Serialize(Response),
+                Message = Response,
                 DeliveryTag = DeliveryTag,
                 IsRpcInvoke = true,
                 MessageId = QueueMessage.MessageId,

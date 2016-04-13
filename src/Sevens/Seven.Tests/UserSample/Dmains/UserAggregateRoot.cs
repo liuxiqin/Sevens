@@ -1,5 +1,6 @@
 using System;
 using Seven.Aggregates;
+using Seven.Infrastructure.UniqueIds;
 using Seven.Tests.UserSample.DomainEvents;
 
 namespace Seven.Tests.UserSample.Dmains
@@ -20,7 +21,7 @@ namespace Seven.Tests.UserSample.Dmains
         public string Email { get; private set; }
 
         public UserAggregateRoot(string userName, string userPassword, bool sex, int age)
-            : base(Guid.NewGuid().ToString())
+            : base(ObjectId.NewObjectId())
         {
             ApplyEvent(new RegisterUserEvent(userName, userPassword, sex, age));
         }

@@ -8,10 +8,10 @@ namespace Seven.Infrastructure.EventStore
 {
     public interface IEventStore
     {
-        EventStream LoadEventStream(string aggregateRootId);
+        DomainEventStream LoadEventStream(string aggregateRootId);
 
-        EventStream LoadEventStream(string aggregateRootId, int version);
+        DomainEventStream LoadEventStream(string aggregateRootId, int version);
 
-        void AppendToStream(string aggregateRootId, EventStream eventStream);
+        void AppendAsync(DomainEventStream eventStream);
     }
 }

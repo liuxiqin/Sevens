@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Seven.Messages.QueueMessages
 {
@@ -19,6 +20,7 @@ namespace Seven.Messages.QueueMessages
 
         public ulong DeliveryTag { get; set; }
 
-        public byte[] Datas;
+        public IMessage Message { get; set; }
+
     }
 }

@@ -36,7 +36,7 @@ namespace Seven.Messages
                 {
                     var queueMessage = _channel.ReceiveMessage();
 
-                    var context = new MessageContext(new DefaultBinarySerializer(), queueMessage, _channelInfo, queueMessage.DeliveryTag);
+                    var context = new MessageContext(_channel, queueMessage, _channelInfo, queueMessage.DeliveryTag);
 
                     _messageHandler.Handle(context);
 

@@ -78,11 +78,11 @@
     <Compile Include="Domains\ValueObject.cs" />
     <Compile Include="EventStore\EventStreamEntity.cs" />
     <Compile Include="EventStore\EventStreamFactory.cs" />
-    <Compile Include="EventStore\EventStreamSpecification.cs" />
     <Compile Include="Events\ApplicationMessage.cs" />
-    <Compile Include="Events\EventStream.cs" />
+    <Compile Include="Events\DomainEventStream.cs" />
     <Compile Include="Events\IEventHandler.cs" />
     <Compile Include="Events\IEventProssor.cs" />
+    <Compile Include="Events\IEventStorage..cs" />
     <Compile Include="Extension\Persistence\EventStorePersistence.cs" />
     <Compile Include="Extension\Persistence\SnapshotPersistence.cs" />
     <Compile Include="Infrastructure\Exceptions\BusinessException.cs" />
@@ -99,6 +99,8 @@
     <Compile Include="Infrastructure\Snapshoting\SnapshotFactory.cs" />
     <Compile Include="Infrastructure\Snapshoting\SnapshotRepository.cs" />
     <Compile Include="Infrastructure\Snapshoting\SnapshotSpecification.cs" />
+    <Compile Include="Infrastructure\UniqueIds\ObjectId.cs" />
+    <Compile Include="Infrastructure\UniqueIds\ObjectIdGenerator.cs" />
     <Compile Include="Initializer\IApplictionInitializer.cs" />
     <Compile Include="Initializer\CommandHandleProvider.cs" />
     <Compile Include="Initializer\EventHandleProvider.cs" />

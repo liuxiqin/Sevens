@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Seven.Commands;
 using Seven.Events;
+using Seven.Infrastructure.UniqueIds;
 using Seven.Tests.UserSample.ApplicationEvents;
 using Seven.Tests.UserSample.Commands;
 using Seven.Tests.UserSample.Dmains;
@@ -36,7 +37,7 @@ namespace Seven.Tests.UserSample.Sagas
         /// <param name="command"></param>
         public void Handle(ICommandContext commandContext, CreateOrderCommand command)
         {
-            commandContext.Add(new OrderAggregateRoot(Guid.NewGuid().ToString()));
+            commandContext.Add(new OrderAggregateRoot(ObjectId.NewObjectId()));
         }
 
         /// <summary>

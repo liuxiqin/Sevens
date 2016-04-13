@@ -15,14 +15,14 @@ namespace Seven.Messages.Channels
         {
             _consumer = new QueueingBasicConsumer(_channel);
 
-            _channel.BasicConsume(_channelInfo.RoutingKey, false, _consumer);
+            _channel.BasicConsume(_channelInfo.RoutingKey, _channelInfo.NoAck, _consumer);
         }
 
         public override void BindElements()
         {
             _channel.ExchangeDeclare(_channelInfo.ExChangeName, ExchangeType.Direct, true);
 
-            _channel.QueueDeclare(_channelInfo.RoutingKey, true, false, false, null);
+            _channel.QueueDeclare(_channelInfo.RoutingKey, _channelInfo.ShouldPersistent, !_channelInfo.ShouldPersistent, !_channelInfo.ShouldPersistent, null);
 
             _channel.QueueBind(_channelInfo.RoutingKey, _channelInfo.ExChangeName, _channelInfo.RoutingKey);
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Seven.Infrastructure.UniqueIds;
 
 namespace Seven.Events
 {
@@ -13,7 +14,7 @@ namespace Seven.Events
 
         public IDomainEvent()
         {
-            Id = Guid.NewGuid().ToString();
+            Id = ObjectId.NewObjectId();
         }
 
         public string MessageId

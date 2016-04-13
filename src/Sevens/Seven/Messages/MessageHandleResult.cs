@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Seven.Messages
 {
     [Serializable]
-    public class MessageHandleResult
+    public class MessageHandleResult : IMessage
     {
         public string MessageId { get; set; }
 
@@ -15,5 +15,13 @@ namespace Seven.Messages
 
         public MessageStatus Status { get; set; }
 
+        public MessageHandleResult(string messageId, string message, MessageStatus status)
+        {
+            MessageId = messageId;
+            Message = message;
+            Status = status;
+        }
+
+        public MessageHandleResult() { }
     }
 }

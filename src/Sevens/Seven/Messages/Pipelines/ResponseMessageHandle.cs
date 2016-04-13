@@ -22,12 +22,11 @@ namespace Seven.Messages.Pipelines
                 ShouldPersistent = false,
             };
 
-
             var reply = MessageChannelPools.GetMessageChannel(channelInfo);
 
             reply.SendMessage(context.GetResponse());
-
-            Console.WriteLine("response the message {0}.",JsonConvert.SerializeObject(context.Response));
+            Console.WriteLine("response the message {0}.", context.Response.Message);
+            Console.WriteLine("response the message {0}.", JsonConvert.SerializeObject(context.Response));
         }
     }
 }
