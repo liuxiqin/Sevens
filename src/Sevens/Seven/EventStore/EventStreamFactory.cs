@@ -17,7 +17,7 @@ namespace Seven.Infrastructure.EventStore
         {
             var events = _binarySerializer.Deserialize<IList<IEvent>>(entity.EventDatas);
 
-            return new DomainEventStream(entity.Version, events);
+            return new DomainEventStream(entity.AggregateRootId, entity.Version, entity.CommandId, events);
         }
 
         public EventStreamEntity Create(string aggregateRootId, int version, IList<IEvent> events)

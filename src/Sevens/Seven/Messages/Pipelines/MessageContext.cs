@@ -55,7 +55,7 @@ namespace Seven.Messages.Pipelines
                 MessageId = QueueMessage.MessageId,
                 Topic = QueueMessage.Topic,
                 TypeName = typeof(MessageHandleResult).FullName,
-                RoutingKey = "RpcResponseQueue"
+                RoutingKey = QueueMessage.ResponseRoutingKey
             };
 
             return queueMessage;

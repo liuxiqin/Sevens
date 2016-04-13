@@ -14,6 +14,8 @@ namespace Seven.Messages.Channels
 
         public RabbitMqConfiguration Configuation { get; set; }
 
+        public string ResponseRoutingKey { get; set; }
+
         public override string ToString()
         {
             return string.Format("{0}_{1}", ExChangeName, RoutingKey);

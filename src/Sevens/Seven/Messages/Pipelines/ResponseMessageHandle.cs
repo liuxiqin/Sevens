@@ -10,15 +10,13 @@ namespace Seven.Messages.Pipelines
     {
         public void Handle(MessageContext context)
         {
-            var routingKey = "RpcResponseQueue";
-
             var channelInfo = new RequestMessageContext()
             {
                 Configuation = context.ChannelInfo.Configuation,
                 ExChangeName = context.ChannelInfo.ExChangeName,
                 ExchangeType = MessageExchangeType.Direct,
                 NoAck = true,
-                RoutingKey = routingKey,
+                RoutingKey = context.QueueMessage.ResponseRoutingKey,
                 ShouldPersistent = false,
             };
 

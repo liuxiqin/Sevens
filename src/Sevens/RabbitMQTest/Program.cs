@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -14,6 +15,7 @@ namespace RabbitMQServerTest
 {
     internal class Program
     {
+
         private static void Main(string[] args)
         {
 
@@ -38,15 +40,15 @@ namespace RabbitMQServerTest
                 true,
                 22);
 
-
             var consumer = new PushMessageConsumer(new RequestMessageContext()
             {
                 Configuation = configuration,
                 ExChangeName = typeof(CreateUserCommand).FullName,
                 ExchangeType = MessageExchangeType.Direct,
                 NoAck = true,
-                RoutingKey = "RpcResponseQueue",
-                ShouldPersistent = false
+                RoutingKey = MessageUtils.CurrentResponseRoutingKey,
+                ShouldPersistent = false,
+                ResponseRoutingKey = MessageUtils.CurrentResponseRoutingKey,
             }, new MessageResponseHandler());
 
             consumer.Start();

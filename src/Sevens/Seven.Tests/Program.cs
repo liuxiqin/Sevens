@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
@@ -106,12 +107,14 @@ namespace Seven.Tests
             var queues = binarySerializer.Serialize(queueMessage);
 
             var queueMessage1 = binarySerializer.Deserialize<QueueMessage>(queues);
-             
+
 
             for (var i = 0; i < 1000000; i++)
             {
-                Console.WriteLine(ObjectId.NewObjectId());
+                // Console.WriteLine(ObjectId.NewObjectId());
             }
+
+            Console.Write("MachineName:{0},ProcessId:{1}", Environment.MachineName, Process.GetCurrentProcess().Id);
 
         }
 

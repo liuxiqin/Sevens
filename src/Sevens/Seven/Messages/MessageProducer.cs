@@ -79,7 +79,8 @@ namespace Seven.Messages
                 Topic = topic,
                 Message = message,
                 TypeName = message.GetType().FullName,
-                MessageType = MessageType.Reply
+                MessageType = MessageType.Reply,
+                ResponseRoutingKey = MessageUtils.CurrentResponseRoutingKey
             };
 
             return queueMessage;

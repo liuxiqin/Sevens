@@ -22,5 +22,7 @@ namespace Seven.Messages.QueueMessages
 
         public IMessage Message { get; set; }
 
+        public string ResponseRoutingKey { get; set; }
+
     }
 }

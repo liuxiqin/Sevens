@@ -136,6 +136,7 @@
     <Compile Include="Initializer\MessageTypeProvider.cs" />
     <Compile Include="Messages\Channels\ChannelInfo.cs" />
     <Compile Include="Messages\Channels\ConsumerChannel.cs" />
+    <Compile Include="Messages\MessageUtils.cs" />
     <Compile Include="Messages\Pipelines\AckMessageHandler.cs" />
     <Compile Include="Messages\QueueMessages\IQueueMessageHandler.cs" />
     <Compile Include="Messages\Channels\MessageChannelBase.cs" />
