@@ -71,6 +71,7 @@
     <Compile Include="Aggregates\AggregateRoot.cs" />
     <Compile Include="Commands\CommandExecutedResult.cs" />
     <Compile Include="Commands\CommandStatus.cs" />
+    <Compile Include="Commands\DefaultCommandProssor.cs" />
     <Compile Include="Commands\ICommandProssor.cs" />
     <Compile Include="Configuration\RabbitMqConfigurationHandler.cs" />
     <Compile Include="Domains\Entity.cs" />
@@ -80,27 +81,28 @@
     <Compile Include="EventStore\EventStreamFactory.cs" />
     <Compile Include="Events\ApplicationMessage.cs" />
     <Compile Include="Events\DomainEventStream.cs" />
+    <Compile Include="Events\EventPublisher.cs" />
     <Compile Include="Events\IEventHandler.cs" />
     <Compile Include="Events\IEventProssor.cs" />
+    <Compile Include="Events\IEventPublisher.cs" />
     <Compile Include="Events\IEventStorage..cs" />
-    <Compile Include="Extension\Persistence\EventStorePersistence.cs" />
-    <Compile Include="Extension\Persistence\SnapshotPersistence.cs" />
     <Compile Include="Infrastructure\Exceptions\BusinessException.cs" />
     <Compile Include="Infrastructure\Exceptions\FrameworkException.cs" />
-    <Compile Include="Infrastructure\Ioc\AutofacContainerObject.cs" />
-    <Compile Include="Infrastructure\Ioc\ObjectContainer.cs" />
+    <Compile Include="Infrastructure\IocContainer\AutofacContainerObject.cs" />
+    <Compile Include="Infrastructure\IocContainer\IContainerObject.cs" />
+    <Compile Include="Infrastructure\IocContainer\ObjectContainer.cs" />
     <Compile Include="Infrastructure\Logs\ISevenLog.cs" />
     <Compile Include="Infrastructure\Persistence\EntityBase.cs" />
     <Compile Include="Infrastructure\Persistence\IPersistence.cs" />
     <Compile Include="Infrastructure\Snapshoting\ISnapshot.cs" />
-    <Compile Include="Infrastructure\Snapshoting\ISnapshotRepository.cs" />
+    <Compile Include="Infrastructure\Snapshoting\ISnapshotStorage.cs" />
     <Compile Include="Infrastructure\Snapshoting\ISpecification.cs" />
-    <Compile Include="Infrastructure\Snapshoting\SnapshotEntity.cs" />
+    <Compile Include="Infrastructure\Snapshoting\MysqlSnapshotStorage.cs" />
+    <Compile Include="Infrastructure\Snapshoting\SnapshotRecord.cs" />
     <Compile Include="Infrastructure\Snapshoting\SnapshotFactory.cs" />
-    <Compile Include="Infrastructure\Snapshoting\SnapshotRepository.cs" />
-    <Compile Include="Infrastructure\Snapshoting\SnapshotSpecification.cs" />
     <Compile Include="Infrastructure\UniqueIds\ObjectId.cs" />
     <Compile Include="Infrastructure\UniqueIds\ObjectIdGenerator.cs" />
+    <Compile Include="Initializer\CommandTopicProvider.cs" />
     <Compile Include="Initializer\IApplictionInitializer.cs" />
     <Compile Include="Initializer\CommandHandleProvider.cs" />
     <Compile Include="Initializer\EventHandleProvider.cs" />
@@ -120,7 +122,6 @@
     <Compile Include="Events\IDomainEvent.cs" />
     <Compile Include="Events\IEvent.cs" />
     <Compile Include="Infrastructure\Exceptions\SevenException.cs" />
-    <Compile Include="Infrastructure\Ioc\IContainerObject.cs" />
     <Compile Include="Infrastructure\MessageDevice\IMessageConnection.cs" />
     <Compile Include="Infrastructure\MessageDevice\MessageConnectionState.cs" />
     <Compile Include="Infrastructure\Repository\EventSouringRepository.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="EventStore\IEventStore.cs" />
     <Compile Include="EventStore\EventStore.cs" />
     <Compile Include="Initializer\MessageTypeProvider.cs" />
+    <Compile Include="Messages\AsyncHandleResult.cs" />
     <Compile Include="Messages\Channels\ChannelInfo.cs" />
     <Compile Include="Messages\Channels\ConsumerChannel.cs" />
     <Compile Include="Messages\MessageUtils.cs" />
@@ -175,6 +177,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Extension\" />
     <Folder Include="Infrastructure\Aspects\" />
     <Folder Include="Infrastructure\Store\" />
     <Folder Include="Modules\" />

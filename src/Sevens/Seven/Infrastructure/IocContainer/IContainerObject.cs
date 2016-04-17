@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Seven.Infrastructure.Ioc
+namespace Seven.Infrastructure.IocContainer
 {
     public interface IContainerObject
     {

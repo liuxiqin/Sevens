@@ -9,7 +9,6 @@ using Dapper;
 using DapperExtensions;
 using DapperExtensions.Mapper;
 using MySql.Data.MySqlClient;
-using Seven.Extension.Persistence;
 using Seven.Infrastructure.Snapshoting;
 using Seven.Infrastructure.UniqueIds;
 
@@ -22,14 +21,14 @@ namespace MysqlDataBase
         public string Name { get; set; }
     }
 
-    public class SnapshotEntityMapper : ClassMapper<SnapshotEntity>
+    public class SnapshotEntityMapper : ClassMapper<SnapshotRecord>
     {
 
     }
 
     public class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Console.WriteLine("connect to mysql....");
 
@@ -37,26 +36,20 @@ namespace MysqlDataBase
 
             var bytes = Encoding.UTF8.GetBytes(datas);
 
-            var snapshot = new SnapshotEntity(ObjectId.NewObjectId(), 1, bytes);
+            var snapshot = new SnapshotRecord(ObjectId.NewObjectId(), 1, bytes);
 
             var testEntity = new TestEntity() { Id = "13566558", Name = "Dapper Insert Test" };
 
-           
+            var mysqlConnectionString =
+                "Database = sevens; Data Source = 127.0.0.1; User Id = root; Password = 123456; port = 3306";
 
-            using (IDbConnection connection = new MySqlConnection("Database = sevens; Data Source = 127.0.0.1; User Id = root; Password = 123456; port = 3306"))
-            {
-                var snapshotPersistence = new SnapshotPersistence(connection);
+            var snapshotStorage = new MysqlSnapshotStorage(mysqlConnectionString);
 
-                connection.Open();
+            var result = snapshotStorage.GetLastestSnapshot(ObjectId.NewObjectId());
 
-                snapshotPersistence.Save(snapshot);
+            Console.WriteLine(result.Result.AggregateRootId);
 
-                var result = connection.Query<SnapshotEntity>(@"select * from SnapshotEntity");
-
-                Console.ReadLine();
-            }
+            Console.ReadLine();
         }
-
-
     }
 }

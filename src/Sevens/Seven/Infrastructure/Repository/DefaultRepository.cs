@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Security.AccessControl;
 using Seven.Aggregates;
 
 namespace Seven.Infrastructure.Repository
@@ -28,9 +29,14 @@ namespace Seven.Infrastructure.Repository
         {
             if (_aggregateRoots.ContainsKey(aggregateRootId))
             {
-                return (T)_aggregateRoots[aggregateRootId];
+                var aggregateRoot = _aggregateRoots[aggregateRootId];
+
+                if (aggregateRoot.GetChanges().Count == 0)
+                    return (T) aggregateRoot;
             }
+
             return _eventSouringRepository.Get<T>(aggregateRootId);
         }
+
     }
 }

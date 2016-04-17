@@ -22,9 +22,7 @@ namespace Seven.Messages.Pipelines
 
             var reply = MessageChannelPools.GetMessageChannel(channelInfo);
 
-            reply.SendMessage(context.GetResponse());
-            Console.WriteLine("response the message {0}.", context.Response.Message);
-            Console.WriteLine("response the message {0}.", JsonConvert.SerializeObject(context.Response));
+            reply.SendMessage(context.GetResponse());  
         }
     }
 }

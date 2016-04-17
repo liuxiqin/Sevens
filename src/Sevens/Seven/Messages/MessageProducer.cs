@@ -21,9 +21,7 @@ namespace Seven.Messages
     {
         private IBinarySerializer _binarySerializer;
 
-        private TimeSpan _timeout = TimeSpan.FromSeconds(10);
-
-        private readonly string _responseQueueName = "PRCRESPONSE";
+        private readonly TimeSpan _timeout = TimeSpan.FromSeconds(10);
 
         private RabbitMqConfiguration _configuration = null;
 
@@ -53,7 +51,7 @@ namespace Seven.Messages
                     RoutingKey = queueMessage.RoutingKey,
                     ShouldPersistent = true
                 };
- 
+
                 var requestChannel = RequestChannelPools.GetRequestChannel(requestMessageContext);
 
                 var replyChannel = requestChannel.SendMessage(queueMessage, _timeout);
@@ -70,8 +68,8 @@ namespace Seven.Messages
         private QueueMessage BuildMessage<TMessage>(TMessage message) where TMessage : IMessage
         {
             var routingKey = message.GetType().FullName;
-            var topic = message.GetType().FullName;
-             
+            var topic = message.GetType().Namespace;
+
             var queueMessage = new QueueMessage()
             {
                 MessageId = ObjectId.NewObjectId(),

@@ -10,16 +10,15 @@ namespace Seven.Aggregates
     
     public interface IAggregateRoot
     {
-
         string AggregateRootId { get; }
 
         void ApplyEvent(IEvent evnt);
-
-        IList<IEvent> Commit();
-
+         
         void ApplyEvents(IList<IEvent> events);
 
         IList<IEvent> GetChanges();
+
+        void Clear();
 
         int Version { get; }
     }

@@ -6,7 +6,9 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Seven.Aggregates;
+using Seven.Events;
 using Seven.Infrastructure.EventStore;
+using Seven.Infrastructure.Serializer;
 using Seven.Infrastructure.Snapshoting;
 
 namespace Seven.Infrastructure.Repository
@@ -15,28 +17,32 @@ namespace Seven.Infrastructure.Repository
     {
         private readonly IEventStore _eventStore;
 
-        private readonly ISnapshotRepository _snapshotRepository;
+        private ISnapshotStorage _snapshotStorage;
 
-        public EventSouringRepository(IEventStore eventStore, ISnapshotRepository snapshotRepository)
+        private readonly IBinarySerializer _binarySerializer;
+
+        public EventSouringRepository(IEventStore eventStore, ISnapshotStorage snapshotStorage,
+            IBinarySerializer binarySerializer)
         {
             _eventStore = eventStore;
-            _snapshotRepository = snapshotRepository;
+            _snapshotStorage = snapshotStorage;
+            _binarySerializer = binarySerializer;
         }
 
         public void Add(IAggregateRoot aggregateRoot)
         {
-            throw new NotImplementedException();
+
         }
 
         public TAggregateRoot Get<TAggregateRoot>(string aggregateRootId) where TAggregateRoot : IAggregateRoot
         {
-            var snapshot = _snapshotRepository.Get(aggregateRootId);
+            var snapshot = _snapshotStorage.GetLastestSnapshot(aggregateRootId).Result;
 
             var aggregateRoot = default(TAggregateRoot);
 
             if (snapshot != null)
             {
-                aggregateRoot = (TAggregateRoot)snapshot.AggregateRoot;
+                aggregateRoot = (TAggregateRoot)ConvertTo(snapshot.Datas);
             }
 
             if (aggregateRoot == null)
@@ -44,11 +50,29 @@ namespace Seven.Infrastructure.Repository
                 aggregateRoot = (TAggregateRoot)FormatterServices.GetUninitializedObject(typeof(TAggregateRoot));
             }
 
-            var eventStream = _eventStore.LoadEventStream(aggregateRootId, aggregateRoot.Version);
+            var eventStreamRecord = _eventStore.LoadEventStream(aggregateRootId, aggregateRoot.Version);
 
-            aggregateRoot.ApplyEvents(eventStream.Events);
+            var changgEvents = ConvertTo(eventStreamRecord);
+
+            aggregateRoot.ApplyEvents(changgEvents.Events);
 
             return aggregateRoot;
         }
+
+        private DomainEventStream ConvertTo(EventStreamRecord streamRecord)
+        {
+            var changeEvents = _binarySerializer.Deserialize<IList<IEvent>>(streamRecord.EventDatas);
+
+            return new DomainEventStream(streamRecord.AggregateRootId, streamRecord.Version, streamRecord.CommandId,
+                changeEvents);
+        }
+
+
+        private IAggregateRoot ConvertTo(byte[] aggregateRootDatas)
+        {
+            return _binarySerializer.Deserialize<IAggregateRoot>(aggregateRootDatas);
+        }
+
+
     }
 }

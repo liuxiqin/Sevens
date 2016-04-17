@@ -1,30 +1,33 @@
 ﻿using System;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dapper;
+using DapperExtensions;
+using MySql.Data.MySqlClient;
 using Seven.Events;
 using Seven.Infrastructure.Persistence;
 
 namespace Seven.Infrastructure.EventStore
 {
-    public class EventStore : IEventStore
+    public class MySqlEventStore : IEventStore
     {
-        private IPersistence<EventStreamEntity> _persistence;
 
-        private EventStreamFactory _eventStreamFactory;
+        private IDbConnection _dbConnection;
 
-        public EventStore(IPersistence<EventStreamEntity> persistence, EventStreamFactory eventStreamFactory)
+        private string _connectionString;
+
+        public MySqlEventStore(string connectionString)
         {
-            _persistence = persistence;
+            _connectionString = connectionString;
 
-            _eventStreamFactory = eventStreamFactory;
+            _dbConnection = new MySqlConnection(connectionString);
         }
 
-        public DomainEventStream LoadEventStream(string aggregateRootId)
+        public EventStreamRecord LoadEventStream(string aggregateRootId)
         {
-            var entity = _persistence.GetById(aggregateRootId);
-
-            return _eventStreamFactory.Create(entity);
+            return _dbConnection.Get<EventStreamRecord>(aggregateRootId);
         }
 
         /// <summary>
@@ -33,18 +36,20 @@ namespace Seven.Infrastructure.EventStore
         /// <param name="aggregateRootId"></param>
         /// <param name="version"></param>
         /// <returns></returns>
-        public DomainEventStream LoadEventStream(string aggregateRootId, int version)
+        public EventStreamRecord LoadEventStream(string aggregateRootId, int version)
         {
-            var entity = _persistence.Get(aggregateRootId, version);
+            var entity = _dbConnection.Query<EventStreamRecord>(
+                "select * from EventStreamEntity where AggregateRootId=@aggregateRootId and Version=@version",
+                new { aggregateRootId = aggregateRootId, version = version }).FirstOrDefault();
 
-            return _eventStreamFactory.Create(entity);
+            return entity;
         }
 
-        public void AppendAsync( DomainEventStream eventStream)
+        public void AppendAsync(EventStreamRecord eventStream)
         {
-            var entity = _eventStreamFactory.Create(eventStream.AggregateRootId, eventStream.Version,eventStream.Events);
-
-            _persistence.Save(entity);
+            var result = _dbConnection.Execute(
+                @"insert into EventStreamEntity(AggregateRootId,Version,EventDatas) values (@AggregateRootId,@Version,@EventDatas)",
+                eventStream);
         }
     }
 }

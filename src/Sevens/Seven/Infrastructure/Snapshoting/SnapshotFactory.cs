@@ -12,14 +12,14 @@ namespace Seven.Infrastructure.Snapshoting
             _binarySerializer = binarySerializer;
         }
 
-        public SnapshotEntity Create(IAggregateRoot aggregateRoot)
+        public SnapshotRecord Create(IAggregateRoot aggregateRoot)
         {
             var datas = _binarySerializer.Serialize(aggregateRoot);
 
-            return new SnapshotEntity(aggregateRoot.AggregateRootId, aggregateRoot.Version, datas);
+            return new SnapshotRecord(aggregateRoot.AggregateRootId, aggregateRoot.Version, datas);
         }
 
-        public Snapshot Create(SnapshotEntity snapshot)
+        public Snapshot Create(SnapshotRecord snapshot)
         {
             var aggregateRoot = _binarySerializer.Deserialize<IAggregateRoot>(snapshot.Datas);
 

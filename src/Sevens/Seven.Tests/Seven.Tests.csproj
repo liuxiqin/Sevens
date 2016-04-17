@@ -72,6 +72,8 @@
     <Compile Include="UserSample\DomainEvents\OrderCreatedEvent.cs" />
     <Compile Include="UserSample\DomainEvents\OrderDestroyedEvent.cs" />
     <Compile Include="UserSample\DomainEvents\RegisterUserEvent.cs" />
+    <Compile Include="UserSample\EventHandlers\OrderEventHandlers.cs" />
+    <Compile Include="UserSample\EventHandlers\UserEventHandlers.cs" />
     <Compile Include="UserSample\Sagas\CreateOrderSagas.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -9,7 +9,9 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using Seven.Commands;
-using Seven.Infrastructure.Ioc;
+using Seven.Infrastructure.EventStore;
+using Seven.Infrastructure.IocContainer;
+using Seven.Infrastructure.Repository;
 using Seven.Infrastructure.Serializer;
 using Seven.Initializer;
 using Seven.Messages;
@@ -40,6 +42,8 @@ namespace RabbitMqClientTest
             ObjectContainer.RegisterInstance(commandInitializer);
             ObjectContainer.RegisterInstance(messageTypeProvider);
 
+            var commandProssor = new DefaultCommandProssor(new MySqlEventStore(""), null, commandInitializer, null, binarySerializer);
+
             var configuration = new RabbitMqConfiguration()
             {
                 HostName = "127.0.0.1",
@@ -54,12 +58,12 @@ namespace RabbitMqClientTest
             var consumer = new PushMessageConsumer(new RequestMessageContext()
             {
                 Configuation = configuration,
-                ExChangeName = typeof(CreateUserCommand).FullName,
+                ExChangeName = typeof(CreateUserCommand).Namespace,
                 ExchangeType = MessageExchangeType.Direct,
                 NoAck = false,
                 RoutingKey = typeof(CreateUserCommand).FullName,
                 ShouldPersistent = true
-            }, new MessageRequestHandler());
+            }, new MessageRequestHandler(commandProssor));
 
             consumer.Start();
 

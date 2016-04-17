@@ -43,7 +43,7 @@ namespace RabbitMQServerTest
             var consumer = new PushMessageConsumer(new RequestMessageContext()
             {
                 Configuation = configuration,
-                ExChangeName = typeof(CreateUserCommand).FullName,
+                ExChangeName = typeof(CreateUserCommand).Namespace,
                 ExchangeType = MessageExchangeType.Direct,
                 NoAck = true,
                 RoutingKey = MessageUtils.CurrentResponseRoutingKey,

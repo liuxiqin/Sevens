@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Linq;
-using Seven.Infrastructure.Serializer;
 using Seven.Commands;
 using Seven.Events;
-using Seven.Infrastructure.Ioc;
-using Seven.Infrastructure.Repository;
-using Seven.Initializer;
 
 namespace Seven.Messages.Pipelines
 {
@@ -14,15 +9,20 @@ namespace Seven.Messages.Pipelines
     /// </summary>
     public class ProcessMessageHandler : IMessageHandler
     {
+        private ICommandProssor _commandProssor;
+
+        public ProcessMessageHandler(ICommandProssor commandProssor)
+        {
+            _commandProssor = commandProssor;
+        }
+
         public void Handle(MessageContext context)
         {
             try
             {
                 if (context.Message is ICommand)
                 {
-                    var commandProssor = new DefaultCommandProssor();
-
-                    commandProssor.Execute(context.Message as ICommand);
+                    _commandProssor.Execute(context.Message as ICommand);
                 }
 
                 if (context.Message is IEvent)

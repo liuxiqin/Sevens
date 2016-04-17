@@ -1,23 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Dynamic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Seven.Commands;
-using Seven.Extension.Persistence;
-using Seven.Infrastructure.Ioc;
-using Seven.Infrastructure.Repository;
-using Seven.Infrastructure.Snapshoting;
-using Seven.Initializer;
-using MySql.Data.MySqlClient;
-using Seven.Events;
-using Seven.Infrastructure.EventStore;
+using Seven.Infrastructure.IocContainer;
 using Seven.Infrastructure.Serializer;
-using Seven.Infrastructure.UniqueIds;
-using Seven.Messages;
 using Seven.Messages.QueueMessages;
 using Seven.Tests.UserSample.Commands;
 
@@ -30,7 +14,7 @@ namespace Seven.Tests
         private static void Main(string[] args)
         {
 
-            //ObjectContainer.SetContainer(new AutofacContainerObject());
+            ObjectContainer.SetContainer(new AutofacContainerObject());
 
             //var applictionInitializer = new EventHandleProvider();
 

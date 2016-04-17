@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Seven.Commands;
 using Seven.Infrastructure.Exceptions;
 using Seven.Infrastructure.Serializer;
 using Seven.Messages.Channels;
@@ -15,16 +16,20 @@ namespace Seven.Messages.QueueMessages
     {
         private List<IMessageHandler> _handlers = new List<IMessageHandler>();
 
-        public MessageRequestHandler()
+        private ICommandProssor _commandProssor;
+
+
+        public MessageRequestHandler(ICommandProssor commandProssor)
         {
+            _commandProssor = commandProssor;
             InitHandlers();
         }
 
 
         private void InitHandlers()
         {
-            // _handlers.Add(new ReceiveMessageHandler(_binarySerializer));
-            // _handlers.Add(new ProcessMessageHandler());
+            _handlers.Add(new ReceiveMessageHandler());
+            _handlers.Add(new ProcessMessageHandler(_commandProssor));
             _handlers.Add(new AckMessageHandler());
             _handlers.Add(new ResponseMessageHandler());
         }
@@ -33,16 +38,6 @@ namespace Seven.Messages.QueueMessages
         {
             try
             {
-                var messageresult = @"³É¹¦";
-
-                var result = new MessageHandleResult(context.QueueMessage.MessageId, messageresult,
-                    MessageStatus.Success);
-
-
-                context.SetResponse(result);
-
-                Console.WriteLine(result.Message);
-
                 _handlers.ForEach(m => m.Handle(context));
             }
 

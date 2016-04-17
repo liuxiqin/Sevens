@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Linq;
 using Seven.Events;
-using Seven.Infrastructure.Ioc;
+using Seven.Infrastructure.IocContainer;
 using Seven.Initializer;
 
 namespace Seven.Aggregates
@@ -47,9 +47,7 @@ namespace Seven.Aggregates
         public void AppendUnCommitEvents(IEvent evnt)
         {
             if (_unCommitEvents == null)
-            {
                 _unCommitEvents = new Queue<IEvent>();
-            }
 
             _unCommitEvents.Enqueue(evnt);
         }
@@ -57,10 +55,7 @@ namespace Seven.Aggregates
         public void ApplyEvents(IList<IEvent> events)
         {
             foreach (var evnt in events)
-            {
-                if (evnt is IDomainEvent)
-                    HandleEvent(evnt);
-            }
+                ApplyEvent(evnt);
         }
 
         public IList<IEvent> GetChanges()
@@ -69,7 +64,7 @@ namespace Seven.Aggregates
 
             while (_unCommitEvents.Count > 0)
             {
-                unCommitEvents.Add(_unCommitEvents.Dequeue());
+                unCommitEvents = _unCommitEvents.ToList();
             }
 
             return unCommitEvents;
@@ -92,16 +87,10 @@ namespace Seven.Aggregates
             handler(this, evnt);
         }
 
-        public IList<IEvent> Commit()
+
+        public void Clear()
         {
-            var unCommitEvents = new List<IEvent>();
-
-            while (_unCommitEvents.Count > 0)
-            {
-                unCommitEvents.Add(_unCommitEvents.Dequeue());
-            }
-
-            return unCommitEvents;
+            _unCommitEvents.Clear();
         }
     }
 }
