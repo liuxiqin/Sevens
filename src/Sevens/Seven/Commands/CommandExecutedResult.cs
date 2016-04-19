@@ -10,6 +10,6 @@ namespace Seven.Commands
     {
         public string Message { get; set; }
 
-        public CommandStatus Status { get; set; }
+        public CommandExecutedStatus Status { get; set; }
     }
 }

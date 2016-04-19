@@ -28,7 +28,7 @@ namespace Seven.Commands
             return new CommandExecutedResult()
             {
                 Message = sendResult.Message,
-                Status = sendResult.Status == MessageStatus.Success ? CommandStatus.Success : CommandStatus.Error
+                Status = sendResult.Status == MessageStatus.Success ? CommandExecutedStatus.Success : CommandExecutedStatus.Error
             };
         }
 

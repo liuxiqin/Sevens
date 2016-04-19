@@ -67,8 +67,9 @@ namespace Seven.Messages
 
         private QueueMessage BuildMessage<TMessage>(TMessage message) where TMessage : IMessage
         {
-            var routingKey = message.GetType().FullName;
-            var topic = message.GetType().Namespace;
+            var routingKey = string.Format("{0}_{1}", "command", message.MessageId.GetHashCode() % 5);
+
+            var topic = message.GetType().Assembly.GetName().Name;
 
             var queueMessage = new QueueMessage()
             {

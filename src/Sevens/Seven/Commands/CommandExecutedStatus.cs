@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Seven.Commands
 {
-    public enum CommandStatus
+    public enum CommandExecutedStatus
     {
         Success,
         Error

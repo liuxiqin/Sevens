@@ -42,7 +42,8 @@ namespace RabbitMqClientTest
             ObjectContainer.RegisterInstance(commandInitializer);
             ObjectContainer.RegisterInstance(messageTypeProvider);
 
-            var commandProssor = new DefaultCommandProssor(new MySqlEventStore(""), null, commandInitializer, null, binarySerializer);
+            var commandProssor = new DefaultCommandProssor(new MySqlEventStore(""), null, commandInitializer, null,
+                binarySerializer);
 
             var configuration = new RabbitMqConfiguration()
             {
@@ -55,17 +56,20 @@ namespace RabbitMqClientTest
 
             Console.WriteLine("begin to receive the message.");
 
-            var consumer = new PushMessageConsumer(new RequestMessageContext()
+            for (var i = 0; i < 5; i++)
             {
-                Configuation = configuration,
-                ExChangeName = typeof(CreateUserCommand).Namespace,
-                ExchangeType = MessageExchangeType.Direct,
-                NoAck = false,
-                RoutingKey = typeof(CreateUserCommand).FullName,
-                ShouldPersistent = true
-            }, new MessageRequestHandler(commandProssor));
+                var consumer = new PushMessageConsumer(new RequestMessageContext()
+                {
+                    Configuation = configuration,
+                    ExChangeName = typeof(CreateUserCommand).Assembly.GetName().Name,
+                    ExchangeType = MessageExchangeType.Direct,
+                    NoAck = false,
+                    RoutingKey = string.Format("{0}_{1}", "command", i),
+                    ShouldPersistent = true
+                }, new MessageRequestHandler(commandProssor));
 
-            consumer.Start();
+                consumer.Start();
+            }
 
             Console.WriteLine("begin to consumer the message.");
 
