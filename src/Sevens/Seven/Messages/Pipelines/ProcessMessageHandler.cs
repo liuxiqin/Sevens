@@ -37,7 +37,7 @@ namespace Seven.Messages.Pipelines
             }
             catch (Exception)
             {
-                context.SetResponse(new MessageHandleResult() { Message = "失败", Status = MessageStatus.Fail });
+                context.SetResponse(new MessageHandleResult() { Message = "失败", Status = MessageStatus.Failure });
             }
         }
     }

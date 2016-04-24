@@ -13,7 +13,7 @@ namespace Seven.Messages.Pipelines
     {
         public IMessage Message { get; private set; }
 
-        public QueueMessage QueueMessage { get; private set; }
+        public MessageWrapper MessageWrapper { get; private set; }
 
         public ulong DeliveryTag { get; private set; }
 
@@ -21,17 +21,17 @@ namespace Seven.Messages.Pipelines
         /// 消息响应结果
         /// </summary>
         public MessageHandleResult Response { get; private set; }
-
-        public RequestMessageContext ChannelInfo { get; private set; }
-
-        public MessageChannelBase Channel { get; private set; }
-
-        public MessageContext(MessageChannelBase channel, QueueMessage queueMessage, RequestMessageContext channelInfo, ulong deliveryTag)
+          
+        public ConsumerContext ConsumerContext { get; private set; }
+        
+        public MessageContext(
+            MessageWrapper queueMessage,
+            ConsumerContext consuemrContext,
+            ulong deliveryTag)
         {
-            QueueMessage = queueMessage;
-            ChannelInfo = channelInfo;
+            MessageWrapper = queueMessage;
+            ConsumerContext = consuemrContext;
             DeliveryTag = deliveryTag;
-            Channel = channel;
         }
 
 
@@ -45,17 +45,16 @@ namespace Seven.Messages.Pipelines
         }
 
 
-        public QueueMessage GetResponse()
+        public MessageWrapper GetResponse()
         {
-            var queueMessage = new QueueMessage()
+            var queueMessage = new MessageWrapper()
             {
-                Message = Response,
-                DeliveryTag = DeliveryTag,
+                Message = Response, 
                 IsRpcInvoke = true,
-                MessageId = QueueMessage.MessageId,
-                Topic = QueueMessage.Topic,
+                MessageId = MessageWrapper.MessageId,
+                ExchangeName = MessageWrapper.ExchangeName,
                 TypeName = typeof(MessageHandleResult).FullName,
-                RoutingKey = QueueMessage.ResponseRoutingKey
+                RoutingKey = MessageWrapper.ResponseRoutingKey
             };
 
             return queueMessage;

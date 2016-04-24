@@ -14,7 +14,7 @@ namespace Seven.Messages.QueueMessages
         {
             Console.WriteLine("receive the response message.");
 
-            var message = context.QueueMessage;
+            var message = context.MessageWrapper;
 
             context.SetResponse(message.Message as MessageHandleResult);
 

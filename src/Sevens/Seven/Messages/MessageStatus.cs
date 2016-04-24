@@ -9,6 +9,7 @@ namespace Seven.Messages
     public enum MessageStatus
     {
         Success,
-        Fail
+        Failure,
+        Timeout
     }
 }

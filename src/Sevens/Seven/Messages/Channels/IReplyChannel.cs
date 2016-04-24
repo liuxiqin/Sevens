@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace Seven.Messages.Channels
 {
     public interface IReplyChannel

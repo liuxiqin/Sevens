@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Seven.Infrastructure.IocContainer;
 using Seven.Messages.Channels;
 
 namespace Seven.Messages.Pipelines
@@ -11,11 +12,9 @@ namespace Seven.Messages.Pipelines
     {
         public void Handle(MessageContext context)
         {
-            context.Channel.GetChannel().BasicAck(context.DeliveryTag, false);
+            var channel = ObjectContainer.Resolve<CommunicateChannelFactoryPool>().GetChannel(context.ConsumerContext);
 
-          //  var replyChannel = MessageChannelPools.GetMessageChannel(context.ChannelInfo);
-
-           // replyChannel.GetChannel().BasicAck(context.DeliveryTag, false);
+            channel.BasicAck(context.DeliveryTag);
         }
     }
 }

@@ -10,29 +10,16 @@ using Seven.Messages;
 using Seven.Messages.Channels;
 using Seven.Messages.QueueMessages;
 using Seven.Tests.UserSample.Commands;
+using System.Text;
+using Seven.Infrastructure.IocContainer;
 
 namespace RabbitMQServerTest
 {
     internal class Program
     {
-
         private static void Main(string[] args)
         {
-
             var binarySerializer = new DefaultBinarySerializer();
-
-            var configuration = new RabbitMqConfiguration()
-            {
-                HostName = "127.0.0.1",
-                Port = 5672,
-                UserName = "guest",
-                UserPaasword = "guest",
-                VirtualName = "/"
-            };
-
-            var producer = new MessageProducer(binarySerializer, configuration);
-
-            var commandService = new CommandService(producer);
 
             var command = new CreateUserCommand(
                 "天涯狼" + DateTime.Now.ToString("yyyyMMddHHmmsss"),
@@ -40,18 +27,38 @@ namespace RabbitMQServerTest
                 true,
                 22);
 
-            var consumer = new PushMessageConsumer(new RequestMessageContext()
-            {
-                Configuation = configuration,
-                ExChangeName = typeof(CreateUserCommand).GetType().Assembly.GetName().Name,
-                ExchangeType = MessageExchangeType.Direct,
-                NoAck = true,
-                RoutingKey = MessageUtils.CurrentResponseRoutingKey,
-                ShouldPersistent = false,
-                ResponseRoutingKey = MessageUtils.CurrentResponseRoutingKey,
-            }, new MessageResponseHandler());
+            var hostName = "127.0.0.1";
+            var port = 5672;
+            var userName = "guest";
+            var password = "guest";
+            var virtualName = "/";
+
+            ObjectContainer.SetContainer(new AutofacContainerObject());
+
+            var endPoint = new RemoteEndpoint(hostName, virtualName, userName, password, port);
+
+            var exChangeName = typeof(CreateUserCommand).Namespace;
+
+            var routingKey = MessageUtils.CurrentResponseRoutingKey;
+
+            var responseRoutingKey = MessageUtils.CurrentResponseRoutingKey;
+
+            var consumerContext = new ConsumerContext(exChangeName, responseRoutingKey, responseRoutingKey, routingKey, true);
+
+            var channelPools = new CommunicateChannelFactoryPool(endPoint);
+
+            var consumer = new PushMessageConsumer(channelPools, binarySerializer, consumerContext, new MessageResponseHandler());
 
             consumer.Start();
+
+            ObjectContainer.RegisterInstance(channelPools);
+            ObjectContainer.RegisterInterface<IBinarySerializer, DefaultBinarySerializer>();
+
+            var requestChannelPools = new RequestChannelPools();
+
+            var commandService = new CommandService(requestChannelPools);
+
+            commandService.Send(command);
 
             Console.WriteLine("begin to receive the result message");
 
@@ -62,8 +69,6 @@ namespace RabbitMQServerTest
                 Console.WriteLine("message:{0}", commandResult.Message);
             }
             Console.ReadLine();
-
-
         }
     }
 }

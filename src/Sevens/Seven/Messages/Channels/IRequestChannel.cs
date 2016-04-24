@@ -1,12 +1,13 @@
 using System;
+using System.Threading.Tasks;
 using Seven.Messages.QueueMessages;
 
 namespace Seven.Messages.Channels
 {
-    public interface IRequestChannel 
+    public interface IRequestChannel
     {
-        IReplyChannel SendMessage(QueueMessage message,TimeSpan timeout);
+        Task<IReplyChannel> SendMessage(MessageWrapper message, int seconds = 10);
 
-        void SendMessageAsync(QueueMessage message);
+        Task SendMessageAsync(MessageWrapper message);
     }
 }

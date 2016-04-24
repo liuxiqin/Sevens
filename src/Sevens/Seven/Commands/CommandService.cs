@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Seven.Infrastructure.Serializer;
+using Seven.Infrastructure.UniqueIds;
 using Seven.Messages;
+using Seven.Messages.Channels;
+using Seven.Messages.QueueMessages;
 
 namespace Seven.Commands
 {
@@ -12,34 +16,57 @@ namespace Seven.Commands
     /// </summary>
     public class CommandService : ICommandService
     {
-        private readonly IMessageProducter _messageProducer;
+        private int _queueCount = 2;
 
-        public CommandService(IMessageProducter messageProducer)
+        private RequestChannelPools _requestChannelPools;
+
+        public CommandService(RequestChannelPools requestChannelPools)
         {
-            _messageProducer = messageProducer;
+            _requestChannelPools = requestChannelPools;
         }
 
-        public CommandExecutedResult Send(ICommand command)
+        public MessageHandleResult Send(ICommand command, int timeoutSeconds = 10)
         {
-            var senedTask = _messageProducer.Publish(command);
+            var messageWrapper = BuildMessage(command);
 
-            var sendResult = senedTask.Result;
+            var rquestChannel =
+                _requestChannelPools.GetRequestChannel(new RequestMessageContext(messageWrapper.ExchangeName,
+                    messageWrapper.RoutingKey, messageWrapper.ResponseRoutingKey));
 
-            return new CommandExecutedResult()
+            var replyTask = rquestChannel.SendMessage(messageWrapper, timeoutSeconds);
+
+            return replyTask.Result.GetResult();
+        }
+
+        public async Task SendAsync(ICommand command)
+        {
+            var messageWrapper = BuildMessage(command, false);
+
+            var rquestChannel =
+                _requestChannelPools.GetRequestChannel(new RequestMessageContext(messageWrapper.ExchangeName,
+                    messageWrapper.RoutingKey, messageWrapper.ResponseRoutingKey));
+
+            await rquestChannel.SendMessageAsync(messageWrapper);
+        }
+
+        private MessageWrapper BuildMessage(ICommand message, bool isRpcInvoke = true)
+        {
+
+            var exchangeName = message.GetType().Assembly.GetName().Name;
+
+            var routingKey = string.Format("{0}_{1}_{2}", exchangeName, "command", message.MessageId.GetHashCode() % _queueCount);
+
+            return new MessageWrapper()
             {
-                Message = sendResult.Message,
-                Status = sendResult.Status == MessageStatus.Success ? CommandExecutedStatus.Success : CommandExecutedStatus.Error
+                MessageId = ObjectId.NewObjectId(),
+                RoutingKey = routingKey,
+                ExchangeName = exchangeName,
+                Message = message,
+                TypeName = message.GetType().FullName,
+                MessageType = MessageType.Reply,
+                ResponseRoutingKey = MessageUtils.CurrentResponseRoutingKey,
+                IsRpcInvoke = isRpcInvoke
             };
-        }
-
-        public async void SendAsync(ICommand command)
-        {
-            _messageProducer.PublishAsync(command);
-        }
-
-        public async Task<MessageHandleResult> AsyncSend(ICommand command)
-        {
-            return await Task.Run(() => { return new MessageHandleResult() {}; });
         }
     }
 }

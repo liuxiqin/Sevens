@@ -83,14 +83,14 @@ namespace Seven.Tests
 
             IBinarySerializer binarySerializer = new DefaultBinarySerializer();
 
-            var queueMessage = new QueueMessage()
+            var queueMessage = new MessageWrapper()
             {
                 Message = changePasswordCommand,
             };
 
             var queues = binarySerializer.Serialize(queueMessage);
 
-            var queueMessage1 = binarySerializer.Deserialize<QueueMessage>(queues);
+            var queueMessage1 = binarySerializer.Deserialize<MessageWrapper>(queues);
 
 
             for (var i = 0; i < 1000000; i++)
@@ -107,9 +107,9 @@ namespace Seven.Tests
         {
             var changePasswordCommand = new ChangePasswordCommand("90ca0d59-65e6-403b-82c5-8df967cc8e22", "2222222", "11111");
 
-            var message = new QueueMessage();
+            var message = new MessageWrapper();
 
-            message.Topic = changePasswordCommand.GetType().FullName;
+            message.ExchangeName = changePasswordCommand.GetType().FullName;
             message.TypeName = changePasswordCommand.GetType().FullName;
 
             var binarySerializer = new DefaultBinarySerializer();

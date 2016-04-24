@@ -9,24 +9,22 @@ namespace Seven.Events
 {
     public class EventPublisher : IEventPublisher
     {
+        private RequestChannelPools _requestChannelPools;
+
+        public EventPublisher(RequestChannelPools requestChannelPools)
+        {
+            _requestChannelPools = requestChannelPools;
+        }
+
         public Task<AsyncHandleResult> Publish(IEvent evnt)
         {
             var publishTask = Task.Run(() =>
             {
                 var queueMessage = BuildMessage(evnt);
 
-                var requestContext = new RequestMessageContext()
-                {
-                    RoutingKey = queueMessage.RoutingKey,
-                    ResponseRoutingKey = null,
-                    ShouldPersistent = true,
-                    ExChangeName = queueMessage.Topic,
-                    NoAck = false,
-                    Configuation = SevensConfiguretion.RabbitMqConfiguration,
-                    ExchangeType = MessageExchangeType.Direct
-                };
+                var requestContext = new RequestMessageContext(queueMessage.ExchangeName, queueMessage.RoutingKey, null);
 
-                var requestChannel = RequestChannelPools.GetRequestChannel(requestContext);
+                var requestChannel = _requestChannelPools.GetRequestChannel(requestContext);
 
                 requestChannel.SendMessageAsync(queueMessage);
 
@@ -49,19 +47,12 @@ namespace Seven.Events
                 {
                     var queueMessage = BuildMessage(evnt);
 
+                    var requestContext = new RequestMessageContext(
+                        queueMessage.ExchangeName,
+                        queueMessage.RoutingKey,
+                        null);
 
-                    var requestContext = new RequestMessageContext()
-                    {
-                        RoutingKey = queueMessage.RoutingKey,
-                        ResponseRoutingKey = null,
-                        ShouldPersistent = true,
-                        ExChangeName = queueMessage.Topic,
-                        NoAck = false,
-                        Configuation = SevensConfiguretion.RabbitMqConfiguration,
-                        ExchangeType = MessageExchangeType.Direct
-                    };
-
-                    var requestChannel = RequestChannelPools.GetRequestChannel(requestContext);
+                    var requestChannel = _requestChannelPools.GetRequestChannel(requestContext);
 
                     requestChannel.SendMessageAsync(queueMessage);
                 }
@@ -72,17 +63,19 @@ namespace Seven.Events
             return publishTask;
         }
 
-        private QueueMessage BuildMessage(IEvent evnt)
+        private MessageWrapper BuildMessage(IEvent evnt)
         {
-            return new QueueMessage()
+            return new MessageWrapper()
             {
                 IsRpcInvoke = false,
                 Message = evnt,
                 MessageId = evnt.MessageId,
                 MessageType = MessageType.OneWay,
                 ResponseRoutingKey = string.Empty,
-                RoutingKey = string.Format("{0}_{1}", "event", evnt.MessageId.GetHashCode() % 5),
-                Topic = evnt.GetType().Assembly.FullName,
+                RoutingKey =
+                    string.Format("{0}_{1}_{2}", evnt.GetType().Assembly.FullName, "event",
+                        evnt.MessageId.GetHashCode()%5),
+                ExchangeName = evnt.GetType().Assembly.FullName,
                 TypeName = evnt.GetType().FullName
             };
         }

@@ -4,41 +4,67 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Framing;
 using Seven.Infrastructure.Serializer;
 using Seven.Messages.QueueMessages;
+using System.Threading.Tasks;
 
 namespace Seven.Messages.Channels
 {
     public class RequestChannel : IRequestChannel
     {
-        private MessageChannelBase _messageChannel;
+        private readonly RequestMessageContext _requestMessageContext;
 
-        private string _exChangeName = null;
+        private readonly CommunicateChannelFactoryPool _channelFactoryPool;
 
-        private IBinarySerializer _binarySerializer = null;
+        private readonly IBinarySerializer _binarySerializer;
 
-        public RequestChannel(string exchangeName, IBinarySerializer binarySerializer)
+        public RequestChannel(
+            CommunicateChannelFactoryPool channelFactoryPool,
+            RequestMessageContext requestMessageContext,
+            IBinarySerializer binarySerializer)
         {
-            _exChangeName = exchangeName;
+            _requestMessageContext = requestMessageContext;
+
+            _channelFactoryPool = channelFactoryPool;
 
             _binarySerializer = binarySerializer;
-
-            _messageChannel = new ProducterChannel(new RequestMessageContext());
         }
 
-        public RequestChannel(RequestMessageContext channelInfo)
+
+        public Task<IReplyChannel> SendMessage(MessageWrapper message, int timeout)
         {
-            _messageChannel = new ProducterChannel(channelInfo);
+            return Task.Run(() =>
+            {
+                var channel =
+                    _channelFactoryPool.GetChannel(
+                        new PublisherContext(
+                            _requestMessageContext.ExChangeName,
+                            _requestMessageContext.ExchangeType,
+                            _requestMessageContext.ShouldPersistent,
+                            _requestMessageContext.NoAck));
+
+                var byteDatas = _binarySerializer.Serialize(message);
+
+                channel.Send(new SendMessage(byteDatas, message.RoutingKey));
+
+                return ReplyChannelPools.TryAddReplyChannel(message.MessageId, TimeSpan.FromSeconds(timeout));
+            });
         }
 
-        public IReplyChannel SendMessage(QueueMessage message, TimeSpan timeout)
+        public Task SendMessageAsync(MessageWrapper message)
         {
-            _messageChannel.SendMessage(message);
+            return Task.Run(() =>
+            {
+                var channel =
+                    _channelFactoryPool.GetChannel(
+                        new PublisherContext(
+                            _requestMessageContext.ExChangeName,
+                            _requestMessageContext.ExchangeType,
+                            _requestMessageContext.ShouldPersistent,
+                            _requestMessageContext.NoAck));
 
-            return ReplyChannelPools.TryAddReplyChannel(message.MessageId, timeout);
-        }
+                var byteDatas = _binarySerializer.Serialize(message);
 
-        public void SendMessageAsync(QueueMessage message)
-        {
-            _messageChannel.SendMessage(message);
+                channel.Send(new SendMessage(byteDatas, message.RoutingKey));
+            });
         }
     }
 }

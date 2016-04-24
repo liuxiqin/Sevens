@@ -9,10 +9,8 @@ namespace Seven.Commands
 {
     public interface ICommandService
     {
-        CommandExecutedResult Send(ICommand command);
+        MessageHandleResult Send(ICommand command, int timeoutSeconds = 10);
 
-        void SendAsync(ICommand command);
-
-        Task<MessageHandleResult> AsyncSend(ICommand command);
+        Task SendAsync(ICommand command);
     }
 }

@@ -10,7 +10,7 @@ namespace Seven.Messages.Pipelines
     {
         public void Handle(MessageContext message)
         {
-            message.SetResponse(new MessageHandleResult() { Status = MessageStatus.Fail, Message = message.Exception.Message });
+            message.SetResponse(new MessageHandleResult() { Status = MessageStatus.Failure, Message = message.Exception.Message });
         }
     }
 }

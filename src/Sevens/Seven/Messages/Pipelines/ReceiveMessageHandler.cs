@@ -10,7 +10,7 @@ namespace Seven.Messages.Pipelines
     {   
         public void Handle(MessageContext context)
         { 
-            context.SetMessage(context.QueueMessage.Message);
+            context.SetMessage(context.MessageWrapper.Message);
         }
     }
 }

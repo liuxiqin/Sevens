@@ -4,31 +4,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Seven.Infrastructure.IocContainer;
 using Seven.Infrastructure.Serializer;
 
 namespace Seven.Messages.Channels
 {
     public class RequestChannelPools
     {
-        private static readonly ConcurrentDictionary<string, IRequestChannel> _channelPools =
+        private readonly ConcurrentDictionary<string, IRequestChannel> _channelPools =
             new ConcurrentDictionary<string, IRequestChannel>();
 
-        private static object _lockObj = new object();
+        private object _lockObj = new object();
 
-        public static IRequestChannel GetRequestChannel(RequestMessageContext channelInfo)
+        private IBinarySerializer _binarySerializer;
+
+        private CommunicateChannelFactoryPool _channelFactoryPools;
+
+        public RequestChannelPools()
         {
-            if (!_channelPools.ContainsKey(channelInfo.ToString()))
+            _channelFactoryPools = ObjectContainer.Resolve<CommunicateChannelFactoryPool>();
+            _binarySerializer = ObjectContainer.Resolve<IBinarySerializer>();
+        }
+
+        public IRequestChannel GetRequestChannel(RequestMessageContext messageContext)
+        {
+            if (!_channelPools.ContainsKey(messageContext.ToString()))
             {
                 lock (_lockObj)
                 {
-                    if (!_channelPools.ContainsKey(channelInfo.ToString()))
+                    if (!_channelPools.ContainsKey(messageContext.ToString()))
                     {
-                        _channelPools.TryAdd(channelInfo.ToString(), new RequestChannel(channelInfo));
+                        _channelPools.TryAdd(messageContext.ToString(), new RequestChannel(_channelFactoryPools, messageContext, _binarySerializer));
                     }
                 }
             }
 
-            return _channelPools[channelInfo.ToString()];
+            return _channelPools[messageContext.ToString()];
         }
     }
 }

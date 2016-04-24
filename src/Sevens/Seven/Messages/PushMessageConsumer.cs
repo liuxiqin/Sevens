@@ -1,5 +1,8 @@
+using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Seven.Configuration;
 using Seven.Infrastructure.Serializer;
 using Seven.Messages.Channels;
 using Seven.Messages.Pipelines;
@@ -12,35 +15,57 @@ namespace Seven.Messages
     /// </summary>
     public class PushMessageConsumer : IMessageConsumer
     {
-        private readonly MessageChannelBase _channel;
-
-        private readonly RequestMessageContext _channelInfo;
-
         private readonly IQueueMessageHandler _messageHandler;
 
         private readonly CancellationTokenSource _cancellation;
+         
+        private readonly ConsumerContext _consumerContext;
 
-        public PushMessageConsumer(RequestMessageContext channelInfo, IQueueMessageHandler messageHandler)
+        private CommunicateChannelFactoryPool _channelPools;
+
+        private IBinarySerializer _binarySerializer;
+
+        public PushMessageConsumer(
+            CommunicateChannelFactoryPool channelPools,
+            IBinarySerializer binarySerializer,
+            ConsumerContext consumerContext,
+            IQueueMessageHandler messageHandler)
         {
-            _channelInfo = channelInfo;
-            _channel = new ConsumerChannel(_channelInfo);
+            _channelPools = channelPools;
+             
+            _consumerContext = consumerContext;
+
             _messageHandler = messageHandler;
+
+            _binarySerializer = binarySerializer;
+
             _cancellation = new CancellationTokenSource();
         }
 
         public void Start()
         {
+            var channel = _channelPools.GetChannel(_consumerContext);
+
+            if (channel == null)
+                throw new ApplicationException("can not start the message of consumer.");
+
             var listenerTask = new Task(() =>
             {
                 while (!_cancellation.IsCancellationRequested)
                 {
-                    var queueMessage = _channel.ReceiveMessage();
+                    var receiveMessage = channel.Receive();
 
-                    var messageContext = new MessageContext(_channel, queueMessage, _channelInfo, queueMessage.DeliveryTag);
+                    if (receiveMessage == null)
+                    {
+                        Thread.Sleep(1);
+                        continue;
+                    }
+
+                    var messageWrapper = _binarySerializer.Deserialize<MessageWrapper>(receiveMessage.ByteDatas);
+
+                    var messageContext = new MessageContext(messageWrapper, _consumerContext, receiveMessage.DeliveryTag);
 
                     _messageHandler.Handle(messageContext);
-
-                    Thread.Sleep(1);
                 }
             });
 

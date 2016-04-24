@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using Seven.Infrastructure.Repository;
 
 namespace Seven.Commands
 {
@@ -13,15 +14,28 @@ namespace Seven.Commands
     {
         private readonly IDictionary<Type, Action<ICommandContext, ICommand>> _commandHandlerProvider;
 
-        public CommandBus(Assembly assembly)
+        private readonly IRepository _repository;
+
+        private readonly ConcurrentQueue<ICommand> _commands;
+
+        private readonly int _maxLength = 100;
+
+        private bool _started = false;
+
+        public CommandBus(Assembly assembly, IRepository repository)
         {
+            _commands = new ConcurrentQueue<ICommand>();
+
             _commandHandlerProvider = new ConcurrentDictionary<Type, Action<ICommandContext, ICommand>>();
+
             Init(assembly);
+
+            _repository = repository;
         }
 
         public void Init(Assembly assembly)
         {
-            var targetType = typeof(ICommandHandler<>);
+            var targetType = typeof (ICommandHandler<>);
             var types = assembly.GetExportedTypes();
             var commandExecutorTypes = types
                 .Where(x =>
@@ -47,34 +61,56 @@ namespace Seven.Commands
             {
                 return;
             }
-            Action<ICommandContext, ICommand> commandHandler = (context, cmd) => handler.Handle(new CommandContext(null), (TCommand)cmd);
+            Action<ICommandContext, ICommand> commandHandler =
+                (context, cmd) => handler.Handle(new CommandContext(null), (TCommand) cmd);
 
             _commandHandlerProvider.Add(commandType, commandHandler);
         }
 
         public void UnRegister<T>(Type commandType) where T : class, ICommand
         {
-            if (_commandHandlerProvider.ContainsKey(typeof(T)))
+            if (_commandHandlerProvider.ContainsKey(typeof (T)))
             {
-                _commandHandlerProvider.Remove(typeof(T));
+                _commandHandlerProvider.Remove(typeof (T));
             }
         }
 
-        public void Send(ProcessCommand processCommand)
+        public void Send(ICommand command)
         {
-            Dispatch(processCommand);
+            _commands.Enqueue(command);
+
+            if (!_started)
+            {
+                _started = true;
+
+                BeginConsumer();
+            }
         }
 
-        public void Dispatch(ProcessCommand processCommand)
+        private void BeginConsumer()
         {
-            if (_commandHandlerProvider.ContainsKey(processCommand.GetType()))
+            var command = default(ICommand);
+
+            if (_commands.TryDequeue(out command))
+                Dispatch(command);
+        }
+
+        public int GetLength()
+        {
+            return _commands.Count;
+        }
+
+        public void Dispatch(ICommand command)
+        {
+            if (_commandHandlerProvider.ContainsKey(command.GetType()))
             {
-                var commandHandler = _commandHandlerProvider[processCommand.GetCommandType];
-                commandHandler(processCommand.CommandContext, processCommand.Command);
+                var commandHandler = _commandHandlerProvider[command.GetType()];
+
+                var commandContext = new CommandContext(_repository);
+
+                commandHandler(commandContext, command);
             }
         }
     }
-
-
 }
 

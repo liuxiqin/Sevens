@@ -9,11 +9,11 @@ namespace Seven.Messages
     /// <summary>
     /// 消息Broker
     /// </summary>
-    public interface IMessageBroker
+    public interface IMessageConnection
     {
         void Stop();
 
-        IConnection GetConnection { get; }
-
+        bool IsOpen();
+        IModel CreateChannel();
     }
 }
