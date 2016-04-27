@@ -40,15 +40,15 @@ namespace Seven.Commands
             AggregateRoots.Add(aggregate.AggregateRootId, aggregate);
         }
 
-        public T Get<T>(string aggregateRootId) where T : IAggregateRoot
+        public TAggregateRoot Get<TAggregateRoot>(string aggregateRootId) where TAggregateRoot : IAggregateRoot
         {
             if (!AggregateRoots.ContainsKey(aggregateRootId))
             {
-                var aggregateRoot = _repository.Get<IAggregateRoot>(aggregateRootId);
+                var aggregateRoot = _repository.Get(aggregateRootId);
 
                 AggregateRoots.Add(aggregateRootId, aggregateRoot);
             }
-            return (T) AggregateRoots[aggregateRootId];
+            return (TAggregateRoot)AggregateRoots[aggregateRootId];
         }
 
     }

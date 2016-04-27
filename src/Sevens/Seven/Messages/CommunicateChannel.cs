@@ -41,16 +41,17 @@ namespace Seven.Messages
         {
             _channel = _connection.CreateChannel();
 
-            _channel.ExchangeDeclare(publisherContext.ExchangeName, publisherContext.ExchangeType,
-                publisherContext.ShouldPersistent);
+            _channel.ExchangeDeclare(publisherContext.ExchangeName, publisherContext.ExchangeType, true);
         }
 
         private void ConsumerBind(ConsumerContext consumerContext)
         {
             _channel = _connection.CreateChannel();
 
-            _channel.QueueDeclare(consumerContext.QueueName, consumerContext.ShouldPersistent,
-                !consumerContext.ShouldPersistent, !consumerContext.ShouldPersistent, null);
+            _channel.ExchangeDeclare(consumerContext.ExChangeName, consumerContext.ExchangeType, true);
+
+            _channel.QueueDeclare(consumerContext.QueueName, consumerContext.Durable,
+                !consumerContext.Durable, !consumerContext.Durable, null);
 
             _channel.QueueBind(_consumerContext.QueueName, _consumerContext.ExChangeName, consumerContext.RoutingKey);
 
@@ -68,7 +69,7 @@ namespace Seven.Messages
 
             var properties = new BasicProperties() { DeliveryMode = 2 };
 
-            if (_publisherContext.ShouldPersistent)
+            if (!_publisherContext.Durable)
                 properties.DeliveryMode = 1;
 
             _channel.BasicPublish(_publisherContext.ExchangeName, messsage.RoutingKey, properties, messsage.ByteDatas);
@@ -82,7 +83,7 @@ namespace Seven.Messages
             if (_basicConsumer == null)
                 throw new ApplicationException("basicConsumer can not be null.");
 
-            var deliverEventArgs = _basicConsumer.Queue.DequeueNoWait(null);
+            var deliverEventArgs = _basicConsumer.Queue.Dequeue();
 
             if (deliverEventArgs == null)
                 return null;

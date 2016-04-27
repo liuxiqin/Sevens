@@ -77,6 +77,9 @@
     <Compile Include="Events\EventSubscription.cs" />
     <Compile Include="Events\IEventSubscription.cs" />
     <Compile Include="Events\IEventBus.cs" />
+    <Compile Include="Infrastructure\Repository\AggregateRootMemoryCache.cs" />
+    <Compile Include="Infrastructure\Repository\IAggregateRootMemoryCache.cs" />
+    <Compile Include="Infrastructure\Repository\IAggregateRootStorage.cs" />
     <Compile Include="Messages\Channels\ConsumerContext.cs" />
     <Compile Include="Messages\Channels\PublisherContext.cs" />
     <Compile Include="Messages\CommunicateChannel.cs" />
@@ -138,7 +141,7 @@
     <Compile Include="Infrastructure\MessageDevice\MessageConnectionState.cs" />
     <Compile Include="Infrastructure\Repository\EventSouringRepository.cs" />
     <Compile Include="Infrastructure\Repository\IRepository.cs" />
-    <Compile Include="Infrastructure\Repository\DefaultRepository.cs" />
+    <Compile Include="Infrastructure\Repository\NonEventSouringRepository.cs" />
     <Compile Include="Infrastructure\Serializer\DefaultBinarySerializer.cs" />
     <Compile Include="Infrastructure\Serializer\IBinarySerializer.cs" />
     <Compile Include="Infrastructure\Serializer\IJsonSerializer.cs" />

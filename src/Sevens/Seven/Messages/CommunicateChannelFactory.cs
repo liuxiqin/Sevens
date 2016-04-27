@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Seven.Messages.Channels;
 
@@ -7,19 +8,19 @@ namespace Seven.Messages
     {
         private IMessageConnection _connection;
 
-        private Dictionary<string, ICommunicateChannel> _channelPools;
+        private ConcurrentDictionary<string, ICommunicateChannel> _channelPools;
 
         private readonly int _channelPoolLength = 16;
 
         private readonly RemoteEndpoint _endpoint;
 
-        private object _lockObj = new object();
-
+        private readonly object _lockObj = new object();
+         
         public CommunicateChannelFactory(RemoteEndpoint endpoint)
         {
             _endpoint = endpoint;
 
-            _channelPools = new Dictionary<string, ICommunicateChannel>();
+            _channelPools = new ConcurrentDictionary<string, ICommunicateChannel>();
         }
 
         public ICommunicateChannel GetChannel(PublisherContext publisherContext)
@@ -30,7 +31,7 @@ namespace Seven.Messages
             {
                 var channel = new CommunicateChannel(_connection, publisherContext);
 
-                _channelPools.Add(publisherContext.ExchangeName, channel);
+                _channelPools.TryAdd(publisherContext.ExchangeName, channel);
             }
             return _channelPools[publisherContext.ExchangeName];
         }
@@ -43,7 +44,7 @@ namespace Seven.Messages
             {
                 var channel = new CommunicateChannel(_connection, consumerContext);
 
-                _channelPools.Add(consumerContext.GetConsumerKey(), channel);
+                _channelPools.TryAdd(consumerContext.GetConsumerKey(), channel);
 
             }
             return _channelPools[consumerContext.GetConsumerKey()];

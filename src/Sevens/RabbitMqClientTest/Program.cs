@@ -19,13 +19,21 @@ using Seven.Messages.Channels;
 using Seven.Messages.QueueMessages;
 using Seven.Tests.UserSample.Commands;
 using RabbitMQ.Client.Events;
+using Seven.Events;
+using Seven.Infrastructure.Snapshoting;
 
 namespace RabbitMqClientTest
 {
     internal class Program
     {
+        private const string _mysqlConnection = "Database = sevens; Data Source = 127.0.0.1; User Id = root; Password = 123456; port = 3306";
+
+
         private static void Main(string[] args)
         {
+
+
+
             var binarySerializer = new DefaultBinarySerializer();
 
             ObjectContainer.SetContainer(new AutofacContainerObject());
@@ -43,23 +51,34 @@ namespace RabbitMqClientTest
             ObjectContainer.RegisterInstance(commandInitializer);
             ObjectContainer.RegisterInstance(messageTypeProvider);
 
-            var commandProssor = new DefaultCommandProssor(new MySqlEventStore(""), null, commandInitializer, null,
-                binarySerializer);
+            var mysqlEventStore = new MySqlEventStore(_mysqlConnection);
+
+            var snapshotStorage = new MysqlSnapshotStorage(_mysqlConnection);
+
+            var aggregateRootStorage = new MysqlAggregateRootStorage(_mysqlConnection);
+
+            var repository = new NonEventSouringRepository(aggregateRootStorage, binarySerializer);
 
             var endPoint = new RemoteEndpoint("127.0.0.1", "/", "guest", "guest", 5672);
 
-            var exChangeName = typeof(CreateUserCommand).Namespace;
+            var exChangeName = typeof(CreateUserCommand).Assembly.GetName().Name; ;
 
             var responseRoutingKey = MessageUtils.CurrentResponseRoutingKey;
 
             var channelPools = new CommunicateChannelFactoryPool(endPoint);
 
-            var messageHandler = new MessageRequestHandler(commandProssor);
-
             ObjectContainer.RegisterInstance(channelPools);
             ObjectContainer.RegisterInterface<IBinarySerializer, DefaultBinarySerializer>();
 
-            for (var i = 0; i < 2; i++)
+            var requestChannelPools = new RequestChannelPools();
+
+            var eventPublisher = new EventPublisher(requestChannelPools);
+
+            var commandProssor = new DefaultCommandProssor(mysqlEventStore, repository, commandInitializer, eventPublisher, binarySerializer);
+
+            var messageHandler = new MessageRequestHandler(commandProssor);
+
+            for (var i = 0; i < 20; i++)
             {
                 var routingKey = string.Format("{0}_{1}_{2}", exChangeName, "command", i);
 

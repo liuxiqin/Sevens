@@ -9,19 +9,23 @@ namespace Seven.Messages.Channels
 
         public readonly string ExchangeType;
 
-        public readonly bool ShouldPersistent;
-
         public readonly bool NoAck;
+
+        public readonly bool Durable;
+
+        public readonly bool AutoDelete;
 
         public PublisherContext(
             string exchangeName,
             string exchangeType,
-            bool shouldPersistent,
+            bool durable,
+            bool autoDelete,
             bool noAck)
         {
             ExchangeName = exchangeName;
             ExchangeType = exchangeType;
-            ShouldPersistent = shouldPersistent;
+            Durable = durable;
+            AutoDelete = autoDelete;
             NoAck = noAck;
         }
     }

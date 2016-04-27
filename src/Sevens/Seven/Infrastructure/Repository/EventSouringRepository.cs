@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Seven.Aggregates;
 using Seven.Events;
 using Seven.Infrastructure.EventStore;
@@ -17,28 +12,37 @@ namespace Seven.Infrastructure.Repository
     {
         private readonly IEventStore _eventStore;
 
-        private ISnapshotStorage _snapshotStorage;
+        private readonly ISnapshotStorage _snapshotStorage;
 
         private readonly IBinarySerializer _binarySerializer;
 
-        public EventSouringRepository(IEventStore eventStore, ISnapshotStorage snapshotStorage,
-            IBinarySerializer binarySerializer)
+        private readonly IAggregateRootMemoryCache _aggregateRoots;
+
+        public EventSouringRepository(
+            IEventStore eventStore,
+            ISnapshotStorage snapshotStorage,
+            IBinarySerializer binarySerializer,
+            IAggregateRootMemoryCache aggregateRootMemoryCache)
         {
             _eventStore = eventStore;
             _snapshotStorage = snapshotStorage;
             _binarySerializer = binarySerializer;
+            _aggregateRoots = aggregateRootMemoryCache;
         }
 
         public void Add(IAggregateRoot aggregateRoot)
         {
-
+            _aggregateRoots.Add(aggregateRoot);
         }
 
         public TAggregateRoot Get<TAggregateRoot>(string aggregateRootId) where TAggregateRoot : IAggregateRoot
         {
-            var snapshot = _snapshotStorage.GetLastestSnapshot(aggregateRootId).Result;
+            var aggregateRoot = _aggregateRoots.Get(aggregateRootId);
 
-            var aggregateRoot = default(TAggregateRoot);
+            if (aggregateRoot != null && aggregateRoot.GetChanges().Count == 0)
+                return (TAggregateRoot)aggregateRoot;
+
+            var snapshot = _snapshotStorage.GetLastestSnapshot(aggregateRootId).Result;
 
             if (snapshot != null)
             {
@@ -56,7 +60,7 @@ namespace Seven.Infrastructure.Repository
 
             aggregateRoot.ApplyEvents(changgEvents.Events);
 
-            return aggregateRoot;
+            return (TAggregateRoot)aggregateRoot;
         }
 
         private DomainEventStream ConvertTo(EventStreamRecord streamRecord)
@@ -72,7 +76,5 @@ namespace Seven.Infrastructure.Repository
         {
             return _binarySerializer.Deserialize<IAggregateRoot>(aggregateRootDatas);
         }
-
-
     }
 }

@@ -30,7 +30,7 @@ namespace Seven.Infrastructure.Snapshoting
         {
             var resultTask = _dbConnection.QueryAsync<SnapshotRecord>(
                 "select * from SnapshotEntity where AggregateRootId=@AggregateRootId ORDER BY versions DESC LIMIT 1",
-                new {AggregateRootId = aggregateRootId});
+                new { AggregateRootId = aggregateRootId });
 
             await resultTask;
 

@@ -12,7 +12,9 @@ namespace Seven.Messages.Pipelines
     {
         public void Handle(MessageContext context)
         {
-            var channel = ObjectContainer.Resolve<CommunicateChannelFactoryPool>().GetChannel(context.ConsumerContext);
+            var channelPools = ObjectContainer.Resolve<CommunicateChannelFactoryPool>();
+
+            var channel = channelPools.GetChannel(context.ConsumerContext);
 
             channel.BasicAck(context.DeliveryTag);
         }

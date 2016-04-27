@@ -11,17 +11,16 @@ namespace Seven.Messages.Pipelines
     {
         public void Handle(MessageContext context)
         {
-            var channelInfo = new RequestMessageContext(context.MessageWrapper.ExchangeName,
-                context.MessageWrapper.ResponseRoutingKey, null, MessageExchangeType.Direct, true, false);
-
             var channelPools = ObjectContainer.Resolve<CommunicateChannelFactoryPool>();
 
             var replyChannel = channelPools.GetChannel(new PublisherContext(context.MessageWrapper.ExchangeName,
-               MessageExchangeType.Direct, false, true));
+               MessageExchangeType.Direct, false, true, true));
 
             var binarySerializer = ObjectContainer.Resolve<IBinarySerializer>();
 
-            replyChannel.Send(new SendMessage(binarySerializer.Serialize(context.Response),
+            context.SetMessage(new MessageHandleResult() { MessageId = context.MessageWrapper.MessageId, Status = MessageStatus.Success });
+
+            replyChannel.Send(new SendMessage(binarySerializer.Serialize(context.MessageWrapper),
                 context.MessageWrapper.ResponseRoutingKey));
         }
     }

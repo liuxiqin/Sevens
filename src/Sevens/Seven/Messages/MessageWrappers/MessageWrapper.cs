@@ -22,7 +22,9 @@ namespace Seven.Messages.QueueMessages
 
         public string ResponseRoutingKey { get; set; }
 
-        public bool ShouldPersist { get; set; }
+        public bool Durable { get; set; }
 
+        public bool AuotDelete { get; set; }
+        
     }
 }

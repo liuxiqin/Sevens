@@ -48,7 +48,7 @@ namespace Seven.Infrastructure.EventStore
         public void AppendAsync(EventStreamRecord eventStream)
         {
             var result = _dbConnection.Execute(
-                @"insert into EventStreamEntity(AggregateRootId,Version,EventDatas) values (@AggregateRootId,@Version,@EventDatas)",
+                @"insert into EventStreamEntity(AggregateRootId,CommandId,Version,EventDatas) values (@AggregateRootId,@CommandId,@Version,@EventDatas)",
                 eventStream);
         }
     }

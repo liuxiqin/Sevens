@@ -8,7 +8,7 @@ namespace Seven.Messages.Channels
 
         public readonly string RoutingKey;
 
-        public readonly bool ShouldPersistent;
+        public readonly bool Durable;
 
         public readonly bool NoAck;
 
@@ -27,14 +27,14 @@ namespace Seven.Messages.Channels
             string responseRoutingKey,
             string exchangeType = MessageExchangeType.Direct,
             bool noAck = false,
-            bool shouldPersistent = true)
+            bool durable = true)
         {
             ExChangeName = exChangeName;
             RoutingKey = routingKey;
             ResponseRoutingKey = responseRoutingKey;
             ExchangeType = exchangeType;
             NoAck = noAck;
-            ShouldPersistent = shouldPersistent;
+            Durable = durable;
         }
     }
 }

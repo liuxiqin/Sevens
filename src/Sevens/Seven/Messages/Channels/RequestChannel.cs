@@ -38,7 +38,8 @@ namespace Seven.Messages.Channels
                         new PublisherContext(
                             _requestMessageContext.ExChangeName,
                             _requestMessageContext.ExchangeType,
-                            _requestMessageContext.ShouldPersistent,
+                            _requestMessageContext.Durable,
+                            _requestMessageContext.NoAck,
                             _requestMessageContext.NoAck));
 
                 var byteDatas = _binarySerializer.Serialize(message);
@@ -58,7 +59,8 @@ namespace Seven.Messages.Channels
                         new PublisherContext(
                             _requestMessageContext.ExChangeName,
                             _requestMessageContext.ExchangeType,
-                            _requestMessageContext.ShouldPersistent,
+                            _requestMessageContext.Durable,
+                            _requestMessageContext.NoAck,
                             _requestMessageContext.NoAck));
 
                 var byteDatas = _binarySerializer.Serialize(message);

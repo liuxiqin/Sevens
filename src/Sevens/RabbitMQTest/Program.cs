@@ -21,12 +21,6 @@ namespace RabbitMQServerTest
         {
             var binarySerializer = new DefaultBinarySerializer();
 
-            var command = new CreateUserCommand(
-                "天涯狼" + DateTime.Now.ToString("yyyyMMddHHmmsss"),
-                DateTime.Now.ToString("yyyyMMddHHmmsss"),
-                true,
-                22);
-
             var hostName = "127.0.0.1";
             var port = 5672;
             var userName = "guest";
@@ -37,7 +31,7 @@ namespace RabbitMQServerTest
 
             var endPoint = new RemoteEndpoint(hostName, virtualName, userName, password, port);
 
-            var exChangeName = typeof(CreateUserCommand).Namespace;
+            var exChangeName = typeof(CreateUserCommand).Assembly.GetName().Name;
 
             var routingKey = MessageUtils.CurrentResponseRoutingKey;
 
@@ -58,16 +52,29 @@ namespace RabbitMQServerTest
 
             var commandService = new CommandService(requestChannelPools);
 
-            commandService.Send(command);
+            //commandService.Send(command);
 
             Console.WriteLine("begin to receive the result message");
 
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             for (var i = 0; i < 100; i++)
             {
-                var commandResult = commandService.Send(command);
+                var command = new CreateUserCommand(
+                    "天涯狼" + DateTime.Now.ToString("yyyyMMddHHmmsss"),
+                    DateTime.Now.ToString("yyyyMMddHHmmsss"),
+                    true,
+                    22);
 
-                Console.WriteLine("message:{0}", commandResult.Message);
+                var commandResult = commandService.SendAsync(command);
+
+                //Console.WriteLine("message:{0} and number is {1}", commandResult.Message, i);
             }
+
+            watch.Stop();
+
+            Console.WriteLine("message:{0} ", watch.ElapsedMilliseconds);
             Console.ReadLine();
         }
     }

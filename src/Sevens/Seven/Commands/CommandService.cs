@@ -16,7 +16,7 @@ namespace Seven.Commands
     /// </summary>
     public class CommandService : ICommandService
     {
-        private int _queueCount = 2;
+        private int _queueCount = 20;
 
         private RequestChannelPools _requestChannelPools;
 

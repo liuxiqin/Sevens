@@ -9,6 +9,8 @@ namespace Seven.Infrastructure.IocContainer
 
         private IContainer _container;
 
+        private object _lockObj = new object();
+
         public AutofacContainerObject()
         {
             _containerBuilder = new ContainerBuilder();
@@ -36,21 +38,30 @@ namespace Seven.Infrastructure.IocContainer
 
         public T Resolve<T>()
         {
-            if (_container == null)
-            {
-                _container = _containerBuilder.Build();
-            }
+            ContainerBuild();
 
             return _container.Resolve<T>();
         }
 
         public T Resolve<T>(Type serviceType)
         {
+            ContainerBuild();
+
+            return (T)_container.Resolve(serviceType);
+        }
+
+        private void ContainerBuild()
+        {
             if (_container == null)
             {
-                _container = _containerBuilder.Build();
+                lock (_lockObj)
+                {
+                    if (_container == null)
+                    {
+                        _container = _containerBuilder.Build();
+                    }
+                }
             }
-            return (T)_container.Resolve(serviceType);
         }
     }
 }
