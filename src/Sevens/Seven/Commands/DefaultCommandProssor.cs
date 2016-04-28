@@ -4,6 +4,7 @@ using Seven.Events;
 using Seven.Infrastructure.EventStore;
 using Seven.Infrastructure.Repository;
 using Seven.Infrastructure.Serializer;
+using Seven.Infrastructure.Snapshoting;
 using Seven.Initializer;
 
 namespace Seven.Commands
@@ -20,11 +21,14 @@ namespace Seven.Commands
 
         private readonly IBinarySerializer _binarySerializer;
 
+        private readonly ISnapshotStorage _snapshotStorage;
+
         public DefaultCommandProssor(
             IEventStore eventStore,
             IRepository repository,
             CommandHandleProvider commandHandleProvider,
             IEventPublisher eventPublisher,
+            ISnapshotStorage snapshotStorage,
             IBinarySerializer binarySerializer)
         {
             _eventStore = eventStore;
@@ -32,6 +36,7 @@ namespace Seven.Commands
             _commandHandleProvider = commandHandleProvider;
             _eventPublisher = eventPublisher;
             _binarySerializer = binarySerializer;
+            _snapshotStorage = snapshotStorage;
         }
 
 
@@ -59,6 +64,8 @@ namespace Seven.Commands
                 Version = aggregateRoot.Value.Version,
                 EventDatas = _binarySerializer.Serialize(domainEvents)
             });
+
+            _snapshotStorage.Create(new SnapshotRecord(aggregateRoot.Key, aggregateRoot.Value.Version, _binarySerializer.Serialize(aggregateRoot.Value)));
 
             _eventPublisher.PublishAsync(domainEvents);
 

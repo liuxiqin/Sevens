@@ -12,18 +12,28 @@ namespace Seven.Messages.QueueMessages
     {
         public void Handle(MessageContext context)
         {
-            Console.WriteLine("receive the response message.");
+            try
+            {
+                Console.WriteLine("receive the response send.{0}, and now is {1}", context.MessageWrapper.TimeStamp, DateTime.Now);
 
-            var message = context.MessageWrapper;
+                var message = context.MessageWrapper;
 
-            context.SetResponse(message.Message as MessageHandleResult);
+                context.SetResponse(message.Message as MessageHandleResult);
 
-            var replyChannel = ReplyChannelPools.GetReplyChannel(message.MessageId);
+                var replyChannel = ReplyChannelPools.GetReplyChannel(message.MessageId);
 
-            if (replyChannel == null) return;
+                if (replyChannel == null)
+                {
+                    Console.WriteLine("replyChannel is null.");
+                    return;
+                }
 
-            replyChannel.SetResult(context.Response);
-
+                replyChannel.SetResult(context.Response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("replyChannel is waiting is error.");
+            }
         }
     }
 }

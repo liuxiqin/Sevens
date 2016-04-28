@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Seven.Events;
 
 namespace Seven.Infrastructure.EventStore
@@ -12,6 +13,6 @@ namespace Seven.Infrastructure.EventStore
 
         EventStreamRecord LoadEventStream(string aggregateRootId, int version);
 
-        void AppendAsync(EventStreamRecord eventStream);
+        bool AppendAsync(EventStreamRecord eventStream);
     }
 }

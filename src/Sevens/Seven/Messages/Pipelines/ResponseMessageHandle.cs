@@ -18,9 +18,22 @@ namespace Seven.Messages.Pipelines
 
             var binarySerializer = ObjectContainer.Resolve<IBinarySerializer>();
 
-            context.SetMessage(new MessageHandleResult() { MessageId = context.MessageWrapper.MessageId, Status = MessageStatus.Success });
+            var responseMessage = new MessageWrapper()
+            {
+                AuotDelete = context.MessageWrapper.AuotDelete,
+                Durable = context.MessageWrapper.Durable,
+                ExchangeName = context.MessageWrapper.ExchangeName,
+                IsRpcInvoke = context.MessageWrapper.IsRpcInvoke,
+                Message = context.Response,
+                MessageId = context.MessageWrapper.MessageId,
+                MessageType = context.MessageWrapper.MessageType,
+                ResponseRoutingKey = context.MessageWrapper.ResponseRoutingKey,
+                RoutingKey = context.MessageWrapper.RoutingKey,
+                TypeName = context.MessageWrapper.TypeName,
+                TimeStamp = DateTime.Now
+            };
 
-            replyChannel.Send(new SendMessage(binarySerializer.Serialize(context.MessageWrapper),
+            replyChannel.Send(new SendMessage(binarySerializer.Serialize(responseMessage),
                 context.MessageWrapper.ResponseRoutingKey));
         }
     }

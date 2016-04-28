@@ -13,9 +13,14 @@ namespace Seven.Commands
     {
         public string Id;
 
+        public string AggerateRootId
+        {
+            get { return Id; }
+        }
+
         public Command()
         {
-            Id =ObjectId.NewObjectId();
+            Id = ObjectId.NewObjectId();
         }
 
         public void Execute()
@@ -41,6 +46,8 @@ namespace Seven.Commands
     public interface ICommand : IMessage
     {
         string CommandId { get; }
+
+        string AggerateRootId { get; }
 
         void Execute();
     }

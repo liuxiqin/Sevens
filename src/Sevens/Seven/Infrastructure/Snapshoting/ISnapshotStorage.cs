@@ -7,7 +7,7 @@ namespace Seven.Infrastructure.Snapshoting
 {
     public interface ISnapshotStorage
     {
-        void Create(SnapshotRecord snapshot);
+        bool Create(SnapshotRecord snapshot);
 
         Task<SnapshotRecord> GetLastestSnapshot(string aggregateRootId);
     }

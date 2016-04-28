@@ -12,7 +12,7 @@ namespace Seven.Messages.Channels
         private readonly TimeSpan _timeout;
 
         private readonly string _messageId;
-        
+
         private MessageHandleResult _result;
 
         public ReplyChannel(string messageId, TimeSpan timeout)
@@ -25,15 +25,18 @@ namespace Seven.Messages.Channels
 
         public MessageHandleResult GetResult()
         {
-            var noTimeout = _manualReset.Wait(_timeout);
+            Console.WriteLine("waiting for response message.");
+            _manualReset.Wait();
+            Console.WriteLine("get for response message.");
+            //  var noTimeout = _manualReset.Wait(_timeout);
 
-            if (!noTimeout)
-                return new MessageHandleResult(_messageId, "has timeout.", MessageStatus.Timeout);
+            // if (!noTimeout)
+            //     return new MessageHandleResult(_messageId, "has timeout.", MessageStatus.Timeout);
 
-            if (_result == null)
-                return new MessageHandleResult(_messageId, "no answer.", MessageStatus.Timeout);
+            // if (_result == null)
+            return new MessageHandleResult(_messageId, "no answer.", MessageStatus.Timeout);
 
-            return _result;
+            //return _result;
         }
 
         public void SetResult(MessageHandleResult result)

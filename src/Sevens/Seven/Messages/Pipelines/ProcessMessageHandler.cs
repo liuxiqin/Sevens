@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Seven.Commands;
 using Seven.Events;
 
@@ -20,6 +21,9 @@ namespace Seven.Messages.Pipelines
         {
             try
             {
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
+
                 if (context.Message is ICommand)
                 {
                     _commandProssor.Execute(context.Message as ICommand);
@@ -32,12 +36,15 @@ namespace Seven.Messages.Pipelines
                     eventProssor.Execute(context.Message as IEvent);
                 }
 
+                context.SetResponse(new MessageHandleResult() { Message = "成功", Status = MessageStatus.Success, MessageId = context.Message.MessageId });
 
-                context.SetResponse(new MessageHandleResult() { Message = "成功", Status = MessageStatus.Success });
+                watch.Stop();
+
+                Console.WriteLine("message proccess time:{0}", watch.ElapsedMilliseconds);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                context.SetResponse(new MessageHandleResult() { Message = "失败", Status = MessageStatus.Failure });
+                context.SetResponse(new MessageHandleResult() { Message = ex.Message, Status = MessageStatus.Failure, MessageId = context.Message.MessageId });
             }
         }
     }

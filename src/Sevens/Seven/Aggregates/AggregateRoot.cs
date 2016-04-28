@@ -62,7 +62,7 @@ namespace Seven.Aggregates
         {
             var unCommitEvents = new List<IEvent>();
 
-            while (_unCommitEvents.Count > 0)
+            if (_unCommitEvents.Count > 0)
             {
                 unCommitEvents = _unCommitEvents.ToList();
             }

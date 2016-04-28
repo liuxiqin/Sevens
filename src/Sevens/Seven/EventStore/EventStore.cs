@@ -23,6 +23,8 @@ namespace Seven.Infrastructure.EventStore
             _connectionString = connectionString;
 
             _dbConnection = new MySqlConnection(connectionString);
+
+            _dbConnection.Open();
         }
 
         public EventStreamRecord LoadEventStream(string aggregateRootId)
@@ -45,11 +47,16 @@ namespace Seven.Infrastructure.EventStore
             return entity;
         }
 
-        public void AppendAsync(EventStreamRecord eventStream)
+        public bool AppendAsync(EventStreamRecord eventStream)
         {
-            var result = _dbConnection.Execute(
+            var resultTask = _dbConnection.ExecuteAsync(
                 @"insert into EventStreamEntity(AggregateRootId,CommandId,Version,EventDatas) values (@AggregateRootId,@CommandId,@Version,@EventDatas)",
                 eventStream);
+
+            if (resultTask.Result == 1)
+                return true;
+
+            return false;
         }
     }
 }

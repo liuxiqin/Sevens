@@ -11,6 +11,7 @@ using Seven.Messages.Channels;
 using Seven.Messages.QueueMessages;
 using Seven.Tests.UserSample.Commands;
 using System.Text;
+using System.Threading.Tasks;
 using Seven.Infrastructure.IocContainer;
 
 namespace RabbitMQServerTest
@@ -45,6 +46,7 @@ namespace RabbitMQServerTest
 
             consumer.Start();
 
+
             ObjectContainer.RegisterInstance(channelPools);
             ObjectContainer.RegisterInterface<IBinarySerializer, DefaultBinarySerializer>();
 
@@ -52,24 +54,23 @@ namespace RabbitMQServerTest
 
             var commandService = new CommandService(requestChannelPools);
 
-            //commandService.Send(command);
-
             Console.WriteLine("begin to receive the result message");
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            for (var i = 0; i < 100; i++)
+
+            for (var i = 0; i < 10000; i++)
             {
                 var command = new CreateUserCommand(
-                    "天涯狼" + DateTime.Now.ToString("yyyyMMddHHmmsss"),
-                    DateTime.Now.ToString("yyyyMMddHHmmsss"),
-                    true,
-                    22);
+                 "天涯狼" + DateTime.Now.ToString("yyyyMMddHHmmsss"),
+                 DateTime.Now.ToString("yyyyMMddHHmmsss"),
+                 true,
+                 22);
 
-                var commandResult = commandService.SendAsync(command);
+                var commandResult = commandService.Send(command, 20);
 
-                //Console.WriteLine("message:{0} and number is {1}", commandResult.Message, i);
+                Console.WriteLine("message:{0} and number is {1}", commandResult.Message, i);
             }
 
             watch.Stop();

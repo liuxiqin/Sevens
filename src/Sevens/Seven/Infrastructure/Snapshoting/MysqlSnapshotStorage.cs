@@ -19,11 +19,13 @@ namespace Seven.Infrastructure.Snapshoting
             _dbConnection = new MySqlConnection(_connectionString);
         }
 
-        public void Create(SnapshotRecord snapshot)
+        public bool Create(SnapshotRecord snapshot)
         {
-            _dbConnection.Execute(
-                @"insert into SnapshotEntity(AggregateRootId,Versions,TimeStamp,Datas) values(@AggregateRootId,@Versions,@TimeStamp,@Datas)",
-                snapshot);
+            var resultTask = _dbConnection.ExecuteAsync(
+                  @"insert into SnapshotEntity(AggregateRootId,Versions,TimeStamp,Datas) values(@AggregateRootId,@Versions,@TimeStamp,@Datas)",
+                  snapshot);
+
+            return resultTask.Result == 1;
         }
 
         public async Task<SnapshotRecord> GetLastestSnapshot(string aggregateRootId)

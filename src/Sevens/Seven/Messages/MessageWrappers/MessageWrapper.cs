@@ -9,7 +9,7 @@ namespace Seven.Messages.QueueMessages
         public string MessageId { get; set; }
 
         public string RoutingKey { get; set; }
-         
+
         public string ExchangeName { get; set; }
 
         public string TypeName { get; set; }
@@ -25,6 +25,8 @@ namespace Seven.Messages.QueueMessages
         public bool Durable { get; set; }
 
         public bool AuotDelete { get; set; }
-        
+
+        public DateTime TimeStamp { get; set; }
+
     }
 }

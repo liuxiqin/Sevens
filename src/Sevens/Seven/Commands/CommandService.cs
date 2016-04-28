@@ -54,7 +54,9 @@ namespace Seven.Commands
 
             var exchangeName = message.GetType().Assembly.GetName().Name;
 
-            var routingKey = string.Format("{0}_{1}_{2}", exchangeName, "command", message.MessageId.GetHashCode() % _queueCount);
+            var hashCode = message.CommandId.GetHashCode() & 0x7FFFFFFF%_queueCount;
+
+            var routingKey = string.Format("{0}_{1}_{2}", exchangeName, "command", hashCode);
 
             return new MessageWrapper()
             {

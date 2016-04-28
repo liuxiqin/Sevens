@@ -57,7 +57,13 @@ namespace RabbitMqClientTest
 
             var aggregateRootStorage = new MysqlAggregateRootStorage(_mysqlConnection);
 
-            var repository = new NonEventSouringRepository(aggregateRootStorage, binarySerializer);
+            var aggregateRootMemory = new AggregateRootMemoryCache();
+
+            var nonEventSouringRepository = new NonEventSouringRepository(aggregateRootStorage, binarySerializer);
+
+            var eventSouringRepository = new EventSouringRepository(mysqlEventStore, snapshotStorage, binarySerializer,
+                aggregateRootMemory);
+
 
             var endPoint = new RemoteEndpoint("127.0.0.1", "/", "guest", "guest", 5672);
 
@@ -74,7 +80,7 @@ namespace RabbitMqClientTest
 
             var eventPublisher = new EventPublisher(requestChannelPools);
 
-            var commandProssor = new DefaultCommandProssor(mysqlEventStore, repository, commandInitializer, eventPublisher, binarySerializer);
+            var commandProssor = new DefaultCommandProssor(mysqlEventStore, eventSouringRepository, commandInitializer, eventPublisher, snapshotStorage, binarySerializer);
 
             var messageHandler = new MessageRequestHandler(commandProssor);
 

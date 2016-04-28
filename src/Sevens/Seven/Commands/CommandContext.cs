@@ -44,12 +44,12 @@ namespace Seven.Commands
         {
             if (!AggregateRoots.ContainsKey(aggregateRootId))
             {
-                var aggregateRoot = _repository.Get(aggregateRootId);
+                var aggregateRoot = _repository.Get<TAggregateRoot>(aggregateRootId);
 
                 AggregateRoots.Add(aggregateRootId, aggregateRoot);
             }
+
             return (TAggregateRoot)AggregateRoots[aggregateRootId];
         }
-
     }
 }

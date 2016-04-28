@@ -73,9 +73,9 @@ namespace Seven.Events
                 MessageType = MessageType.OneWay,
                 ResponseRoutingKey = string.Empty,
                 RoutingKey =
-                    string.Format("{0}_{1}_{2}", evnt.GetType().Assembly.FullName, "event",
-                        evnt.MessageId.GetHashCode()%5),
-                ExchangeName = evnt.GetType().Assembly.FullName,
+                    string.Format("{0}_{1}_{2}", evnt.GetType().Assembly.GetName().Name, "event",
+                        evnt.MessageId.GetHashCode() & 0x7FFFFFFF % 5),
+                ExchangeName = evnt.GetType().Assembly.GetName().Name,
                 TypeName = evnt.GetType().FullName
             };
         }
