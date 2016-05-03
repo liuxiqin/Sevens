@@ -33,12 +33,10 @@ namespace RabbitMqClientTest
         private static void Main(string[] args)
         {
 
-
+            var containerBuilder = new AutofacContainerBuilder();
 
             var binarySerializer = new DefaultBinarySerializer();
-
-            ObjectContainer.SetContainer(new AutofacContainerObject());
-
+            
             var eventHandleInitializer = new EventHandleProvider();
             eventHandleInitializer.Initialize(Assembly.GetExecutingAssembly(), Assembly.Load("Seven.Tests"));
 
@@ -48,9 +46,9 @@ namespace RabbitMqClientTest
             var messageTypeProvider = new MessageTypeProvider();
             messageTypeProvider.Initialize(Assembly.GetExecutingAssembly(), Assembly.Load("Seven.Tests"));
 
-            ObjectContainer.RegisterInstance(eventHandleInitializer);
-            ObjectContainer.RegisterInstance(commandInitializer);
-            ObjectContainer.RegisterInstance(messageTypeProvider);
+            containerBuilder.RegisterInstance(eventHandleInitializer);
+            containerBuilder.RegisterInstance(commandInitializer);
+            containerBuilder.RegisterInstance(messageTypeProvider);
 
             var mysqlEventStore = new MySqlEventStore(_mysqlConnection);
 
@@ -74,8 +72,8 @@ namespace RabbitMqClientTest
 
             var channelPools = new CommunicateChannelFactoryPool(endPoint);
 
-            ObjectContainer.RegisterInstance(channelPools);
-            ObjectContainer.RegisterInterface<IBinarySerializer, DefaultBinarySerializer>();
+            containerBuilder.RegisterInstance(channelPools);
+            containerBuilder.RegisterInterface<IBinarySerializer, DefaultBinarySerializer>();
 
             var requestChannelPools = new RequestChannelPools();
 

@@ -11,12 +11,12 @@ namespace Seven.Messages.Pipelines
     {
         public void Handle(MessageContext context)
         {
-            var channelPools = ObjectContainer.Resolve<CommunicateChannelFactoryPool>();
+            var channelPools = DependencyResolver.Resolve<CommunicateChannelFactoryPool>();
 
             var replyChannel = channelPools.GetChannel(new PublisherContext(context.MessageWrapper.ExchangeName,
                MessageExchangeType.Direct, false, true, true));
 
-            var binarySerializer = ObjectContainer.Resolve<IBinarySerializer>();
+            var binarySerializer = DependencyResolver.Resolve<IBinarySerializer>();
 
             var responseMessage = new MessageWrapper()
             {

@@ -14,7 +14,7 @@ namespace Seven.Tests
         private static void Main(string[] args)
         {
 
-            ObjectContainer.SetContainer(new AutofacContainerObject());
+           // ObjectContainer.SetContainer(new AutofacContainerObject());
 
             //var applictionInitializer = new EventHandleProvider();
 

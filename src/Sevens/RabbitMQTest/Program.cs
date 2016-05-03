@@ -23,7 +23,7 @@ namespace RabbitMQServerTest
             var password = "guest";
             var virtualName = "/";
 
-            ObjectContainer.SetContainer(new AutofacContainerObject());
+           // ObjectContainer.SetContainer(new AutofacContainerObject());
 
             var endPoint = new RemoteEndpoint(hostName, virtualName, userName, password, port);
 
@@ -42,8 +42,8 @@ namespace RabbitMQServerTest
             consumer.Start();
 
 
-            ObjectContainer.RegisterInstance(channelPools);
-            ObjectContainer.RegisterInterface<IBinarySerializer, DefaultBinarySerializer>();
+           // ObjectContainer.RegisterInstance(channelPools);
+          //  ObjectContainer.RegisterInterface<IBinarySerializer, DefaultBinarySerializer>();
 
             var requestChannelPools = new RequestChannelPools();
 

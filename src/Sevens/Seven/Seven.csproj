@@ -113,9 +113,6 @@
     <Compile Include="Events\IEventStorage..cs" />
     <Compile Include="Infrastructure\Exceptions\BusinessException.cs" />
     <Compile Include="Infrastructure\Exceptions\FrameworkException.cs" />
-    <Compile Include="Infrastructure\Dependency\AutofacContainerObject.cs" />
-    <Compile Include="Infrastructure\Dependency\IContainerObject.cs" />
-    <Compile Include="Infrastructure\Dependency\ObjectContainer.cs" />
     <Compile Include="Infrastructure\Logs\ISevenLog.cs" />
     <Compile Include="Infrastructure\Persistence\EntityBase.cs" />
     <Compile Include="Infrastructure\Persistence\IPersistence.cs" />

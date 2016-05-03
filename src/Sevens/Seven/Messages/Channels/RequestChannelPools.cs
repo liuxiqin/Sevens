@@ -22,8 +22,8 @@ namespace Seven.Messages.Channels
 
         public RequestChannelPools()
         {
-            _channelFactoryPools = ObjectContainer.Resolve<CommunicateChannelFactoryPool>();
-            _binarySerializer = ObjectContainer.Resolve<IBinarySerializer>();
+            _channelFactoryPools = DependencyResolver.Resolve<CommunicateChannelFactoryPool>();
+            _binarySerializer = DependencyResolver.Resolve<IBinarySerializer>();
         }
 
         public IRequestChannel GetRequestChannel(RequestMessageContext messageContext)

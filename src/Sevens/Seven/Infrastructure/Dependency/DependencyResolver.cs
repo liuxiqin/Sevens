@@ -11,12 +11,12 @@ namespace Seven.Infrastructure.Dependency
             _dependencyResolver = dependencyResolver;
         }
 
-        public static T Resolver<T>()
+        public static T Resolve<T>()
         {
             return _dependencyResolver.Resolve<T>();
         }
 
-        public static T Resolver<T>(Type serviceType)
+        public static T Resolve<T>(Type serviceType)
         {
             return _dependencyResolver.Resolve<T>(serviceType);
         }

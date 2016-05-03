@@ -11,10 +11,10 @@ namespace Seven.Aggregates
     public abstract class AggregateRoot : IAggregateRoot
     {
         [NonSerialized]
-        private  EventHandleProvider _eventHandleProvider;
+        private EventHandleProvider _eventHandleProvider;
 
         [NonSerialized]
-        private  Queue<IEvent> _unCommitEvents;
+        private Queue<IEvent> _unCommitEvents;
 
         private string _aggregateRootId;
 
@@ -74,7 +74,7 @@ namespace Seven.Aggregates
         {
             if (_eventHandleProvider == null)
             {
-                _eventHandleProvider = ObjectContainer.Resolve<EventHandleProvider>();
+                _eventHandleProvider = DependencyResolver.Resolve<EventHandleProvider>();
             }
 
             var handler = _eventHandleProvider.GetInternalHandler(this.GetType(), evnt.GetType());
