@@ -14,13 +14,22 @@ namespace Seven.Infrastructure.Dependency
 
         public T Resolve<T>()
         {
-            return default(T);
+            return _container.Resolve<T>();
         }
 
-        public T Resolve<T>(Type serviceType) { return default(T); }
+        public T Resolve<T>(Type serviceType)
+        {
+            return (T)_container.Resolve(serviceType);
+        }
 
-        public T Resolve<T>(string instanceName) { return default(T); }
+        public T Resolve<T>(string serviceName)
+        {
+            return _container.ResolveNamed<T>(serviceName);
+        }
 
-        public object Resolve(Type serviceType) { return default(object); }
+        public object Resolve(Type serviceType)
+        {
+            return _container.Resolve(serviceType);
+        }
     }
 }

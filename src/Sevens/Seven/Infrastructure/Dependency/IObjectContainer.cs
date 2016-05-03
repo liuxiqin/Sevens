@@ -8,7 +8,7 @@ namespace Seven.Infrastructure.Dependency
 
         T Resolve<T>(Type serviceType);
         
-        T Resolve<T>(string instanceName);
+        T Resolve<T>(string serviceName);
 
         object Resolve(Type serviceType);
 
