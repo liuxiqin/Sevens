@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading;
-using Newtonsoft.Json;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Framing;
 using Seven.Commands;
 using Seven.Infrastructure.Serializer;
 using Seven.Messages;
 using Seven.Messages.Channels;
 using Seven.Messages.QueueMessages;
 using Seven.Tests.UserSample.Commands;
-using System.Text;
-using System.Threading.Tasks;
-using Seven.Infrastructure.IocContainer;
+using Seven.Infrastructure.Dependency;
+using Seven.Tests;
 
 namespace RabbitMQServerTest
 {
@@ -52,7 +47,9 @@ namespace RabbitMQServerTest
 
             var requestChannelPools = new RequestChannelPools();
 
-            var commandService = new CommandService(requestChannelPools);
+            var commandTopicProvider = new UserTopicProvider();
+
+            var commandService = new CommandService(requestChannelPools, commandTopicProvider);
 
             Console.WriteLine("begin to receive the result message");
 

@@ -1,7 +1,7 @@
 using System;
 using Autofac;
 
-namespace Seven.Infrastructure.IocContainer
+namespace Seven.Infrastructure.Dependency
 {
     public class AutofacContainerObject : IContainerObject
     {

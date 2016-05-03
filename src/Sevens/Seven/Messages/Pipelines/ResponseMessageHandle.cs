@@ -1,6 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
-using Seven.Infrastructure.IocContainer;
+using Seven.Infrastructure.Dependency;
 using Seven.Infrastructure.Serializer;
 using Seven.Messages.Channels;
 using Seven.Messages.QueueMessages;

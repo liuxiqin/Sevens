@@ -6,8 +6,6 @@ using Seven.Events;
 
 namespace Seven.Aggregates
 {
-
-    
     public interface IAggregateRoot
     {
         string AggregateRootId { get; }

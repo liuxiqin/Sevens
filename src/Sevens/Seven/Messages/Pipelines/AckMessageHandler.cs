@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Seven.Infrastructure.IocContainer;
+using Seven.Infrastructure.Dependency;
 using Seven.Messages.Channels;
 
 namespace Seven.Messages.Pipelines

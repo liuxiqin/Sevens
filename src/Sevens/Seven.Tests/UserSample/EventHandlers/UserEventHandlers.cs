@@ -10,14 +10,14 @@ using Seven.Tests.UserSample.DomainEvents;
 namespace Seven.Tests.UserSample.EventHandlers
 {
     public class UserEventHandlers
-        :IEventHandler<RegisterUserEvent>,
+        : IEventHandler<RegisterUserEvent>,
         IEventHandler<BindEmailEvent>,
         IEventHandler<BindPhoneEvent>,
         IEventHandler<ChangePasswordEvent>
     {
         public void Handle(RegisterUserEvent evnt)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("handle the domain event.");
         }
 
         public void Handle(BindEmailEvent evnt)

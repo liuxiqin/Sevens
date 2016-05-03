@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using Seven.Infrastructure.IocContainer;
+using Seven.Infrastructure.Dependency;
 using Seven.Infrastructure.Serializer;
 using Seven.Messages.QueueMessages;
 using Seven.Tests.UserSample.Commands;

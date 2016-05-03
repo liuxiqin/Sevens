@@ -18,11 +18,17 @@ namespace Seven.Commands
     {
         private int _queueCount = 20;
 
-        private RequestChannelPools _requestChannelPools;
+        private readonly RequestChannelPools _requestChannelPools;
 
-        public CommandService(RequestChannelPools requestChannelPools)
+        private readonly ICommandTopicProvider _commandTopicProvider;
+
+        public CommandService(
+            RequestChannelPools requestChannelPools,
+            ICommandTopicProvider commandTopicProvider)
         {
             _requestChannelPools = requestChannelPools;
+
+            _commandTopicProvider = commandTopicProvider;
         }
 
         public MessageHandleResult Send(ICommand command, int timeoutSeconds = 10)
@@ -51,10 +57,9 @@ namespace Seven.Commands
 
         private MessageWrapper BuildMessage(ICommand message, bool isRpcInvoke = true)
         {
+            var exchangeName = _commandTopicProvider.GetTopic(message.GetType());
 
-            var exchangeName = message.GetType().Assembly.GetName().Name;
-
-            var hashCode = message.CommandId.GetHashCode() & 0x7FFFFFFF%_queueCount;
+            var hashCode = message.CommandId.GetHashCode() & 0x7FFFFFFF % _queueCount;
 
             var routingKey = string.Format("{0}_{1}_{2}", exchangeName, "command", hashCode);
 

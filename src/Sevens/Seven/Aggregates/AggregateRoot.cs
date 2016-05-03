@@ -2,19 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Seven.Events;
-using Seven.Infrastructure.IocContainer;
+using Seven.Infrastructure.Dependency;
 using Seven.Initializer;
 
 namespace Seven.Aggregates
 {
-    [Serializable()]
+    [Serializable]
     public abstract class AggregateRoot : IAggregateRoot
     {
         [NonSerialized]
-        private EventHandleProvider _eventHandleProvider;
+        private  EventHandleProvider _eventHandleProvider;
 
         [NonSerialized]
-        public Queue<IEvent> _unCommitEvents;
+        private  Queue<IEvent> _unCommitEvents;
 
         private string _aggregateRootId;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -10,7 +11,6 @@ using Newtonsoft.Json;
 using RabbitMQ.Client;
 using Seven.Commands;
 using Seven.Infrastructure.EventStore;
-using Seven.Infrastructure.IocContainer;
 using Seven.Infrastructure.Repository;
 using Seven.Infrastructure.Serializer;
 using Seven.Initializer;
@@ -18,9 +18,10 @@ using Seven.Messages;
 using Seven.Messages.Channels;
 using Seven.Messages.QueueMessages;
 using Seven.Tests.UserSample.Commands;
-using RabbitMQ.Client.Events;
 using Seven.Events;
+using Seven.Infrastructure.Dependency;
 using Seven.Infrastructure.Snapshoting;
+using Seven.Tests;
 
 namespace RabbitMqClientTest
 {
@@ -78,15 +79,33 @@ namespace RabbitMqClientTest
 
             var requestChannelPools = new RequestChannelPools();
 
-            var eventPublisher = new EventPublisher(requestChannelPools);
+            var commandTopicProvider = new UserTopicProvider();
+
+            var eventTopicProvider = new UserEEventTopicProvider();
+
+            var eventPublisher = new EventPublisher(requestChannelPools, eventTopicProvider);
 
             var commandProssor = new DefaultCommandProssor(mysqlEventStore, eventSouringRepository, commandInitializer, eventPublisher, snapshotStorage, binarySerializer);
 
             var messageHandler = new MessageRequestHandler(commandProssor);
 
-            for (var i = 0; i < 20; i++)
+            for (var i = 0; i < 5; i++)
             {
                 var routingKey = string.Format("{0}_{1}_{2}", exChangeName, "command", i);
+
+                var consumerContext = new ConsumerContext(exChangeName, routingKey, routingKey, responseRoutingKey, false, true);
+
+                var consumer = new PushMessageConsumer(channelPools, binarySerializer, consumerContext, messageHandler);
+
+                consumer.Start();
+
+                Console.WriteLine("Started.");
+            }
+
+
+            for (var i = 0; i < 5; i++)
+            {
+                var routingKey = string.Format("{0}_{1}_{2}", exChangeName, "event", i);
 
                 var consumerContext = new ConsumerContext(exChangeName, routingKey, routingKey, responseRoutingKey, false, true);
 

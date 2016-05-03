@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserCommandTopicProvider.cs" />
     <Compile Include="UserSample\ApplicationEvents\CreateOrderCanceled.cs" />
     <Compile Include="UserSample\ApplicationEvents\InvertoryOutCheckoutFailed.cs" />
     <Compile Include="UserSample\ApplicationEvents\OrderCreated.cs" />

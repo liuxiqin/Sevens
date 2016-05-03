@@ -1,4 +1,4 @@
-namespace Seven.Infrastructure.IocContainer
+namespace Seven.Infrastructure.Dependency
 {
     public class ObjectContainer
     {
