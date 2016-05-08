@@ -11,10 +11,10 @@ namespace Seven.Aggregates
         string AggregateRootId { get; }
 
         void ApplyEvent(IEvent evnt);
-         
+
         void ApplyEvents(IList<IEvent> events);
 
-        IList<IEvent> GetChanges();
+        IList<IEvent> GetUnCommitEvents();
 
         void Clear();
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Seven.Aggregates;
 using Seven.Events;
 using Seven.Infrastructure.EventStore;
 using Seven.Infrastructure.Repository;
@@ -53,27 +54,36 @@ namespace Seven.Commands
             if (aggregateRoots.Count > 1)
                 throw new Exception("one command handler can change just only one aggregateRoot.");
 
-            var aggregateRoot = aggregateRoots.First();
+            var aggregateRoot = aggregateRoots.First().Value;
 
-            var domainEvents = aggregateRoot.Value.GetChanges();
+            var domainEvents = aggregateRoot.GetUnCommitEvents();
 
-            _eventStore.AppendAsync(new EventStreamRecord()
-            {
-                AggregateRootId = aggregateRoot.Key,
-                CommandId = command.CommandId,
-                Version = aggregateRoot.Value.Version,
-                EventDatas = _binarySerializer.Serialize(domainEvents)
-            });
+            var eventStream = BuildEventStream(aggregateRoot, command.CommandId);
 
-            _snapshotStorage.Create(new SnapshotRecord(aggregateRoot.Key, aggregateRoot.Value.Version, _binarySerializer.Serialize(aggregateRoot.Value)));
+            _eventStore.AppendAsync(eventStream);
+
+            if (aggregateRoot.Version % 3 == 0)
+                _snapshotStorage.Create(new SnapshotRecord(aggregateRoot.AggregateRootId, aggregateRoot.Version,
+                    _binarySerializer.Serialize(aggregateRoot)));
 
             _eventPublisher.PublishAsync(domainEvents);
 
-            aggregateRoot.Value.Clear();
+            aggregateRoot.Clear();
 
             Console.WriteLine(aggregateRoot.ToString());
 
             Console.WriteLine("DomainEvents count is {0}", domainEvents.Count);
+        }
+
+        private EventStreamRecord BuildEventStream(IAggregateRoot aggregateRoot, string commandId)
+        {
+            return new EventStreamRecord()
+            {
+                AggregateRootId = aggregateRoot.AggregateRootId,
+                CommandId = commandId,
+                Version = aggregateRoot.Version,
+                EventDatas = _binarySerializer.Serialize(aggregateRoot.GetUnCommitEvents())
+            };
         }
     }
 }

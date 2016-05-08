@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using Seven.Aggregates;
 using Seven.Events;
@@ -39,7 +40,7 @@ namespace Seven.Infrastructure.Repository
         {
             var aggregateRoot = _aggregateRoots.Get(aggregateRootId);
 
-            if (aggregateRoot != null && aggregateRoot.GetChanges().Count == 0)
+            if (aggregateRoot != null && aggregateRoot.GetUnCommitEvents().Count == 0)
                 return (TAggregateRoot)aggregateRoot;
 
             var snapshot = _snapshotStorage.GetLastestSnapshot(aggregateRootId).Result;
@@ -70,7 +71,6 @@ namespace Seven.Infrastructure.Repository
             return new DomainEventStream(streamRecord.AggregateRootId, streamRecord.Version, streamRecord.CommandId,
                 changeEvents);
         }
-
 
         private IAggregateRoot ConvertTo(byte[] aggregateRootDatas)
         {

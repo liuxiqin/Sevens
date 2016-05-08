@@ -9,6 +9,7 @@ namespace Seven.Messages
     public interface IMessage
     {
         string MessageId { get; }
+
     }
 
     [Serializable]

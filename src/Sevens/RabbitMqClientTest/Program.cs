@@ -36,7 +36,7 @@ namespace RabbitMqClientTest
             var containerBuilder = new AutofacContainerBuilder();
 
             var binarySerializer = new DefaultBinarySerializer();
-            
+
             var eventHandleInitializer = new EventHandleProvider();
             eventHandleInitializer.Initialize(Assembly.GetExecutingAssembly(), Assembly.Load("Seven.Tests"));
 
@@ -62,7 +62,7 @@ namespace RabbitMqClientTest
 
             var eventSouringRepository = new EventSouringRepository(mysqlEventStore, snapshotStorage, binarySerializer,
                 aggregateRootMemory);
-
+             
 
             var endPoint = new RemoteEndpoint("127.0.0.1", "/", "guest", "guest", 5672);
 
@@ -74,6 +74,8 @@ namespace RabbitMqClientTest
 
             containerBuilder.RegisterInstance(channelPools);
             containerBuilder.RegisterInterface<IBinarySerializer, DefaultBinarySerializer>();
+
+            DependencyResolver.SetResolver(new DefaultDependencyResolver(containerBuilder.Build()));
 
             var requestChannelPools = new RequestChannelPools();
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using Seven;
 using Seven.Commands;
 using Seven.Infrastructure.Serializer;
 using Seven.Messages;
@@ -23,7 +24,7 @@ namespace RabbitMQServerTest
             var password = "guest";
             var virtualName = "/";
 
-           // ObjectContainer.SetContainer(new AutofacContainerObject());
+
 
             var endPoint = new RemoteEndpoint(hostName, virtualName, userName, password, port);
 
@@ -41,9 +42,12 @@ namespace RabbitMQServerTest
 
             consumer.Start();
 
+            var containerBuilder = new AutofacContainerBuilder();
 
-           // ObjectContainer.RegisterInstance(channelPools);
-          //  ObjectContainer.RegisterInterface<IBinarySerializer, DefaultBinarySerializer>();
+            containerBuilder.RegisterInstance(channelPools);
+            containerBuilder.RegisterInterface<IBinarySerializer, DefaultBinarySerializer>();
+
+            DependencyResolver.SetResolver(new DefaultDependencyResolver(containerBuilder.Build()));
 
             var requestChannelPools = new RequestChannelPools();
 
@@ -74,6 +78,15 @@ namespace RabbitMQServerTest
 
             Console.WriteLine("message:{0} ", watch.ElapsedMilliseconds);
             Console.ReadLine();
+        }
+
+        private void Start()
+        {
+            SevensConfiguration.Initialize();
+
+            var bootstrap = new Bootstrap();
+
+            bootstrap.Start();
         }
     }
 }

@@ -28,6 +28,11 @@ namespace Seven.Infrastructure.Dependency
 
         private IContainer _container;
 
+        public AutofacContainerBuilder()
+        {
+            _containerBuilder = new ContainerBuilder();
+        }
+
         public IObjectContainer Build()
         {
             var container = _containerBuilder.Build();

@@ -11,16 +11,21 @@ namespace Seven.Commands
     [Serializable]
     public class Command : ICommand
     {
-        public string Id;
+        private string _id;
+
+        public int RetryCount { get; set; }
+
+    
 
         public string AggerateRootId
         {
-            get { return Id; }
+            get { return _id; }
         }
 
         public Command()
         {
-            Id = ObjectId.NewObjectId();
+            _id = ObjectId.NewObjectId();
+            RetryCount = 5;
         }
 
         public void Execute()
@@ -30,12 +35,12 @@ namespace Seven.Commands
 
         public string CommandId
         {
-            get { return Id; }
+            get { return _id; }
         }
 
         public string MessageId
         {
-            get { return Id; }
+            get { return _id; }
         }
 
         protected long Version { get; set; }
@@ -50,5 +55,7 @@ namespace Seven.Commands
         string AggerateRootId { get; }
 
         void Execute();
+
+        int RetryCount { get; set; }
     }
 }

@@ -62,7 +62,7 @@ namespace Seven.Infrastructure.UniqueIds
 
         private static int GenerateCounter()
         {
-            _counter = Interlocked.Increment(ref _counter);
+            _counter = Interlocked.Increment(ref _counter) % (int.MaxValue - 1);
 
             return _counter;
         }
